@@ -5,14 +5,17 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build",
-    "build": "webpack --progress --colors"
+    "build": "webpack --progress --colors",
+    "test": "jest"
   },
   "author": "pman",
   "license": "MIT",
   "devDependencies": {
+    "alt": "^0.17.1",
     "babel-core": "^5.6.18",
     "babel-loader": "^5.3.1",
     "flux": "^2.0.3",
+    "jest-cli": "^0.4.15",
     "node-libs-browser": "^0.5.2",
     "node-sass": "^3.2.0",
     "react": "^0.13.3",
