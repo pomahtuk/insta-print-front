@@ -36,7 +36,7 @@ var AllLocations = React.createClass({
     if (LocationStore.isLoading()) {
       return (
         <div>
-          <img src="ajax-loader.gif" />
+          <img src="images/ajax-loader.gif" />
         </div>
       )
     }

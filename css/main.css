@@ -1,0 +1,22 @@
+body {
+  background-image: url('../images/bg.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  /* FIXME: Temp. workaround for vertical scrollbars */
+  margin: 0;
+}
+
+body::before {
+    content: '';
+    will-change: transform;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    position: fixed;
+}
+
+body .demo-blog {
+  font-family: 'Roboto', 'Helvetica', sans-serif;
+}

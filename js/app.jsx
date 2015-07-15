@@ -1,8 +1,14 @@
-import React from 'react';
-// import Router from 'react-router';
-// import { DefaultRoute, Link, Route, RouteHandler } from 'react-router';
+// js for material design - really doubt we will need this, but still
+import mdl from 'material-design-lite/material.js';
+//css for material design
+import 'material-design-lite/material.css';
+import '../css/main.css';
 
-// import LoginHandler from './components/login.jsx';
+import React from 'react';
+import Router from 'react-router';
+import { DefaultRoute, Link, Route, RouteHandler } from 'react-router';
+
+import Locations from './components/Locations.jsx';
 
 // let App = React.createClass({
 //   render() {
@@ -18,19 +24,18 @@ import React from 'react';
 //   }
 // });
 
-// let routes = (
-//   <Route name="app" path="/" handler={App}>
-//     <Route name="login" path="/login" handler={LoginHandler}/>
-//   </Route>
-// );
-
-// Router.run(routes, function (Handler) {
-//   React.render(<Handler/>, document.body);
-// });
-
-import Locations from './components/Locations.jsx';
-
-React.render(
-  <Locations />,
-  document.body
+let routes = (
+  <Route name="index" path="/" handler={Locations}>
+    <Route name="locations" path="/locations" handler={Locations}/>
+  </Route>
 );
+
+Router.run(routes, function (Handler) {
+  React.render(<Handler/>, document.getElementById('react'));
+});
+
+
+// React.render(
+//   <Locations />,
+//   document.body
+// );
