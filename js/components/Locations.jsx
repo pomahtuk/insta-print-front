@@ -69,15 +69,20 @@ var Locations = React.createClass({
   render() {
     return (
       <div>
-        <h1>Locations</h1>
-        <AltContainer store={LocationStore}>
-          <AllLocations />
-        </AltContainer>
+        <main class="mdl-layout__content image-background">
+          <div class="demo-blog__posts mdl-grid">
+            <h1>Locations</h1>
+            <AltContainer store={LocationStore}>
+              <AllLocations />
+            </AltContainer>
 
-        <h1>Favorites</h1>
-        <AltContainer store={FavoritesStore}>
-          <Favorites />
-        </AltContainer>
+            <h1>Favorites</h1>
+            <AltContainer store={FavoritesStore}>
+              <Favorites />
+            </AltContainer>
+          </div>
+        </main>
+        <div class="mdl-layout__obfuscator"></div>
       </div>
     );
   }

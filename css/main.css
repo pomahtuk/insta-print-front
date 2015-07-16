@@ -1,9 +1,13 @@
-body {
+.image-background {
   background-image: url('../images/bg.jpg');
   background-size: cover;
   background-attachment: fixed;
+}
+
+body {
   /* FIXME: Temp. workaround for vertical scrollbars */
   margin: 0;
+  font-family: 'Roboto', 'Helvetica', sans-serif;
 }
 
 body::before {
@@ -15,8 +19,4 @@ body::before {
     bottom: 0;
     top: 0;
     position: fixed;
-}
-
-body .demo-blog {
-  font-family: 'Roboto', 'Helvetica', sans-serif;
 }

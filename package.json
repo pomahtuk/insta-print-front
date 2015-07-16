@@ -17,6 +17,7 @@
     "css-loader": "^0.15.4",
     "extract-text-webpack-plugin": "^0.8.2",
     "file-loader": "^0.8.4",
+    "google-map-react": "^0.4.0",
     "jest-cli": "^0.4.15",
     "material-design-lite": "git+https://github.com/google/material-design-lite.git#v1.0.0",
     "napa": "^1.2.0",

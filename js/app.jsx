@@ -2,37 +2,32 @@
 import mdl from 'material-design-lite/material.js';
 
 import React from 'react';
-import Router from 'react-router';
-import { DefaultRoute, Link, Route, RouteHandler } from 'react-router';
+import Router, { DefaultRoute, Link, Route, RouteHandler } from 'react-router';
 
 import Locations from './components/Locations.jsx';
+import Tools from './components/Tools.jsx';
 
-// let App = React.createClass({
-//   render() {
-//     return (
-//       <div className="nav">
-//         <Link to="app">Home</Link>
-//         <Link to="login">Login</Link>
-
-//         {/* this is the importTant part */}
-//         <RouteHandler/>
-//       </div>
-//     );
-//   }
-// });
+let App = React.createClass({
+  render() {
+    return (
+      <div class="demo-blog mdl-layout mdl-js-layout has-drawer is-upgraded">
+        <Link to="index">Home</Link>
+        <Link to="locations">Locations</Link>
+        <Link to="tools">Tools</Link>
+        {/* this is the importTant part */}
+        <RouteHandler/>
+      </div>
+    );
+  }
+});
 
 let routes = (
-  <Route name="index" path="/" handler={Locations}>
+  <Route name="index" path="/" handler={App}>
     <Route name="locations" path="/locations" handler={Locations}/>
+    <Route name="tools" path="/tools" handler={Tools}/>
   </Route>
 );
 
 Router.run(routes, function (Handler) {
-  React.render(<Handler/>, document.getElementById('react'));
+  React.render(<Handler/>, document.body);
 });
-
-
-// React.render(
-//   <Locations />,
-//   document.body
-// );
