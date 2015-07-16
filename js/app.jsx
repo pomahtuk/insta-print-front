@@ -1,8 +1,5 @@
 // js for material design - really doubt we will need this, but still
 import mdl from 'material-design-lite/material.js';
-//css for material design
-import 'material-design-lite/material.css';
-import '../css/main.css';
 
 import React from 'react';
 import Router from 'react-router';

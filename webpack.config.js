@@ -3,18 +3,19 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
     entry: [
-      "./js/app.jsx"
+      "./js/app.jsx",
+      "./css/app.css"
     ],
     output: {
       path: "./build",
-      filename: "bundle.js"
+      filename: "[name].js"
     },
     module: {
       loaders: [
         { test: /\.jsx?$/, loaders: ['react-hot', 'babel'], exclude: /node_modules/ },
-        { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
-        { test: /\.png$/, loader: "url-loader?limit=100000" },
-        { test: /\.jpg$/, loader: "file-loader" },
+        { test: /\.js$/, exclude: /node_modules/, loader: 'babel'},
+        { test: /\.png$/, loader: "url?limit=100000" },
+        { test: /\.jpg$/, loader: "file" },
         // Extract css files
         {
             test: /\.css$/,
@@ -30,7 +31,7 @@ module.exports = {
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoErrorsPlugin(),
-      new ExtractTextPlugin("bundle.css")
+      new ExtractTextPlugin("[name].css")
     ]
 
 };
