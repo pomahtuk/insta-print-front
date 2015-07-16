@@ -1,6 +1,3 @@
-// js for material design - really doubt we will need this, but still
-import mdl from 'material-design-lite/material.js';
-
 import React from 'react';
 import Router, { DefaultRoute, Link, Route, RouteHandler } from 'react-router';
 
@@ -22,19 +19,15 @@ let Navigation = React.createClass({
 let App = React.createClass({
   render() {
     return (
-      <div className="layout-transparent mdl-layout mdl-js-layout">
+      <div className="">
 
-        <header classNane="mdl-layout__header mdl-layout__header--transparent">
-          <div classNane="mdl-layout__header-row">
+        <header classNane="">
+          <div classNane="">
             <Navigation/>
           </div>
         </header>
-        
-        <div classNane="mdl-layout__drawer">
-          <Navigation/>
-        </div>
 
-        <main classNane="mdl-layout__content">
+        <main classNane="">
           <RouteHandler/>
         </main>
 

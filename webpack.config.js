@@ -12,7 +12,7 @@ module.exports = {
     },
     module: {
       loaders: [
-        { test: /\.jsx?$/, loaders: ['react-hot', 'babel'], exclude: /node_modules/ },
+        { test: /\.jsx?$/, loader: 'react-hot-loader!babel-loader?stage=0', exclude: /node_modules/ },
         { test: /\.js$/, exclude: /node_modules/, loader: 'babel'},
         { test: /\.png$/, loader: "url?limit=100000" },
         { test: /\.jpg$/, loader: "file" },
@@ -23,7 +23,7 @@ module.exports = {
         },
         // Extract sass files
         {
-            test: /\.scss$/,
+            test: /\.sass$/,
             loader: ExtractTextPlugin.extract("style-loader", "css-loader!sass-loader")
         }
       ]

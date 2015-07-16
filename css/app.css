@@ -1,4 +1,4 @@
 /* css for material design */
-@import '~material-design-lite/material.css';
+@import '~normalize-css/normalize.css';
 /* css for app */
 @import './main.css';
