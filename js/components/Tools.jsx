@@ -6,12 +6,9 @@ var Tools = React.createClass({
   render() {
     return (
       <div>
-        <main class="mdl-layout__content">
-          <div class="demo-blog__posts mdl-grid">
-            <h1>Tools</h1>
-          </div>
-        </main>
-        <div class="mdl-layout__obfuscator"></div>
+        <div className="demo-blog__posts mdl-grid">
+          <h1>Tools</h1>
+        </div>
       </div>
     );
   }

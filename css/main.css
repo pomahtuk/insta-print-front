@@ -4,19 +4,15 @@
   background-attachment: fixed;
 }
 
+.layout-transparent .mdl-layout__header,
+.layout-transparent .mdl-layout__drawer-button {
+  /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+  color: white;
+}
+
 body {
   /* FIXME: Temp. workaround for vertical scrollbars */
   margin: 0;
   font-family: 'Roboto', 'Helvetica', sans-serif;
-}
-
-body::before {
-    content: '';
-    will-change: transform;
-    z-index: 1;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    position: fixed;
 }
