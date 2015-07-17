@@ -4,7 +4,7 @@ import LocationStore from '../stores/LocationStore';
 import FavoritesStore from '../stores/FavoritesStore';
 import LocationActions from '../actions/LocationActions';
 
-let Favorites = React.createClass({
+class Favorites extends React.Component {
   render() {
     return (
       <ul>
@@ -16,15 +16,15 @@ let Favorites = React.createClass({
       </ul>
     );
   }
-});
+};
 
-let AllLocations = React.createClass({
+class AllLocations extends React.Component {
   addFave(ev) {
     let location = LocationStore.getLocation(
       Number(ev.target.getAttribute('data-id'))
     );
     LocationActions.favoriteLocation(location);
-  },
+  }
 
   render() {
     if (this.props.errorMessage) {
@@ -59,12 +59,12 @@ let AllLocations = React.createClass({
       </ul>
     );
   }
-});
+};
 
-let Locations = React.createClass({
+class Locations extends React.Component {
   componentDidMount() {
     LocationStore.fetchLocations();
-  },
+  }
 
   render() {
     return (
@@ -83,6 +83,6 @@ let Locations = React.createClass({
       </div>
     );
   }
-});
+};
 
-module.exports = Locations;
+export default Locations;

@@ -1,8 +1,6 @@
 import AltContainer from 'alt/AltContainer';
 import ToolsActions from '../actions/LocationActions';
 
-import PlaceMark from './map/PlaceMark.jsx';
-
 import React from "react/addons";
 import {GoogleMaps, Marker} from "react-google-maps";
 

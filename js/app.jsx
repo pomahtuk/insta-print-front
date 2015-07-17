@@ -1,10 +1,10 @@
 import React from 'react';
-import Router, { DefaultRoute, Link, Route, RouteHandler } from 'react-router';
+import Router, { State, DefaultRoute, Link, Route, RouteHandler } from 'react-router';
 
 import Locations from './components/Locations.jsx';
 import Tools from './components/Tools.jsx';
 
-let Navigation = React.createClass({
+class Navigation extends React.Component {
   render() {
     return (
       <nav className="mdl-navigation">
@@ -14,18 +14,32 @@ let Navigation = React.createClass({
       </nav>
     )
   }
-});
+}
 
 let App = React.createClass({
+  mixins: [State],
+
+  drawConditionalNavigation (routeLink) {
+    if (routeLink === '/') {
+      return true;
+    }
+
+    return (
+      <header classNane="">
+        <div classNane="">
+          <Navigation />
+        </div>
+      </header>
+    )
+  },
+
   render() {
+    var link = this.getPath();
+
     return (
       <div className="">
 
-        <header classNane="">
-          <div classNane="">
-            <Navigation/>
-          </div>
-        </header>
+        {this.drawConditionalNavigation(link)}
 
         <main classNane="">
           <RouteHandler/>

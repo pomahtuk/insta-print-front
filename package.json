@@ -4,7 +4,7 @@
   "description": "Front end for insta-print vending machine",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --devtool eval --progress --colors --hot",
+    "start": "webpack-dev-server --devtool source-map --progress --colors --hot",
     "build": "webpack -p --config webpack.config.js --progress --profile --colors",
     "test": "jest"
   },
