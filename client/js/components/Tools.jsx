@@ -2,15 +2,17 @@ import AltContainer from 'alt/AltContainer';
 import ToolsActions from '../actions/LocationActions';
 
 import React from "react/addons";
+import Router from 'react-router';
 import {GoogleMaps, Marker} from "react-google-maps";
 
 const {update} = React.addons;
 
-class GettingStarted extends React.Component {
+let GettingStarted = React.createClass({
 
-  constructor (...args) {
-    super(...args);
-    this.state = {
+  mixins: [ Router.State ],
+
+  getInitialState () {
+    return {
       markers: [{
         position: {
           lat: 25.0112183,
@@ -20,7 +22,7 @@ class GettingStarted extends React.Component {
         animation: 2
       }],
     };
-  }
+  },
 
   /*
    * This is called when you click on the map.
@@ -41,7 +43,7 @@ class GettingStarted extends React.Component {
     this.setState({ markers });
 
     this.refs.map.panTo(event.latLng);
-  }
+  },
 
   _handle_marker_rightclick (index, event) {
     /*
@@ -58,11 +60,13 @@ class GettingStarted extends React.Component {
     });
 
     this.setState({ markers });
-  }
+  },
 
   render () {
     const {props, state} = this,
           {googleMapsApi, ...otherProps} = props;
+
+    console.log(this.context.router.getCurrentQuery());
 
     return (
       <GoogleMaps containerProps={{
@@ -94,6 +98,6 @@ class GettingStarted extends React.Component {
       );
     }
   }
-}
+});
 
 export default GettingStarted;
