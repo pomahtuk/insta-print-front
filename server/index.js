@@ -1,16 +1,41 @@
-var koa = require('koa');
-var logger = require('koa-logger');
-var bodyParser = require('koa-bodyparser');
-var appRouter = require('./routes/app.js');
-var koaStatic = require('koa-static');
+const koa = require('koa');
+const logger = require('koa-logger');
+const bodyParser = require('koa-bodyparser');
+const koaStatic = require('koa-static');
+const path = require('path');
+const fs = require("fs");
+const mongoose = require("mongoose");
 
-var path = require('path');
+/**
+ * Setting config vars
+ */
+const staticPath = path.normalize(__dirname + '/../client/build');
+const modelsPath = path.normalize(__dirname + '/models');
+const appPort = 3000;
 
-var app = koa();
+/**
+ * Connect to database
+ */
+const mongoURI = "mongodb://localhost/insta-print";
 
-var staticPath = path.normalize(__dirname + '/../client/build');
+mongoose.connect(mongoURI);
+mongoose.connection.on("error", function(err) {
+  console.log(err);
+});
 
-console.log(staticPath);
+/**
+ * Load the models
+ */
+fs.readdirSync(modelsPath).forEach(function(file) {
+  if (~file.indexOf("js")) {
+    require(modelsPath + "/" + file);
+  }
+});
+
+
+const app = koa();
+// require after models initialization to prevent errors
+const appRouter = require('./routes/app.js');
 
 app.use(logger());
 app.use(bodyParser());
@@ -18,5 +43,8 @@ app.use(koaStatic(staticPath));
 
 app.use(appRouter.routes());
 
-app.listen(3000);
-console.log('listening on port 3000');
+// Start app
+if (!module.parent) {
+  app.listen(appPort);
+  console.log("Server started, listening on port: " + appPort);
+}
