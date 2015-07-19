@@ -33,6 +33,16 @@ function* updateDBRecord(key, context) {
   return dbRecord;
 }
 
+function* retreiveDBRecord(key, context) {
+  try {
+    var dbRecord = yield InstagramKey.findOne({'key': key}).exec();
+  } catch (err) {
+    context.throw(err);
+  }
+
+  return dbRecord;
+}
+
 // Create a new route
 router.post('/api-key', function* () {
   var record = yield updateDBRecord('api-key', this);
@@ -41,12 +51,32 @@ router.post('/api-key', function* () {
   this.body = record;
 });
 
+router.get('/api-key', function* () {
+  var record = yield retreiveDBRecord('api-key', this);
+  this.status = 200;
+  this.body = record;
+});
+
+
 router.post('/location-id', function* () {
   var record = yield updateDBRecord('location-id', this);
 
   this.status = 200;
   this.body = record;
 });
+
+router.get('/location-id', function* () {
+  var record = yield retreiveDBRecord('location-id', this);
+  this.status = 200;
+  this.body = record;
+});
+
+router.get('/settings', function* () {
+  var dbRecords = yield InstagramKey.find().exec();
+  this.status = 200;
+  this.body = dbRecords;
+});
+
 
 // pass everything to react
 router.get('*', function* () {
