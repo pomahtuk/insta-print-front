@@ -7,7 +7,7 @@ module.exports = {
       "./client/css/app.css"
     ],
     output: {
-      path: "./build",
+      path: "./client/build",
       filename: "[name].js"
     },
     module: {

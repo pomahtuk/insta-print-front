@@ -11,11 +11,13 @@ class Navigation extends React.Component {
         <Link to="index" className="mdl-navigation__link">Home</Link>
         <Link to="locations" className="mdl-navigation__link">Locations</Link>
         <Link to="tools" className="mdl-navigation__link">Tools</Link>
-        <a href="https://api.instagram.com/oauth/authorize/?client_id=0e746470835249b0a01487361b63d20d&redirect_uri=http://localhost:8080/tools&response_type=code">Instagramm Auth</a>
+        <a href="https://api.instagram.com/oauth/authorize/?client_id=0e746470835249b0a01487361b63d20d&redirect_uri=http://localhost:3000/tools&response_type=code">Instagramm Auth</a>
       </nav>
     )
   }
 }
+
+// instagramm apiKey = 3b1454dc18344ec19d4344c25efe2c18
 
 let App = React.createClass({
   mixins: [State],
@@ -58,7 +60,6 @@ let routes = (
   </Route>
 );
 
-// Router.run(routes, Router.HistoryLocation, function (Handler) {
-Router.run(routes, function (Handler) {
+Router.run(routes, Router.HistoryLocation, function (Handler) {
   React.render(<Handler/>, document.getElementById('react'));
 });
