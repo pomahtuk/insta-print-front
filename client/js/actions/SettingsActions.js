@@ -1,14 +1,6 @@
 import dispatcher from '../dispatcher/appDispatcher.js';
 
 class SettingsActions {
-  updateValue(key, value) {
-    this.dispatch(key, value);
-  }
-
-  getValue(key) {
-    this.dispatch(key);
-  }
-
   getAllSettings() {
     this.dispatch()
   }

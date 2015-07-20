@@ -5,18 +5,13 @@ import SettingsSource from  '../sources/SettingsSource';
 
 class SettingsStore {
   constructor() {
-    this.settings = {};
+    this.settings = [];
     this.errorMessage = null;
 
     this.bindListeners({
-      handleUpdateSettings: SettingsActions.UPDATE_LOCATIONS,
+      handleUpdateSettings: SettingsActions.UPDATE_SETTINGS,
       handleGetAllSettings: SettingsActions.GET_ALL_SETTINGS,
       handleSettingsFailed: SettingsActions.SETTINGS_FAILED
-    });
-
-    this.exportPublicMethods({
-      getValue: this.getValue,
-      setValue: this.setValue
     });
 
     this.exportAsync(SettingsSource);
@@ -32,23 +27,7 @@ class SettingsStore {
   }
 
   handleGetAllSettings() {
-    this.settings = {};
-  }
-
-  // this looks fine
-  getValue(key) {
-    var { settings } = this.getState();
-    return settings.filter(item => item.key === key);
-  }
-
-  // nope^ this will update a runtime, not server
-  setValue(key, value) {
-    var { settings } = this.getState();
-    var item = settings.filter(item => item.key === key);
-    item.value = value;
-    this.setState({
-      settings: settings
-    });
+    this.settings = [];
   }
 }
 

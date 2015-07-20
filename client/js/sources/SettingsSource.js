@@ -14,30 +14,7 @@ let SettingsSource = {
           // a remote server somewhere.
           setTimeout(function () {
             resolve(mockData);
-          }, 250);
-        });
-      },
-
-      local() {
-        // Never check locally, always fetch remotely.
-        return null;
-      },
-
-      success: SettingsActions.updateSettings,
-      error: SettingsActions.settingsFailed,
-      loading: SettingsActions.getAllSettings
-    }
-  },
-
-  updateValue(key, value) {
-    return {
-      remote() {
-        return new Promise(function (resolve, reject) {
-          // simulate an asynchronous flow where data is fetched on
-          // a remote server somewhere.
-          setTimeout(function () {
-            resolve(mockData);
-          }, 250);
+          }, 2500);
         });
       },
 
