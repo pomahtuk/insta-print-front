@@ -27,6 +27,27 @@ let SettingsSource = {
       error: SettingsActions.settingsFailed,
       loading: SettingsActions.getAllSettings
     }
+  },
+
+  updateSettingsValue(key) {
+    return {
+      remote() {
+        return new Promise(function (resolve, reject) {
+          // simulate an asynchronous flow where data is fetched on
+          // a remote server somewhere.
+          setTimeout(function () {
+            resolve(mockData);
+          }, 2500);
+        });
+      },
+
+      local() {
+        return null;
+      },
+
+      success: SettingsActions.updateSettings,
+      error: SettingsActions.settingsFailed
+    }
   }
 };
 
