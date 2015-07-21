@@ -1,6 +1,8 @@
 import dispatcher from '../dispatcher/appDispatcher.js';
 
 class SettingsActions {
+  // this way! go to server here and dispatch all staff here!
+
   getAllSettings() {
     this.dispatch()
   }

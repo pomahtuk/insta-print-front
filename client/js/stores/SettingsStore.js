@@ -18,6 +18,8 @@ class SettingsStore {
       getOption: this.getOption
     });
 
+    // fuck this!
+    // not this way!
     this.exportAsync(SettingsSource);
   }
 
