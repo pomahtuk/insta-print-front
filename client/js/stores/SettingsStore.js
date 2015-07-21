@@ -5,7 +5,7 @@ import SettingsSource from  '../sources/SettingsSource';
 
 class SettingsStore {
   constructor() {
-    this.settings = [];
+    this.settings = {};
     this.errorMessage = null;
 
     this.bindListeners({
@@ -31,17 +31,13 @@ class SettingsStore {
   }
 
   handleGetAllSettings() {
-    this.settings = [];
+    this.settings = {};
   }
 
+  // useless method
   getOption(key) {
     var { settings } = this.getState();
-
-    var option = settings.filter( (option) => option.key === key );
-
-    console.log(option);
-
-    return option;
+    return settings[key];
   }
 
 }

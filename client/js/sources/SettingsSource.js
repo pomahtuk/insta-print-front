@@ -3,10 +3,10 @@ import $ from 'jquery';
 
 import {API_URL} from '../constants/App.js';
 
-var defaultData = [
-  { id: 0, key: 'api-key', value: '' },
-  { id: 1, key: 'location-id', value: '' },
-];
+var defaultData = {
+  'api-key': '',
+  'location-id': ''
+}
 
 let SettingsSource = {
   fetchSettings() {
@@ -18,9 +18,9 @@ let SettingsSource = {
             resolve(result);
           });
 
-          xhr.fail(function (e) {
+          xhr.fail(function (error) {
             console.log('ajax failed on get');
-            reject(e);
+            reject(error);
           });
         });
       },

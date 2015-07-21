@@ -46,7 +46,6 @@ function* retreiveDBRecord(key, context) {
 // Create a new route
 router.post('/api-key', function* () {
   var record = yield updateDBRecord('api-key', this);
-
   this.status = 200;
   this.body = record;
 });
@@ -60,7 +59,6 @@ router.get('/api-key', function* () {
 
 router.post('/location-id', function* () {
   var record = yield updateDBRecord('location-id', this);
-
   this.status = 200;
   this.body = record;
 });
@@ -73,8 +71,12 @@ router.get('/location-id', function* () {
 
 router.get('/settings', function* () {
   var dbRecords = yield InstagramKey.find().exec();
+  var result = {};
+  dbRecords.map(function(record) {
+    result[record.key] = record.value;
+  });
   this.status = 200;
-  this.body = dbRecords;
+  this.body = result;
 });
 
 

@@ -18,6 +18,7 @@ let ToolsContainer = React.createClass({
     let queryObjext = router.getCurrentQuery();
 
     if (queryObjext.code) {
+      // check for progress actions
       // update value based on instagramm api response
       SettingsActions.updateSettingsValue({
         key: 'api-key',
@@ -37,8 +38,8 @@ let ToolsContainer = React.createClass({
 
     return (
       <div>
-        <ToolsButtons settings={this.props.settings} />
-        <ToolsMap settings={this.props.settings} />
+        <ToolsButtons {...this.props} />
+        <ToolsMap {...this.props} />
       </div>
     );
   }
