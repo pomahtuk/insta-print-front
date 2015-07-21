@@ -2,9 +2,10 @@ const koa = require('koa');
 const logger = require('koa-logger');
 const bodyParser = require('koa-bodyparser');
 const koaStatic = require('koa-static');
+const cors = require('koa-cors');
 const path = require('path');
-const fs = require("fs");
-const mongoose = require("mongoose");
+const fs = require('fs');
+const mongoose = require('mongoose');
 
 /**
  * Setting config vars
@@ -12,11 +13,12 @@ const mongoose = require("mongoose");
 const staticPath = path.normalize(__dirname + '/../client/build');
 const modelsPath = path.normalize(__dirname + '/models');
 const appPort = 3000;
+const apiPort = 3001;
 
 /**
  * Connect to database
  */
-const mongoURI = "mongodb://localhost/insta-print";
+const mongoURI = 'mongodb://localhost/insta-print';
 
 mongoose.connect(mongoURI);
 mongoose.connection.on("error", function(err) {
@@ -37,6 +39,7 @@ const app = koa();
 // require after models initialization to prevent errors
 const appRouter = require('./routes/app.js');
 
+app.use(cors({ origin: '*' }));
 app.use(logger());
 app.use(bodyParser());
 app.use(koaStatic(staticPath));
@@ -46,5 +49,6 @@ app.use(appRouter.routes());
 // Start app
 if (!module.parent) {
   app.listen(appPort);
-  console.log("Server started, listening on port: " + appPort);
+  app.listen(apiPort);
+  console.log('Server started, listening on ports: ' + appPort + ', ' + apiPort);
 }

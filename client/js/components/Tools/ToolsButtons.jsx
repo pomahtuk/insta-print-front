@@ -15,7 +15,7 @@ let ToolsButtons = React.createClass({
     let newStateObj = {};
 
     // this needed to let input work
-    settings.map((option) => newStateObj[option.key] = option.value);
+    settings.map((option, index) => newStateObj[option.key] = option.value);
 
     this.setState(newStateObj);
   },
@@ -46,7 +46,7 @@ let ToolsButtons = React.createClass({
     // function which renders input groups
     function toInputs(option, index) {
       return (
-        <div className="input-container">
+        <div className="input-container" key={option.key}>
           <input type="text" dafaultValue={option.value} value={this.state[option.key]} htmlFor={option.key} onChange={this._handleInputChange.bind(this, option)} />
           <button onClick={this._updateSettings.bind(this, option)}>Update</button>
         </div>
