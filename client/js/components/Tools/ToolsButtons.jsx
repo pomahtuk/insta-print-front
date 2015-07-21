@@ -32,6 +32,11 @@ let ToolsButtons = React.createClass({
     this.setState(updateObject);
   },
 
+  _getCurrentOption (key) {
+    var optionValue = SettingsStore.getOption(key);
+    console.log(optionValue);
+  },
+
   render () {
     // once we have settings available - render
     return (
@@ -49,6 +54,7 @@ let ToolsButtons = React.createClass({
         <div className="input-container" key={option.key}>
           <input type="text" dafaultValue={option.value} value={this.state[option.key]} htmlFor={option.key} onChange={this._handleInputChange.bind(this, option)} />
           <button onClick={this._updateSettings.bind(this, option)}>Update</button>
+          <button onClick={this._getCurrentOption.bind(this, option.key)}>Get</button>
         </div>
       )
     }

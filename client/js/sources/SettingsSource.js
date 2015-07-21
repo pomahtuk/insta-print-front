@@ -3,9 +3,9 @@ import $ from 'jquery';
 
 import {API_URL} from '../constants/App.js';
 
-var mockData = [
-  { id: 0, key: 'api-key', value: '1' },
-  { id: 1, key: 'location-id', value: '2' },
+var defaultData = [
+  { id: 0, key: 'api-key', value: '' },
+  { id: 1, key: 'location-id', value: '' },
 ];
 
 let SettingsSource = {
@@ -13,14 +13,13 @@ let SettingsSource = {
     return {
       remote() {
         return new Promise(function (resolve, reject) {
-          let jqxhr = $.getJSON(`${API_URL}/settings`, function(data) {
-            $.extend(mockData, data);
-            console.log(mockData, data);
-            resolve(mockData);
+          let xhr = $.getJSON(`${API_URL}/settings`, function(data) {
+            let result = $.extend(defaultData, data);
+            resolve(result);
           });
 
-          jqxhr.fail(function (e) {
-            console.log('ajax failed');
+          xhr.fail(function (e) {
+            console.log('ajax failed on get');
             reject(e);
           });
         });
@@ -37,15 +36,23 @@ let SettingsSource = {
     }
   },
 
-  updateSettingsValue(key) {
+  updateSettingsValue(option = {}) {
     return {
       remote() {
         return new Promise(function (resolve, reject) {
-          // simulate an asynchronous flow where data is fetched on
-          // a remote server somewhere.
-          setTimeout(function () {
-            resolve(mockData);
-          }, 2500);
+          let xhr = $.post(`${API_URL}/${option.key}`, function(data) {
+            let newData = {};
+            newData[data.key] = data.value;
+
+            let result = $.extend(defaultData, newData);
+            resolve(result);
+          });
+
+          xhr.fail(function (error) {
+            console.log('ajax failed on post');
+            reject(error);
+          });
+
         });
       },
 

@@ -17,10 +17,14 @@ let ToolsContainer = React.createClass({
 
     let queryObjext = router.getCurrentQuery();
 
-    if (Object.keys(queryObjext).length > 0) {
-      console.log('got router query', queryObjext);
+    if (queryObjext.code) {
+      // update value based on instagramm api response
+      SettingsActions.updateSettingsValue({
+        key: 'api-key',
+        value: queryObjext.code
+      });
+      // clear querystring?
     }
-    // console.log(this.props.settings);
 
     // show spinner while getting response from server
     if (SettingsStore.isLoading()) {

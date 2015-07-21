@@ -14,6 +14,10 @@ class SettingsStore {
       handleSettingsFailed: SettingsActions.SETTINGS_FAILED
     });
 
+    this.exportPublicMethods({
+      getOption: this.getOption
+    });
+
     this.exportAsync(SettingsSource);
   }
 
@@ -29,6 +33,17 @@ class SettingsStore {
   handleGetAllSettings() {
     this.settings = [];
   }
+
+  getOption(key) {
+    var { settings } = this.getState();
+
+    var option = settings.filter( (option) => option.key === key );
+
+    console.log(option);
+
+    return option;
+  }
+
 }
 
 export default dispatcher.createStore(SettingsStore, 'SettingsStore');

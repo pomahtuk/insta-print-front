@@ -9,6 +9,10 @@ class SettingsActions {
     this.dispatch(settings)
   }
 
+  updateSettingsValue(option) {
+    this.dispatch(option);
+  }
+
   settingsFailed(errorMessage) {
     this.dispatch(errorMessage)
   }
