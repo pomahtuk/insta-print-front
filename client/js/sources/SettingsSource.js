@@ -1,4 +1,5 @@
 import SettingsActions from '../actions/SettingsActions';
+import $ from 'jquery';
 
 var mockData = [
   { id: 0, key: 'api-key', value: '1' },
