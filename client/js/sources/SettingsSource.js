@@ -1,68 +1,17 @@
-import SettingsActions from '../actions/SettingsActions';
-import $ from 'jquery';
-
+import axios from 'axios';
 import {API_URL} from '../constants/App.js';
-
-var defaultData = {
-  'api-key': '',
-  'location-id': ''
-}
 
 let SettingsSource = {
   fetchSettings() {
-    return {
-      remote() {
-        return new Promise(function (resolve, reject) {
-          let xhr = $.getJSON(`${API_URL}/settings`, function(data) {
-            let result = $.extend(defaultData, data);
-            resolve(result);
-          });
-
-          xhr.fail(function (error) {
-            console.log('ajax failed on get');
-            reject(error);
-          });
-        });
-      },
-
-      local() {
-        // Never check locally, always fetch remotely.
-        return null;
-      },
-
-      success: SettingsActions.updateSettings,
-      error: SettingsActions.settingsFailed,
-      loading: SettingsActions.getAllSettings
-    }
+    let request = axios.get(`${API_URL}/settings`);
+    return request;
   },
 
-  updateSettingsValue(option = {}) {
-    return {
-      remote() {
-        return new Promise(function (resolve, reject) {
-          let xhr = $.post(`${API_URL}/${option.key}`, function(data) {
-            let newData = {};
-            newData[data.key] = data.value;
-
-            let result = $.extend(defaultData, newData);
-            resolve(result);
-          });
-
-          xhr.fail(function (error) {
-            console.log('ajax failed on post');
-            reject(error);
-          });
-
-        });
-      },
-
-      local() {
-        return null;
-      },
-
-      success: SettingsActions.updateSettings,
-      error: SettingsActions.settingsFailed
-    }
+  updateSettingsValue(option) {
+    let request = axios.post(`${API_URL}/${option.key}`, {
+      code: option.value
+    });
+    return request;
   }
 };
 

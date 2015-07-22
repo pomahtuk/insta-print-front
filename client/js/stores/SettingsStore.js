@@ -18,10 +18,6 @@ class SettingsStore {
       getOption: this.getOption,
       getSettings: this.getSettings
     });
-
-    // fuck this!
-    // not this way!
-    // this.exportAsync(SettingsSource);
   }
 
   handleSettingsFailed(errorMessage) {

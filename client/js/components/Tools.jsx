@@ -19,6 +19,16 @@ let Tools = React.createClass({
   componentDidMount() {
     SettingsStore.listen(this._onChange);
     SettingsActions.fetchSettings();
+
+    // handle instagram auth token
+    const {router} = this.context;
+    let queryObjext = router.getCurrentQuery();
+    if (queryObjext.code) {
+      SettingsActions.updateSettingsValue({
+        key: 'api-key',
+        value: queryObjext.code
+      });
+    }
   },
 
   componentWillUnmount() {
@@ -33,19 +43,6 @@ let Tools = React.createClass({
   },
 
   render() {
-    const {router} = this.context;
-
-    let queryObjext = router.getCurrentQuery();
-
-    // if (queryObjext.code) {
-    //   // check for progress actions
-    //   // update value based on instagramm api response
-    //   SettingsActions.updateSettingsValue({
-    //     key: 'api-key',
-    //     value: queryObjext.code
-    //   });
-    //   // clear querystring?
-
     return (
       <div>
         <ToolsButtons settings={this.state.settings} />

@@ -14,7 +14,6 @@ let ToolsButtons = React.createClass({
   // we will be able to reflect this
   componentWillReceiveProps(nextProps) {
     let {settings} = nextProps;
-
     this.setState({
       settings: settings
     });
