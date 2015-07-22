@@ -5,11 +5,19 @@ import React from "react/addons";
 let ToolsButtons = React.createClass({
   // some state has to be initial
   getInitialState () {
-    // this is not an anti-pattern, because i am not using props
-    let {settings} = this.props;
     return {
-      settings: settings
+      settings: {}
     }
+  },
+
+  // once parrent container receive state updates
+  // we will be able to reflect this
+  componentWillReceiveProps(nextProps) {
+    let {settings} = nextProps;
+
+    this.setState({
+      settings: settings
+    });
   },
 
   // just mock method
@@ -26,6 +34,7 @@ let ToolsButtons = React.createClass({
     });
   },
 
+  // two way databinding implementation
   _getCurrentOption (key) {
     var optionValue = SettingsStore.getOption(key);
     console.log(optionValue);
@@ -35,6 +44,7 @@ let ToolsButtons = React.createClass({
     let {settings} = this.state;
     let inputs = [];
 
+    // creating inputs for each settings key
     for (let key in settings) {
       if (settings.hasOwnProperty(key)) {
         inputs.push(

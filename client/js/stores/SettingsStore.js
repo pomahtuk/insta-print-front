@@ -15,12 +15,13 @@ class SettingsStore {
     });
 
     this.exportPublicMethods({
-      getOption: this.getOption
+      getOption: this.getOption,
+      getSettings: this.getSettings
     });
 
     // fuck this!
     // not this way!
-    this.exportAsync(SettingsSource);
+    // this.exportAsync(SettingsSource);
   }
 
   handleSettingsFailed(errorMessage) {
@@ -34,6 +35,11 @@ class SettingsStore {
 
   handleGetAllSettings() {
     this.settings = {};
+  }
+
+  getSettings() {
+    var { settings } = this.getState();
+    return settings
   }
 
   // useless method

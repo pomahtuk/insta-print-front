@@ -1,4 +1,3 @@
-import AltContainer from 'alt/AltContainer';
 import SettingsActions from '../actions/SettingsActions';
 import SettingsStore from '../stores/SettingsStore';
 
@@ -8,57 +7,52 @@ import Router from 'react-router';
 import ToolsButtons from './Tools/ToolsButtons.jsx';
 import ToolsMap from './Tools/ToolsMap.jsx';
 
-let ToolsContainer = React.createClass({
+let Tools = React.createClass({
   mixins: [ Router.State ],
 
+  getInitialState() {
+    return {
+      settings: {}
+    }
+  },
+
+  componentDidMount() {
+    SettingsStore.listen(this._onChange);
+    SettingsActions.fetchSettings();
+  },
+
+  componentWillUnmount() {
+    SettingsStore.unlisten(this._onChange);
+  },
+
+  /* Store events */
+  _onChange() {
+    this.setState({
+      settings: SettingsStore.getSettings()
+    });
+  },
+
   render() {
-    const {props, state} = this;
     const {router} = this.context;
 
     let queryObjext = router.getCurrentQuery();
 
-    if (queryObjext.code) {
-      // check for progress actions
-      // update value based on instagramm api response
-      SettingsActions.updateSettingsValue({
-        key: 'api-key',
-        value: queryObjext.code
-      });
-      // clear querystring?
-    }
-
-    // show spinner while getting response from server
-    if (SettingsStore.isLoading()) {
-      return (
-        <div>
-          <img src="images/ajax-loader.gif" />
-        </div>
-      )
-    }
+    // if (queryObjext.code) {
+    //   // check for progress actions
+    //   // update value based on instagramm api response
+    //   SettingsActions.updateSettingsValue({
+    //     key: 'api-key',
+    //     value: queryObjext.code
+    //   });
+    //   // clear querystring?
 
     return (
       <div>
-        <ToolsButtons {...this.props} />
-        <ToolsMap {...this.props} />
+        <ToolsButtons settings={this.state.settings} />
+        <ToolsMap settings={this.state.settings} />
       </div>
     );
   }
 });
-
-class Tools extends React.Component {
-  componentDidMount() {
-    SettingsStore.fetchSettings();
-  }
-
-  render() {
-    return (
-      <AltContainer store={SettingsStore}>
-        {/*<ToolsButtons />
-        <ToolsMap />*/}
-        <ToolsContainer/>
-      </AltContainer>
-    );
-  }
-};
 
 export default Tools;
