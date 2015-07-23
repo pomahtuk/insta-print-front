@@ -29,7 +29,7 @@ let ToolsMap = React.createClass({
   componentWillReceiveProps(nextProps) {
     let {coordinates} = nextProps;
 
-    if (coordinates && Object.keys(coordinates).length === 2) {
+    if (coordinates.latitude && coordinates.longitude) {
       this.setState({
         coordinates: coordinates
       });
@@ -57,7 +57,7 @@ let ToolsMap = React.createClass({
         googleMapsApi={
           "undefined" !== typeof google ? google.maps : null
         }
-        zoom={10}
+        zoom={14}
         center={{lat: state.coordinates.latitude, lng: state.coordinates.longitude}}>
 
         {state.markers.map(toMarker, this)}

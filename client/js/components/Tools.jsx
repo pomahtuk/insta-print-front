@@ -45,7 +45,7 @@ let Tools = React.createClass({
   /* Store events */
   _onLocationChange() {
     this.setState({
-      settings: GeoStore.getCoordinates()
+      coordinates: GeoStore.getCoordinates()
     });
   },
 
