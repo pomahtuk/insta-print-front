@@ -1,5 +1,7 @@
 import SettingsActions from '../actions/SettingsActions';
+import GeoActions from '../actions/GeoActions';
 import SettingsStore from '../stores/SettingsStore';
+import GeoStore from '../stores/GeoStore';
 
 import React from "react/addons";
 import Router from 'react-router';
@@ -12,13 +14,17 @@ let Tools = React.createClass({
 
   getInitialState() {
     return {
-      settings: {}
+      settings: {},
+      coordinates: {}
     }
   },
 
   componentDidMount() {
     SettingsStore.listen(this._onChange);
     SettingsActions.fetchSettings();
+
+    GeoStore.listen(this._onLocationChange);
+    GeoActions.getCoordinates();
 
     // handle instagram auth token
     const {router} = this.context;
@@ -33,9 +39,16 @@ let Tools = React.createClass({
 
   componentWillUnmount() {
     SettingsStore.unlisten(this._onChange);
+    GeoStore.unlisten(this._onLocationChange);
   },
 
   /* Store events */
+  _onLocationChange() {
+    this.setState({
+      settings: GeoStore.getCoordinates()
+    });
+  },
+
   _onChange() {
     this.setState({
       settings: SettingsStore.getSettings()
@@ -45,8 +58,8 @@ let Tools = React.createClass({
   render() {
     return (
       <div>
-        <ToolsButtons settings={this.state.settings} />
-        <ToolsMap settings={this.state.settings} />
+        <ToolsButtons settings={this.state.settings} coordinates={this.state.coordinates} />
+        <ToolsMap settings={this.state.settings} coordinates={this.state.coordinates} />
       </div>
     );
   }

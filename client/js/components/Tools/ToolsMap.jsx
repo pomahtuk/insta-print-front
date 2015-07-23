@@ -5,9 +5,14 @@ import React from "react/addons";
 import Router from 'react-router';
 import {GoogleMaps, Marker} from "react-google-maps";
 
+// TODO: loading state!
 let ToolsMap = React.createClass({
   getInitialState () {
     return {
+      coordinates: {
+        latitude: 52.365667099999996,
+        longitude: 4.8983713
+      },
       markers: [{
         position: {
           lat: 25.0112183,
@@ -19,13 +24,27 @@ let ToolsMap = React.createClass({
     };
   },
 
+  // once parrent container receive state updates
+  // we will be able to reflect this
+  componentWillReceiveProps(nextProps) {
+    let {coordinates} = nextProps;
+
+    if (coordinates && Object.keys(coordinates).length === 2) {
+      this.setState({
+        coordinates: coordinates
+      });
+    }
+  },
+
   /*
    * This is called when you click on the map.
    * Go and try click now.
    */
   render () {
     const {props, state} = this,
-          {googleMapsApi, ...otherProps} = props;
+          {googleMapsApi, ...otherProps} = props,
+          {coordinates} = state,
+          {latitude, longitude} = coordinates;
 
     return (
       <GoogleMaps containerProps={{
@@ -38,8 +57,8 @@ let ToolsMap = React.createClass({
         googleMapsApi={
           "undefined" !== typeof google ? google.maps : null
         }
-        zoom={3}
-        center={{lat: -25.363882, lng: 131.044922}}>
+        zoom={10}
+        center={{lat: state.coordinates.latitude, lng: state.coordinates.longitude}}>
 
         {state.markers.map(toMarker, this)}
 

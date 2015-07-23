@@ -6,17 +6,26 @@ let ToolsButtons = React.createClass({
   // some state has to be initial
   getInitialState () {
     return {
-      settings: {}
+      settings: {},
+      coordinates: {}
     }
   },
 
   // once parrent container receive state updates
   // we will be able to reflect this
   componentWillReceiveProps(nextProps) {
-    let {settings} = nextProps;
-    this.setState({
-      settings: settings
-    });
+    let {settings, coordinates} = nextProps;
+    let updateUbject = {};
+
+    if (settings) {
+      updateUbject['settings'] = settings;
+    }
+
+    if (coordinates) {
+      updateUbject['coordinates'] = coordinates;
+    }
+
+    this.setState(updateUbject);
   },
 
   // just mock method
