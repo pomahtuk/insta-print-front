@@ -6,12 +6,22 @@ class InstagramStore {
     this.locations = [];
 
     this.bindListeners({
-      addFavoriteLocation: LocationActions.FAVORITE_LOCATION
+      handleUpdateLocations: InstagramActions.UPDATE_LOCATIONS
     });
+
+    this.exportPublicMethods({
+      getLocations: this.getLocations
+    });
+
   }
 
-  addFavoriteLocation(location) {
-    this.locations.push(location);
+  getLocations() {
+    let {locations} = this.getState();
+    return locations;
+  }
+
+  handleUpdateLocations(locations) {
+    this.locations = locations;
   }
 }
 

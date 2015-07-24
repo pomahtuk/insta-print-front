@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {INSTAGRAM_URL} from '../constants/App.js';
+import {INSTAGRAM_URL, PROXY_API_URL} from '../constants/App.js';
 
 let InstagramSource = {
   /**
@@ -15,13 +15,14 @@ let InstagramSource = {
    * @return {Promise}      [Ajax Promise]
    */
   searchLocations(lat, lng, token) {
-    let request = axios.get(`${INSTAGRAM_URL}/locations/search`, {
+    let request = axios.get(`${PROXY_API_URL}`, {
       params: {
+        url: `${INSTAGRAM_URL}/locations/search`,
         lat: lat,
         lng: lng,
         access_token: token
       }
-    );
+    });
     return request;
   },
 
@@ -37,12 +38,13 @@ let InstagramSource = {
    * @return {Promise}      [Ajax Promise]
    */
   searchUsers(query, token) {
-    let request = axios.get(`${INSTAGRAM_URL}/users/search`, {
+    let request = axios.get(`${PROXY_API_URL}`, {
       params: {
+        url: `${INSTAGRAM_URL}/users/search`,
         q: query,
         access_token: token
       }
-    );
+    });
     return request;
   },
 
@@ -64,7 +66,7 @@ let InstagramSource = {
       params: {
         access_token: token
       }
-    );
+    });
     return request;
   },
 
@@ -82,7 +84,7 @@ let InstagramSource = {
       params: {
         access_token: token
       }
-    );
+    });
     return request;
   },
 
@@ -100,7 +102,7 @@ let InstagramSource = {
       params: {
         access_token: token
       }
-    );
+    });
     return request;
   }
 

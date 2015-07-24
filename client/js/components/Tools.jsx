@@ -28,11 +28,12 @@ let Tools = React.createClass({
 
     // handle instagram auth token
     const {router} = this.context;
-    let queryObjext = router.getCurrentQuery();
-    if (queryObjext.code) {
+    let token = window.location.hash.split('=')[1];
+
+    if (token) {
       SettingsActions.updateSettingsValue({
         key: 'api-key',
-        value: queryObjext.code
+        value: token
       });
     }
   },

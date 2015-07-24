@@ -1,5 +1,7 @@
 import SettingsActions from '../../actions/SettingsActions';
+import InstagramActions from '../../actions/InstagramActions';
 import SettingsStore from '../../stores/SettingsStore';
+import InstagramStore from '../../stores/InstagramStore';
 
 import React from "react/addons";
 import Router from 'react-router';
@@ -9,31 +11,57 @@ import {GoogleMaps, Marker} from "react-google-maps";
 let ToolsMap = React.createClass({
   getInitialState () {
     return {
+      settings: {},
       coordinates: {
         latitude: 52.365667099999996,
         longitude: 4.8983713
       },
-      markers: [{
-        position: {
-          lat: 25.0112183,
-          lng: 121.52067570000001,
-        },
-        key: "Taiwan",
-        animation: 2
+      locations: [{
+        latitude: 52.365556619,
+        id: "312287221",
+        longitude: 4.898041384,
+        name: "The Bank, Amsterdam"
       }],
     };
   },
 
+  componentDidMount() {
+    InstagramStore.listen(this._onInstagrammChange);
+  },
+
+  componentWillUnmount() {
+    InstagramStore.unlisten(this._onInstagrammChange);
+  },
+
+  /* Store events */
+  _onInstagrammChange() {
+    this.setState({
+      locations: InstagramStore.getLocations()
+    });
+  },
   // once parrent container receive state updates
   // we will be able to reflect this
   componentWillReceiveProps(nextProps) {
-    let {coordinates} = nextProps;
+    let {coordinates, settings} = nextProps;
+    let {latitude, longitude} = coordinates;
+    let apiKey = settings['api-key'];
 
-    if (coordinates.latitude && coordinates.longitude) {
+    if (apiKey && latitude && longitude) {
+      InstagramActions.searchLocations(latitude, longitude, apiKey);
+    }
+
+    if (settings) {
+      this.setState({
+        settings: settings
+      });
+    }
+
+    if (latitude && longitude) {
       this.setState({
         coordinates: coordinates
       });
     }
+
   },
 
   /*
@@ -43,7 +71,7 @@ let ToolsMap = React.createClass({
   render () {
     const {props, state} = this,
           {googleMapsApi, ...otherProps} = props,
-          {coordinates} = state,
+          {coordinates, settings} = state,
           {latitude, longitude} = coordinates;
 
     return (
@@ -57,20 +85,19 @@ let ToolsMap = React.createClass({
         googleMapsApi={
           "undefined" !== typeof google ? google.maps : null
         }
-        zoom={14}
-        center={{lat: state.coordinates.latitude, lng: state.coordinates.longitude}}>
+        zoom={16}
+        center={{lat: latitude, lng: longitude}}>
 
-        {state.markers.map(toMarker, this)}
+        {state.locations.map(toMarker, this)}
 
       </GoogleMaps>
     );
 
-    function toMarker (marker, index) {
+    function toMarker (location, index) {
       return (
         <Marker
-          position={marker.position}
-          key={marker.key}
-          animation={marker.animation}
+          position={{lat: location.latitude, lng: location.longitude}}
+          key={location.id}
         />
       );
     }

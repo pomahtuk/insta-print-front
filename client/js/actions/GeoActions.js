@@ -10,12 +10,11 @@ class GeoActions {
   }
 
   updateCoordinates(coordinates) {
-    let {latitude, longitude} = coordinates;
-    let result = {
-      latitude: latitude,
-      longitude: longitude
+    var result = {
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude
     }
-    this.dispatch(coordinates);
+    this.dispatch(result);
   }
 
   geoLocationFailed(errorMessage) {

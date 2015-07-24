@@ -10,8 +10,9 @@ class InstagramActions {
       .catch((response) =>  this.actions.instagramFailed(response.statusText));
   }
 
-  updateLocations(locations) {
-    this.dispatch(locations);
+  updateLocations(locationsResponse) {
+    let { data } = locationsResponse;
+    this.dispatch(data);
   }
 
   instagramFailed(errorMessage) {

@@ -38,12 +38,14 @@ fs.readdirSync(modelsPath).forEach(function(file) {
 const app = koa();
 // require after models initialization to prevent errors
 const appRouter = require('./routes/app.js');
+const proxyRouter = require('./routes/proxy.js');
 
 app.use(cors({ origin: '*' }));
 app.use(logger());
 app.use(bodyParser());
 app.use(koaStatic(staticPath));
 
+app.use(proxyRouter.routes());
 app.use(appRouter.routes());
 
 // Start app
