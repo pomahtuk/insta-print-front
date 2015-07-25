@@ -30,7 +30,7 @@ let Tools = React.createClass({
     const {router} = this.context;
     let token = window.location.hash.split('=')[1];
 
-    if (token) {
+    if (token && token !== this.state.settings['api-key']) {
       SettingsActions.updateSettingsValue({
         key: 'api-key',
         value: token
@@ -59,7 +59,7 @@ let Tools = React.createClass({
   render() {
     return (
       <div>
-        <ToolsButtons settings={this.state.settings} coordinates={this.state.coordinates} />
+        {/* list of locations will go here */}
         <ToolsMap settings={this.state.settings} coordinates={this.state.coordinates} />
       </div>
     );

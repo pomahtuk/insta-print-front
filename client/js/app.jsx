@@ -4,16 +4,20 @@ import Router, { State, DefaultRoute, Link, Route, RouteHandler } from 'react-ro
 import Locations from './components/Locations.jsx';
 import Tools from './components/Tools.jsx';
 
+let clientId = '0e746470835249b0a01487361b63d20d';
+let redirectUri = 'http://localhost:3000/tools';
+let instaLink = `https://api.instagram.com/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token`;
+
 class Navigation extends React.Component {
   render() {
     return (
-      <nav className="mdl-navigation">
-        <Link to="index" className="mdl-navigation__link">Home</Link>
-        <Link to="locations" className="mdl-navigation__link">Locations</Link>
-        <Link to="tools" className="mdl-navigation__link">Tools</Link>
-        <a href="https://api.instagram.com/oauth/authorize/?client_id=0e746470835249b0a01487361b63d20d&redirect_uri=http://localhost:3000/tools&response_type=token">Instagramm Auth</a>
-      </nav>
-    )
+      <ul className="navigation">
+        <li><Link to="index">Home</Link></li>
+        <li><Link to="locations">Locations</Link></li>
+        <li><Link to="tools">Tools</Link></li>
+        <li><a href={instaLink}>Instagramm Auth</a></li>
+      </ul>
+    );
   }
 }
 
@@ -33,20 +37,20 @@ let App = React.createClass({
           <Navigation />
         </div>
       </header>
-    )
+    );
   },
 
   render() {
     var link = this.getPath();
 
     return (
-      <div className="">
+      <div>
 
         {this.drawConditionalNavigation(link)}
 
-        <main classNane="">
+        <div classNane="main-content">
           <RouteHandler/>
-        </main>
+        </div>
 
       </div>
     );

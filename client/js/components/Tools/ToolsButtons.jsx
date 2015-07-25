@@ -1,6 +1,6 @@
 import SettingsActions from '../../actions/SettingsActions';
 import SettingsStore from '../../stores/SettingsStore';
-import React from "react/addons";
+import React from 'react/addons';
 
 let ToolsButtons = React.createClass({
   // some state has to be initial
@@ -8,7 +8,7 @@ let ToolsButtons = React.createClass({
     return {
       settings: {},
       coordinates: {}
-    }
+    };
   },
 
   // once parrent container receive state updates
@@ -18,11 +18,11 @@ let ToolsButtons = React.createClass({
     let updateUbject = {};
 
     if (settings) {
-      updateUbject['settings'] = settings;
+      updateUbject.settings = settings;
     }
 
     if (coordinates) {
-      updateUbject['coordinates'] = coordinates;
+      updateUbject.coordinates = coordinates;
     }
 
     this.setState(updateUbject);
@@ -61,7 +61,7 @@ let ToolsButtons = React.createClass({
             <button onClick={this._updateSettings.bind(this, key)}>Update</button>
             <button onClick={this._getCurrentOption.bind(this, key)}>Get</button>
           </div>
-        )
+        );
       }
     }
 
