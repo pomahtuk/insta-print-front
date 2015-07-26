@@ -9,7 +9,6 @@ body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
 }
 
-
 .app {
   display: flex;
   min-height: 100vh;
@@ -49,11 +48,6 @@ body {
   margin: 0;
 
   background: #3F51B5;
-
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
   display: flex;
 
   -webkit-flex-flow: row wrap;
@@ -66,7 +60,7 @@ body {
     color: white;
 
     &:hover,
-    &.active {
+    &:not(.index).active {
       background: #303F9F;
     }
 
@@ -98,4 +92,25 @@ body {
     }
   }
 
+}
+
+.location-options {
+  &__container {
+    height: 100%;
+    /* max-height: 100%; */
+    position: absolute;
+    overflow: auto;
+  }
+
+  &__item {
+    padding: 10px;
+
+    &--hover {
+      background: #333;
+    }
+
+    &--current {
+
+    }
+  }
 }

@@ -12,7 +12,7 @@ class Navigation extends React.Component {
   render() {
     return (
       <ul className="navigation">
-        <li><Link to="index">Home</Link></li>
+        <li><Link className='index' to="index">Home</Link></li>
         <li><Link to="locations">Locations</Link></li>
         <li><Link to="tools">Tools</Link></li>
         <li><a href={instaLink}>Instagramm Auth</a></li>

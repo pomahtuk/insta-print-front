@@ -1,5 +1,6 @@
 import InstagramActions from '../../actions/InstagramActions';
 import React from 'react/addons';
+import classNames from 'classnames';
 
 let MapLocationsList = React.createClass({
   getInitialState () {
@@ -20,16 +21,22 @@ let MapLocationsList = React.createClass({
   },
 
   _toLocationItem (location) {
+    let classes = classNames({
+      'location-options__item': true,
+      'location-options__item--hover': location.hovered,
+      'location-options__item--current': location.current
+    });
+
     return (
       <div
+        className={classes}
         key={location.id}
         onMouseEnter={this._setLocationHover.bind(this, location, true)}
         onMouseLeave={this._setLocationHover.bind(this, location, false)}
       >
-        <p>
-          {location.name} -  {location.hovered ? 'true' : 'false'}
-        </p>
-
+        {location.name} -  {location.hovered ? 'true' : 'false'}
+        <br/>
+        <button className="pure-button pure-button-primary" href="#">Set as machine location</button>
       </div>
     );
   },
@@ -43,9 +50,11 @@ let MapLocationsList = React.createClass({
 
     return (
       <div
-        className="main-sidebar"
+        className="main-sidebar location-options"
       >
-        {locations.map(this._toLocationItem, this)}
+        <div className='location-options__container'>
+          {locations.map(this._toLocationItem, this)}
+        </div>
       </div>
     );
   }

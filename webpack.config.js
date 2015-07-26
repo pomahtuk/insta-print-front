@@ -22,12 +22,12 @@ module.exports = {
         // Extract css files
         {
             test: /\.css$/,
-            loader: ExtractTextPlugin.extract('css?sourceMap!postcss-loader')
+            loader: ExtractTextPlugin.extract('css?sourceMap!postcss-loader?sourceMap')
         },
         {
           test: /\.scss$/,
           loader: ExtractTextPlugin.extract(
-              'css?sourceMap!sass?sourceMap!postcss-loader'
+              'css?sourceMap!sass?sourceMap!postcss-loader?sourceMap'
           )
         }
       ]
