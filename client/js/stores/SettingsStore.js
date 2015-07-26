@@ -16,7 +16,7 @@ class SettingsStore {
 
     this.exportPublicMethods({
       getOption: this.getOption,
-      getSettings: this.getSettings
+      getData: this.getSettings
     });
   }
 
@@ -35,7 +35,7 @@ class SettingsStore {
 
   getSettings() {
     var { settings } = this.getState();
-    return settings
+    return settings;
   }
 
   // useless method

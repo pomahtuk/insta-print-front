@@ -1,7 +1,4 @@
-import SettingsActions from '../../actions/SettingsActions';
 import InstagramActions from '../../actions/InstagramActions';
-import SettingsStore from '../../stores/SettingsStore';
-import InstagramStore from '../../stores/InstagramStore';
 
 import React from 'react/addons';
 import Router from 'react-router';
@@ -27,35 +24,21 @@ let ToolsMap = React.createClass({
     };
   },
 
-  componentDidMount() {
-    InstagramStore.listen(this._onInstagrammChange);
-  },
-
-  componentWillUnmount() {
-    InstagramStore.unlisten(this._onInstagrammChange);
-  },
-
-  /* Store events */
-  _onInstagrammChange() {
-    this.setState({
-      locations: InstagramStore.getLocations()
-    });
-  },
-
   // once parrent container receive state updates
   // we will be able to reflect this
   componentWillReceiveProps(nextProps) {
-    let {coordinates, settings} = nextProps;
+    let {coordinates, locations, settings} = nextProps;
     let {latitude, longitude} = coordinates;
-    let apiKey = settings['api-key'];
-
-    if (apiKey && latitude && longitude) {
-      InstagramActions.searchLocations(latitude, longitude, apiKey);
-    }
 
     if (settings) {
       this.setState({
         settings: settings
+      });
+    }
+
+    if (locations) {
+      this.setState({
+        locations: locations
       });
     }
 
@@ -68,14 +51,8 @@ let ToolsMap = React.createClass({
   },
 
   // all map related actions
-  _handle_location_click (location) {
-    location.showInfo = true;
-    this.setState(this.state);
-  },
-
-  _handle_closeclick (location) {
-    location.showInfo = false;
-    this.setState(this.state);
+  _setLocationHover (location, state) {
+    InstagramActions.setLocationHoverState(location.id, state);
   },
 
   _handle_zoom_changed () {
@@ -123,7 +100,8 @@ let ToolsMap = React.createClass({
           position={{lat: location.latitude, lng: location.longitude}}
           key={location.id}
           ref={location.id}
-          onClick={this._handle_location_click.bind(this, location)}>
+          onClick={this._setLocationHover.bind(this, location, true)}
+        >
 
           {renderInfoWindow.call(this, location)}
 
@@ -133,7 +111,17 @@ let ToolsMap = React.createClass({
 
     function renderInfoWindow (location) {
       var ref = location.id;
-      return location.showInfo ? <InfoWindow key={`${ref}_info_window`} owner={ref} content={location.name} onCloseclick={this._handle_closeclick.bind(this, location)} /> : null;
+      if (location.hovered) {
+        return (
+          <InfoWindow
+            key={`${ref}_info_window`}
+            owner={ref}
+            content={location.name}
+            onCloseclick={this._setLocationHover.bind(this, location, false)}
+          />
+        );
+      }
+      return null;
     }
 
 

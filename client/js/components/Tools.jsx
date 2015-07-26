@@ -2,8 +2,10 @@ import SettingsActions from '../actions/SettingsActions';
 import GeoActions from '../actions/GeoActions';
 import SettingsStore from '../stores/SettingsStore';
 import GeoStore from '../stores/GeoStore';
+import InstagramStore from '../stores/InstagramStore';
+import InstagramActions from '../actions/InstagramActions';
 
-import React from "react/addons";
+import React from 'react/addons';
 import Router from 'react-router';
 
 import ToolsButtons from './Tools/ToolsButtons.jsx';
@@ -14,16 +16,20 @@ let Tools = React.createClass({
 
   getInitialState() {
     return {
+      initilaCoolrds: true,
       settings: {},
-      coordinates: {}
-    }
+      coordinates: {},
+      locations: [],
+      oldCoords: {}
+    };
   },
 
   componentDidMount() {
-    SettingsStore.listen(this._onChange);
-    SettingsActions.fetchSettings();
+    SettingsStore.listen(this._onChange.bind(this, 'settings', SettingsStore));
+    GeoStore.listen(this._onChange.bind(this, 'coordinates', GeoStore));
+    InstagramStore.listen(this._onChange.bind(this, 'locations', InstagramStore));
 
-    GeoStore.listen(this._onLocationChange);
+    SettingsActions.fetchSettings();
     GeoActions.getCoordinates();
 
     // handle instagram auth token
@@ -39,29 +45,53 @@ let Tools = React.createClass({
   },
 
   componentWillUnmount() {
-    SettingsStore.unlisten(this._onChange);
-    GeoStore.unlisten(this._onLocationChange);
+    SettingsStore.unlisten(this._onChange.bind(this, 'settings', SettingsStore));
+    GeoStore.unlisten(this._onChange.bind(this, 'coordinates', GeoStore));
+    InstagramStore.unlisten(this._onChange.bind(this, 'locations', InstagramStore));
   },
 
   /* Store events */
-  _onLocationChange() {
-    this.setState({
-      coordinates: GeoStore.getCoordinates()
-    });
-  },
+  _onChange(key, store) {
+    let updateObj = {};
+    updateObj[key] = store.getData();
 
-  _onChange() {
-    this.setState({
-      settings: SettingsStore.getSettings()
-    });
+    if (key === 'coordinates') {
+      // if this is first update - set initial to oldCoords
+      if (this.state.coordinates.latitude) {
+        updateObj.oldCoords = this.state.coordinates;
+        updateObj.initilaCoolrds = false;
+      } else {
+        updateObj.oldCoords = store.getData();
+        updateObj.initilaCoolrds = true;
+      }
+    }
+
+    if (key === 'locations') {
+      updateObj.initilaCoolrds = false;
+    }
+
+    this.setState(updateObj);
   },
 
   render() {
+    let {coordinates, settings, oldCoords, initilaCoolrds} = this.state;
+    let {latitude, longitude} = coordinates;
+    let apiKey = settings['api-key'];
+    // call Action only if coords changed
+    let coordsDiffer = (latitude !== oldCoords.latitude || longitude !== oldCoords.longitude);
+
+    if (apiKey && latitude && longitude && (coordsDiffer || initilaCoolrds)) {
+      InstagramActions.searchLocations(latitude, longitude, apiKey);
+    }
+
+    // console.log(this.state.locations);
+
     return (
-      <div>
-        {/* list of locations will go here */}
-        <ToolsMap settings={this.state.settings} coordinates={this.state.coordinates} />
-      </div>
+      <ToolsMap
+        settings={this.state.settings}
+        coordinates={this.state.coordinates}
+        locations={this.state.locations}
+      />
     );
   }
 });

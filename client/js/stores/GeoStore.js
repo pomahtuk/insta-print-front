@@ -12,7 +12,7 @@ class GeoStore {
     });
 
     this.exportPublicMethods({
-      getCoordinates: this.getCoordinates
+      getData: this.getCoordinates
     });
   }
 

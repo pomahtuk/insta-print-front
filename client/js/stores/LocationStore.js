@@ -16,7 +16,7 @@ class LocationStore {
     });
 
     this.exportPublicMethods({
-      getLocation: this.getLocation
+      getData: this.getLocation
     });
 
     this.exportAsync(LocationSource);
@@ -77,4 +77,4 @@ class LocationStore {
   }
 }
 
-export default dispatcher.createStore(LocationStore, 'LocationStore');;
+export default dispatcher.createStore(LocationStore, 'LocationStore');

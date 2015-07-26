@@ -9,14 +9,35 @@ body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
 }
 
-.flexi-wrapper {
+
+.app {
   display: flex;
   min-height: 100vh;
+  flex-direction: column;
+  justify-content: flex-start; /* align items in Main Axis */
+  align-items: stretch; /* align items in Cross Axis */
+  align-content: stretch; /* Extra space in Cross Axis */
+}
+
+.app-content {
+  flex: 1;
+  position: relative;
+}
+
+.flexi-wrapper {
+  display: flex;
   flex-direction: row;
+  width: 100%;
+  position: absolute;
+  /* justify-content: flex-start; */
+  /* align-items: stretch; */
+  /* align-content: stretch; */
+  height: 100%;
 }
 
 .main-content {
   flex: 1;
+  overflow: auto;
 }
 
 .main-sidebar{

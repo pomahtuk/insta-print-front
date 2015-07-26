@@ -6,11 +6,12 @@ class InstagramStore {
     this.locations = [];
 
     this.bindListeners({
-      handleUpdateLocations: InstagramActions.UPDATE_LOCATIONS
+      handleUpdateLocations: InstagramActions.UPDATE_LOCATIONS,
+      handleSetLocationHoverState: InstagramActions.SET_LOCATION_HOVER_STATE
     });
 
     this.exportPublicMethods({
-      getLocations: this.getLocations
+      getData: this.getLocations
     });
 
   }
@@ -22,6 +23,13 @@ class InstagramStore {
 
   handleUpdateLocations(locations) {
     this.locations = locations;
+  }
+
+  handleSetLocationHoverState(params) {
+    this.locations.map((location) => {
+      location.hovered = location.id === params.id ? params.state : false;
+      return location;
+    });
   }
 }
 

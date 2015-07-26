@@ -15,6 +15,13 @@ class InstagramActions {
     this.dispatch(data);
   }
 
+  setLocationHoverState(locationId, state) {
+    this.dispatch({
+      id: locationId,
+      state: state
+    });
+  }
+
   instagramFailed(errorMessage) {
     this.dispatch(errorMessage);
   }

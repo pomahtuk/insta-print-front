@@ -32,10 +32,8 @@ let App = React.createClass({
     // }
 
     return (
-      <header classNane="">
-        <div classNane="">
-          <Navigation />
-        </div>
+      <header className="">
+        <Navigation />
       </header>
     );
   },
@@ -44,11 +42,11 @@ let App = React.createClass({
     var link = this.getPath();
 
     return (
-      <div>
+      <div className="app">
 
         {this.drawConditionalNavigation(link)}
 
-        <div classNane="main-content">
+        <div className="app-content">
           <RouteHandler/>
         </div>
 
