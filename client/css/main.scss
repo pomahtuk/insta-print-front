@@ -44,7 +44,6 @@ body {
   flex: 0 300px;
 }
 
-
 .navigation {
   list-style: none;
   margin: 0;
@@ -59,17 +58,20 @@ body {
 
   -webkit-flex-flow: row wrap;
   justify-content: flex-end;
-}
 
-.navigation a {
-  text-decoration: none;
-  display: block;
-  padding: 1em;
-  color: white;
-}
+  a {
+    text-decoration: none;
+    display: block;
+    padding: 1em;
+    color: white;
 
-.navigation a:hover {
-  background: #303F9F;
+    &:hover,
+    &.active {
+      background: #303F9F;
+    }
+
+  }
+
 }
 
 @media all and (max-width: 800px) {
@@ -83,17 +85,17 @@ body {
     -webkit-flex-flow: column wrap;
     flex-flow: column wrap;
     padding: 0;
+
+    a {
+      text-align: center;
+      padding: 10px;
+      border-top: 1px solid rgba(255,255,255,0.3);
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    li:last-of-type a {
+      border-bottom: none;
+    }
   }
 
-  .navigation a {
-    text-align: center;
-    padding: 10px;
-    border-top: 1px solid rgba(255,255,255,0.3);
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-  }
-
-
-  .navigation li:last-of-type a {
-    border-bottom: none;
-  }
 }
