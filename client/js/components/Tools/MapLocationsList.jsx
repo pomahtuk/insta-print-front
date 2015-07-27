@@ -20,12 +20,14 @@ let MapLocationsList = React.createClass({
 
   },
 
-  _toLocationItem (location) {
+  _toLocationItem (location, index) {
     let classes = classNames({
       'location-options__item': true,
       'location-options__item--hover': location.hovered,
       'location-options__item--current': location.current
     });
+
+    let title = `${index+1} : ${location.name}`;
 
     return (
       <div
@@ -34,8 +36,10 @@ let MapLocationsList = React.createClass({
         onMouseEnter={this._setLocationHover.bind(this, location, true)}
         onMouseLeave={this._setLocationHover.bind(this, location, false)}
       >
-        {location.name} -  {location.hovered ? 'true' : 'false'}
-        <br/>
+        <div className='location-options__item__title'>
+          {title}
+        </div>
+
         <button className="pure-button pure-button-primary" href="#">Set as machine location</button>
       </div>
     );
