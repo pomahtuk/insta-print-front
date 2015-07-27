@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
  * Setting config vars
  */
 const staticPath = path.normalize(__dirname + '/../client/build');
+const assetsPath = path.normalize(__dirname + '/../client/images');
 const modelsPath = path.normalize(__dirname + '/models');
 const appPort = 3000;
 const apiPort = 3001;
@@ -44,6 +45,7 @@ app.use(cors({ origin: '*' }));
 app.use(logger());
 app.use(bodyParser());
 app.use(koaStatic(staticPath));
+app.use(koaStatic(assetsPath));
 
 app.use(proxyRouter.routes());
 app.use(appRouter.routes());

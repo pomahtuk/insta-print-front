@@ -56,7 +56,6 @@ router.get('/api-key', function* () {
   this.body = record;
 });
 
-
 router.post('/location-id', function* () {
   var record = yield updateDBRecord('location-id', this);
   this.status = 200;
@@ -78,7 +77,6 @@ router.get('/settings', function* () {
   this.status = 200;
   this.body = result;
 });
-
 
 // pass everything to react
 router.get('*', function* () {

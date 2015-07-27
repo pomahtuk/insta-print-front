@@ -6,6 +6,8 @@ import Router from 'react-router';
 import {GoogleMaps, InfoWindow, Marker} from 'react-google-maps';
 import MapLocationsList from './MapLocationsList.jsx';
 
+import {STATIC_URL} from '../../constants/App.js'
+
 // TODO: loading state!
 let ToolsMap = React.createClass({
   getInitialState () {
@@ -106,6 +108,7 @@ let ToolsMap = React.createClass({
           position={{lat: location.latitude, lng: location.longitude}}
           key={location.id}
           ref={location.id}
+          icon={`${STATIC_URL}/marker.png`}
           onClick={this._setLocationHover.bind(this, location, true)}
         >
 
