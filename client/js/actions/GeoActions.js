@@ -17,6 +17,10 @@ class GeoActions {
     this.dispatch(result);
   }
 
+  updateZoomLevel(zoom) {
+    this.dispatch(zoom);
+  }
+
   geoLocationFailed(errorMessage) {
     this.dispatch(errorMessage);
   }

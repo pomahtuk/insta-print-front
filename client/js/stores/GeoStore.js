@@ -4,21 +4,30 @@ import GeoActions from  '../actions/GeoActions.js';
 class GeoStore {
   constructor() {
     this.coordinates = {};
+    this.zoom = 18;
     this.positionError = null;
 
     this.bindListeners({
       handleUpdateCoordinates: GeoActions.UPDATE_COORDINATES,
-      handleGeoLocationFailed: GeoActions.GEO_LOCATION_FAILED
+      handleGeoLocationFailed: GeoActions.GEO_LOCATION_FAILED,
+      handleUpdateZoomLevel: GeoActions.UPDATE_ZOOM_LEVEL
     });
 
     this.exportPublicMethods({
-      getData: this.getCoordinates
+      getData: this.getStoreData
     });
   }
 
-  getCoordinates() {
-    let {coordinates} = this.getState();
-    return coordinates;
+  getStoreData() {
+    let {coordinates, zoom} = this.getState();
+    return {
+      coordinates: coordinates,
+      zoom: zoom
+    };
+  }
+
+  handleUpdateZoomLevel(zoom) {
+    this.zoom = zoom;
   }
 
   handleUpdateCoordinates(coordinates) {

@@ -1,4 +1,5 @@
 import InstagramActions from '../../actions/InstagramActions';
+import GeoActions from '../../actions/GeoActions';
 
 import React from 'react/addons';
 import Router from 'react-router';
@@ -9,11 +10,17 @@ import MapLocationsList from './MapLocationsList.jsx';
 let ToolsMap = React.createClass({
   getInitialState () {
     return {
-      zoomLevel: 18,
       settings: {},
-      coordinates: {
+      defaultCoords: {
         latitude: 52.365667099999996,
         longitude: 4.8983713
+      },
+      geo: {
+        coordinates: {
+          latitude: 52.365667099999996,
+          longitude: 4.8983713
+        },
+        zoom: 18
       },
       locations: [{
         latitude: 52.365556619,
@@ -27,8 +34,7 @@ let ToolsMap = React.createClass({
   // once parrent container receive state updates
   // we will be able to reflect this
   componentWillReceiveProps(nextProps) {
-    let {coordinates, locations, settings} = nextProps;
-    let {latitude, longitude} = coordinates;
+    let {geo, locations, settings} = nextProps;
 
     if (settings) {
       this.setState({
@@ -42,9 +48,9 @@ let ToolsMap = React.createClass({
       });
     }
 
-    if (latitude && longitude) {
+    if (geo) {
       this.setState({
-        coordinates: coordinates
+        geo: geo
       });
     }
 
@@ -57,29 +63,23 @@ let ToolsMap = React.createClass({
 
   _handle_zoom_changed () {
     const zoomLevel = this.refs.map.getZoom();
-    if (zoomLevel !== this.state.zoomLevel) {
-      // Notice: Check zoomLevel equality here,
-      // or it will fire zoom_changed event infinitely
-      this.setState({
-        zoomLevel
-      });
+    if (zoomLevel !== this.state.geo.zoom) {
+      GeoActions.updateZoomLevel(zoomLevel);
     }
   },
 
   _handle_center_change (event) {
     const center = this.refs.map.getCenter();
-    const {coordinates} = this.state;
+    const {coordinates} = this.state.geo;
     let {latitude, longitude} = coordinates;
     let newLatitude = center.lat();
     let newLongitude = center.lng();
     let coordsPresent = latitude && longitude;
 
     if (coordsPresent && (latitude !== newLatitude || longitude !== newLongitude)) {
-      this.setState({
-        coordinates: {
-          latitude: newLatitude,
-          longitude: newLongitude
-        }
+      GeoActions.updateCoordinates({
+        latitude: newLatitude,
+        longitude: newLongitude
       });
     }
   },
@@ -89,10 +89,16 @@ let ToolsMap = React.createClass({
    * Go and try click now.
    */
   render () {
-    const {props, state} = this,
-          {googleMapsApi, ...otherProps} = props,
-          {coordinates, settings} = state,
-          {latitude, longitude} = coordinates;
+    let {props, state} = this,
+      {googleMapsApi, ...otherProps} = props,
+      {geo, settings, defaultCoords} = state,
+      {latitude, longitude} = geo.coordinates;
+
+    // fallback for initial coords
+    if (!latitude) {
+      latitude = defaultCoords.latitude;
+      longitude = defaultCoords.longitude;
+    }
 
     function toMarker (location, index) {
       return (
@@ -124,7 +130,6 @@ let ToolsMap = React.createClass({
       return null;
     }
 
-
     return (
       <div className='flexi-wrapper'>
         <GoogleMaps containerProps={{
@@ -135,7 +140,7 @@ let ToolsMap = React.createClass({
           googleMapsApi={
             typeof google !== 'undefined' ? google.maps : null
           }
-          zoom={state.zoomLevel}
+          zoom={geo.zoom}
           onDragend={this._handle_center_change}
           onZoomChanged={this._handle_zoom_changed}
           center={{lat: latitude, lng: longitude}}
