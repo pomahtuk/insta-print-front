@@ -1,4 +1,5 @@
 import InstagramActions from '../../actions/InstagramActions';
+import SettingsActions from '../../actions/SettingsActions';
 import React from 'react/addons';
 import classNames from 'classnames';
 
@@ -27,7 +28,7 @@ let MapLocationsList = React.createClass({
       'location-options__item--current': location.current
     });
 
-    let title = `${index+1} : ${location.name}`;
+    let title = `${index + 1} : ${location.name}`;
 
     return (
       <div
@@ -40,13 +41,25 @@ let MapLocationsList = React.createClass({
           {title}
         </div>
 
-        <button className="pure-button pure-button-primary" href="#">Set as machine location</button>
+        <button
+          className="pure-button pure-button-primary"
+          onClick={this._setLocationIdSettings.bind(this, location)}
+        >
+          Set as machine location
+        </button>
       </div>
     );
   },
 
   _setLocationHover (location, state) {
     InstagramActions.setLocationHoverState(location.id, state);
+  },
+
+  _setLocationIdSettings (location) {
+    SettingsActions.updateSettingsValue({
+      key: 'location-id',
+      value: location.id
+    });
   },
 
   render () {

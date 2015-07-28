@@ -94,6 +94,39 @@ body {
 
 }
 
+.main-screen-photos {
+  line-height: 0;
+  column-count: 5;
+  column-gap: 0px;
+
+  &--image {
+    /* Just in case there are inline attributes */
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .main-screen-photos {
+    column-count: 4;
+  }
+}
+@media (max-width: 1000px) {
+  .main-screen-photos {
+    column-count: 3;
+  }
+}
+@media (max-width: 800px) {
+  .main-screen-photos {
+    column-count: 2;
+  }
+}
+@media (max-width: 400px) {
+  #photos {
+    column-count: 1;
+  }
+}
+
 .location-options {
   &__container {
     height: 100%;
@@ -125,11 +158,11 @@ body {
     }
 
     &--hover {
-      background: #EEE;
+      background: #B6B6B6;
     }
 
     &--current {
-
+      background: #4CAF50;
     }
   }
 }

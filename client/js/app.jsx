@@ -1,8 +1,8 @@
 import React from 'react';
 import Router, { State, DefaultRoute, Link, Route, RouteHandler } from 'react-router';
 
-import Locations from './components/Locations.jsx';
 import Tools from './components/Tools.jsx';
+import Machine from './components/Machine.jsx';
 
 let clientId = '0e746470835249b0a01487361b63d20d';
 let redirectUri = 'http://localhost:3000/tools';
@@ -12,8 +12,7 @@ class Navigation extends React.Component {
   render() {
     return (
       <ul className="navigation">
-        <li><Link className='index' to="index">Home</Link></li>
-        <li><Link to="locations">Locations</Link></li>
+        <li><Link to="index">Home</Link></li>
         <li><Link to="tools">Tools</Link></li>
         <li><a href={instaLink}>Instagramm Auth</a></li>
       </ul>
@@ -21,30 +20,14 @@ class Navigation extends React.Component {
   }
 }
 
-// instagramm apiKey = 3b1454dc18344ec19d4344c25efe2c18
-
 let App = React.createClass({
   mixins: [State],
 
-  drawConditionalNavigation (routeLink) {
-    // if (routeLink === '/') {
-    //   return true;
-    // }
-
-    return (
-      <header className="">
-        <Navigation />
-      </header>
-    );
-  },
-
   render() {
-    var link = this.getPath();
-
     return (
       <div className="app">
 
-        {this.drawConditionalNavigation(link)}
+        <Navigation />
 
         <div className="app-content">
           <RouteHandler/>
@@ -56,9 +39,9 @@ let App = React.createClass({
 });
 
 let routes = (
-  <Route name="index" path="/" handler={App}>
-    <Route name="locations" path="/locations" handler={Locations}/>
+  <Route handler={App}>
     <Route name="tools" path="/tools" handler={Tools}/>
+    <DefaultRoute name="index" handler={Machine} />
   </Route>
 );
 

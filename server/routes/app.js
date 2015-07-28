@@ -1,20 +1,20 @@
 const router = require('koa-router')();
 const sendfile = require('koa-sendfile');
 const path = require('path');
-const mongoose = require("mongoose");
-const InstagramKey = mongoose.model("InstagramKey");
+const mongoose = require('mongoose');
+const InstagramKey = mongoose.model('InstagramKey');
 
-const indexPath = path.normalize(__dirname + '/../../index.html');
+const indexPath = path.normalize(path.join(__dirname, '/../../index.html'));
 
 function* updateDBRecord(key, context) {
   const payload = context.request.body;
 
   if (!payload) {
-    context.throw("The body is empty", 400);
+    context.throw('The body is empty', 400);
   }
 
   if (!payload.code) {
-    context.throw("Missing code", 400);
+    context.throw('Missing code', 400);
   }
 
   try {
@@ -81,7 +81,7 @@ router.get('/settings', function* () {
 // pass everything to react
 router.get('*', function* () {
   var stats = yield* sendfile.call(this, indexPath);
-  if (!this.status) this.throw(404)
+  if (!this.status) this.throw(404);
 });
 
 

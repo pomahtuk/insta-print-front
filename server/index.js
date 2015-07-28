@@ -10,9 +10,9 @@ const mongoose = require('mongoose');
 /**
  * Setting config vars
  */
-const staticPath = path.normalize(__dirname + '/../client/build');
-const assetsPath = path.normalize(__dirname + '/../client/images');
-const modelsPath = path.normalize(__dirname + '/models');
+const staticPath = path.normalize(path.join(__dirname, '/../client/build'));
+const assetsPath = path.normalize(path.join(__dirname, '/../client/images'));
+const modelsPath = path.normalize(path.join(__dirname, '/models'));
 const appPort = 3000;
 const apiPort = 3001;
 
@@ -22,7 +22,7 @@ const apiPort = 3001;
 const mongoURI = 'mongodb://localhost/insta-print';
 
 mongoose.connect(mongoURI);
-mongoose.connection.on("error", function(err) {
+mongoose.connection.on('error', function(err) {
   console.log(err);
 });
 
@@ -30,8 +30,8 @@ mongoose.connection.on("error", function(err) {
  * Load the models
  */
 fs.readdirSync(modelsPath).forEach(function(file) {
-  if (~file.indexOf("js")) {
-    require(modelsPath + "/" + file);
+  if (~file.indexOf('js')) {
+    require(modelsPath + '/' + file);
   }
 });
 
