@@ -98,8 +98,9 @@ let InstagramSource = {
    * @return {Promise}            [Ajax Promise]
    */
   getMediaForLocation(locationId, token) {
-    let request = axios.get(`${INSTAGRAM_URL}/locations/${locationId}/media/recent`, {
+    let request = axios.get(`${PROXY_API_URL}`, {
       params: {
+        url: `${INSTAGRAM_URL}/locations/${locationId}/media/recent`,
         access_token: token
       }
     });

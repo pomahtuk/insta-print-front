@@ -10,6 +10,7 @@ import Router from 'react-router';
 
 import ToolsButtons from './Tools/ToolsButtons.jsx';
 import ToolsMap from './Tools/ToolsMap.jsx';
+import Navigation from './Navigation.jsx';
 
 let Tools = React.createClass({
   mixins: [ Router.State ],
@@ -76,11 +77,19 @@ let Tools = React.createClass({
     let {geo, settings, oldCoords, locations} = this.state;
 
     return (
-      <ToolsMap
-        settings={settings}
-        geo={geo}
-        locations={locations}
-      />
+      <div className="app">
+
+        <Navigation />
+
+        <div className="app-content">
+          <ToolsMap
+            settings={settings}
+            geo={geo}
+            locations={locations}
+          />
+        </div>
+
+      </div>
     );
   }
 });

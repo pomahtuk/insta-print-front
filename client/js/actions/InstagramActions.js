@@ -10,6 +10,14 @@ class InstagramActions {
       .catch((response) =>  this.actions.instagramFailed(response.statusText));
   }
 
+  // this way! go to server here and dispatch all staff here!
+  getLocationImages(locationId, apiKey) {
+    let request = InstagramSource.getMediaForLocation(locationId, apiKey);
+    request
+      .then((response) => this.actions.updateLocationImages(response.data))
+      .catch((response) =>  this.actions.instagramFailed(response.statusText));
+  }
+
   updateLocations(locationsResponse) {
     let { data } = locationsResponse;
     this.dispatch(data);
@@ -20,6 +28,10 @@ class InstagramActions {
       id: locationId,
       state: state
     });
+  }
+
+  updateLocationImages(locationImages) {
+    this.dispatch(locationImages);
   }
 
   instagramFailed(errorMessage) {
