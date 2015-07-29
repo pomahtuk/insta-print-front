@@ -34,6 +34,10 @@ class InstagramStore {
   }
 
   handleUpdateLocationImages(locationImages) {
+    // generate random sizes
+    // locationImages.map((locationImage) => {
+    //   return locationImage;
+    // });
     this.locationImages = locationImages;
   }
 

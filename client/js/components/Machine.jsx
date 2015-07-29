@@ -3,11 +3,18 @@ import React from 'react';
 import SettingsActions from '../actions/SettingsActions';
 import SettingsStore from '../stores/SettingsStore';
 import InstagramStore from '../stores/InstagramStore';
+import GeoStore from '../stores/GeoStore';
+import GeoActions from '../actions/GeoActions';
 import InstagramActions from '../actions/InstagramActions';
 
 let Machine = React.createClass({
   getInitialState() {
     return {
+      loaded: false,
+      geo: {
+        coordinates: {},
+        zoom: 18
+      },
       settings: {},
       locationImages: []
     };
@@ -16,62 +23,80 @@ let Machine = React.createClass({
   componentDidMount() {
     SettingsStore.listen(this._onChange.bind(this, 'settings', SettingsStore));
     InstagramStore.listen(this._onChange.bind(this, 'locationImages', InstagramStore));
+    GeoStore.listen(this._onChange.bind(this, 'geo', GeoStore));
 
     SettingsActions.fetchSettings();
+    GeoActions.getCoordinates();
   },
 
   componentWillUnmount() {
     SettingsStore.unlisten(this._onChange.bind(this, 'settings', SettingsStore));
     InstagramStore.unlisten(this._onChange.bind(this, 'locationImages', InstagramStore));
+    GeoStore.unlisten(this._onChange.bind(this, 'geo', GeoStore));
   },
 
   componentWillUpdate(nextProps, nextState) {
-    let {settings} = nextState,
+    let {geo, settings} = nextState,
       oldSettings = this.state.settings,
       oldApiKey = oldSettings['api-key'],
-      oldLocationId = oldSettings['location-id'],
       apiKey = settings['api-key'],
-      locationId = settings['location-id'];
+      {coordinates} = geo,
+      {latitude, longitude} = coordinates,
+      oldCoords = this.state.geo.coordinates;
 
-    let newValuesDiffer = (apiKey !== oldApiKey) && (locationId !== oldLocationId);
+    let coordsDiffer = (latitude !== oldCoords.latitude || longitude !== oldCoords.longitude);
 
-    if (newValuesDiffer && apiKey && locationId) {
-      InstagramActions.getLocationImages(locationId, apiKey);
+    if (apiKey && latitude && longitude && coordsDiffer) {
+      InstagramActions.getImagesForCoordinates(latitude, longitude, apiKey);
     }
   },
 
   /* Store events */
   _onChange(key, store) {
-    let updateObj = {};
+    if (this.isMounted()) {
+      let updateObj = {};
 
-    if (key === 'locationImages') {
-      updateObj[key] = store.getLocationImages();
-    } else {
-      updateObj[key] = store.getData();
+      if (key === 'locationImages') {
+        updateObj[key] = store.getLocationImages();
+      } else {
+        updateObj[key] = store.getData();
+      }
+
+      if (key === 'geo' && updateObj[key] && updateObj[key].coordinates) {
+        updateObj.loaded = true;
+      }
+
+      this.setState(updateObj);
     }
-
-    console.log('store update received', updateObj);
-
-    this.setState(updateObj);
   },
 
-  _toDisplayImage(locationImage) {
-    let {standard_resolution, high_resolution} = locationImage.images;
-    let workImage = high_resolution || standard_resolution;
+  _toDisplayImage(locationImage, index) {
+    let {standard_resolution, high_resolution} = locationImage.images,
+      workImage = high_resolution || standard_resolution,
+      colCount = 4,
+      colItemWidth = window.innerWidth / colCount;
 
     return (
       <img
         className="main-screen-photos--image"
         key={locationImage.id}
         src={workImage.url}
-        width={workImage.height}
-        height={workImage.width}
+        width={colItemWidth}
+        height={colItemWidth}
       />
     );
   },
 
   render() {
     let {state} = this;
+
+    if (!state.loaded) {
+      return (
+        <div>
+          <img src="/ajax-loader.gif"/>
+        </div>
+      );
+    }
 
     return (
       <div className="main-screen-photos">

@@ -96,34 +96,14 @@ body {
 
 .main-screen-photos {
   line-height: 0;
-  column-count: 5;
-  column-gap: 0px;
+  font-size: 0;
+  /* height: 100vh; */
+  width: 100vw;
+  overflow: hidden;
 
   &--image {
-    /* Just in case there are inline attributes */
-    width: 100% !important;
-    height: auto !important;
-  }
-}
-
-@media (max-width: 1200px) {
-  .main-screen-photos {
-    column-count: 4;
-  }
-}
-@media (max-width: 1000px) {
-  .main-screen-photos {
-    column-count: 3;
-  }
-}
-@media (max-width: 800px) {
-  .main-screen-photos {
-    column-count: 2;
-  }
-}
-@media (max-width: 400px) {
-  .main-screen-photos {
-    column-count: 1;
+    display: inline-block;
+    float: left;
   }
 }
 

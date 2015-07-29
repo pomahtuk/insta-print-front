@@ -18,6 +18,13 @@ class InstagramActions {
       .catch((response) =>  this.actions.instagramFailed(response.statusText));
   }
 
+  getImagesForCoordinates(lat, lng, token) {
+    let request = InstagramSource.getMediaForLatLng(lat, lng, token);
+    request
+      .then((response) => this.actions.updateLocationImages(response.data))
+      .catch((response) =>  this.actions.instagramFailed(response.statusText));
+  }
+
   updateLocations(locationsResponse) {
     let { data } = locationsResponse;
     this.dispatch(data);

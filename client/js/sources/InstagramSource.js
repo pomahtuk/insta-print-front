@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 import {INSTAGRAM_URL, PROXY_API_URL} from '../constants/App.js';
 
 let InstagramSource = {
@@ -104,6 +105,31 @@ let InstagramSource = {
         access_token: token
       }
     });
+
+    return request;
+  },
+
+  /**
+   * Making a request to Instagram API to fetch media near current coords
+   *
+   * https://api.instagram.com/v1/media/search?access_token=ACCESS-TOKEN
+   *
+   * @param  {Number} lat   [Lattitude of current location]
+   * @param  {Number} lng   [longtitude on current location]
+   * @param  {String} token [acess token for all requests]
+   * @return {Promise}      [Ajax Promise]
+   */
+  getMediaForLatLng(lat, lng, token) {
+    let request = axios.get(`${PROXY_API_URL}`, {
+      params: {
+        url: `${INSTAGRAM_URL}/media/search`,
+        lat: lat,
+        lng: lng,
+        distance: 200,
+        access_token: token
+      }
+    });
+
     return request;
   }
 

@@ -68,9 +68,11 @@ let Tools = React.createClass({
 
   /* Store events */
   _onChange(key, store) {
-    let updateObj = {};
-    updateObj[key] = store.getData();
-    this.setState(updateObj);
+    if (this.isMounted()) {
+      let updateObj = {};
+      updateObj[key] = store.getData();
+      this.setState(updateObj);
+    }
   },
 
   render() {
