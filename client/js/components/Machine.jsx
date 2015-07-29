@@ -80,7 +80,7 @@ let Machine = React.createClass({
       <img
         className="main-screen-photos--image"
         key={locationImage.id}
-        src={workImage.url}
+        src={`${locationImage.link}media/?size=l`}
         width={colItemWidth}
         height={colItemWidth}
       />
