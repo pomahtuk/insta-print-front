@@ -7,7 +7,7 @@
     "start": "node --harmony ./server/index.js",
     "build": "webpack -p --config webpack.config.js --progress --profile --colors",
     "test": "jest",
-    "dev": "nodemon --ignore client/ --harmony ./server/index.js & webpack -w --devtool source-map --progress --colors="
+    "dev": "nodemon --ignore client/ --ignore node_modules/ --harmony ./server/index.js & webpack -w --devtool source-map --progress --colors="
   },
   "author": "pman",
   "license": "MIT",
@@ -54,6 +54,6 @@
     "koa-static": "^1.4.9",
     "koa-views": "^3.1.0",
     "lodash": "^3.10.0",
-    "mongoose": "^4.0.8"
+    "mongoose": "^4.1.0"
   }
 }

@@ -14,25 +14,18 @@ let Machine = React.createClass({
   },
 
   componentDidMount() {
-    console.log('mounted');
-
     SettingsStore.listen(this._onChange.bind(this, 'settings', SettingsStore));
     InstagramStore.listen(this._onChange.bind(this, 'locationImages', InstagramStore));
 
     SettingsActions.fetchSettings();
-    // InstagramActions.getLocationImages();
   },
 
   componentWillUnmount() {
-    console.log('un-mounted');
-
     SettingsStore.unlisten(this._onChange.bind(this, 'settings', SettingsStore));
     InstagramStore.unlisten(this._onChange.bind(this, 'locationImages', InstagramStore));
   },
 
   componentWillUpdate(nextProps, nextState) {
-    console.log('updated');
-
     let {settings} = nextState,
       oldSettings = this.state.settings,
       oldApiKey = oldSettings['api-key'],
@@ -41,8 +34,6 @@ let Machine = React.createClass({
       locationId = settings['location-id'];
 
     let newValuesDiffer = (apiKey !== oldApiKey) && (locationId !== oldLocationId);
-
-    console.log(newValuesDiffer);
 
     if (newValuesDiffer && apiKey && locationId) {
       InstagramActions.getLocationImages(locationId, apiKey);
@@ -64,10 +55,27 @@ let Machine = React.createClass({
     this.setState(updateObj);
   },
 
-  render() {
+  _toDisplayImage(locationImage) {
+    let {standard_resolution, high_resolution} = locationImage.images;
+    let workImage = high_resolution || standard_resolution;
+
     return (
-      <div>
-        home page
+      <img
+        className="main-screen-photos--image"
+        key={locationImage.id}
+        src={workImage.url}
+        width={workImage.height}
+        height={workImage.width}
+      />
+    );
+  },
+
+  render() {
+    let {state} = this;
+
+    return (
+      <div className="main-screen-photos">
+        {state.locationImages.map(this._toDisplayImage, this)}
       </div>
     );
   }

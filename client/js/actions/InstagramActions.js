@@ -31,7 +31,8 @@ class InstagramActions {
   }
 
   updateLocationImages(locationImages) {
-    this.dispatch(locationImages);
+    let { data } = locationImages;
+    this.dispatch(data);
   }
 
   instagramFailed(errorMessage) {
