@@ -6,6 +6,7 @@ import SettingsStore from  '../stores/SettingsStore';
 class InstagramStore {
   constructor() {
     this.locations = [];
+    this.users = [];
     this.locationImages = [];
     this.currentLocationId = '';
 
@@ -13,12 +14,14 @@ class InstagramStore {
       handleUpdateLocations: InstagramActions.UPDATE_LOCATIONS,
       handleSetLocationHoverState: InstagramActions.SET_LOCATION_HOVER_STATE,
       handleUpdateSettings: SettingsActions.UPDATE_SETTINGS,
-      handleUpdateLocationImages: InstagramActions.UPDATE_LOCATION_IMAGES
+      handleUpdateLocationImages: InstagramActions.UPDATE_LOCATION_IMAGES,
+      handleUpdateUsers: InstagramActions.UPDATE_USERS
     });
 
     this.exportPublicMethods({
       getData: this.getLocations,
-      getLocationImages: this.getLocationImages
+      getLocationImages: this.getLocationImages,
+      getUsers: this.getUsers
     });
 
   }
@@ -33,12 +36,21 @@ class InstagramStore {
     return locations;
   }
 
+  getUsers() {
+    let {users} = this.getState();
+    return users;
+  }
+
   handleUpdateLocationImages(locationImages) {
     // generate random sizes
     // locationImages.map((locationImage) => {
     //   return locationImage;
     // });
     this.locationImages = locationImages;
+  }
+
+  handleUpdateUsers(users) {
+    this.users = users;
   }
 
   handleUpdateSettings() {

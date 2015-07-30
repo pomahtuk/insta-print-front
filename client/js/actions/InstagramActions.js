@@ -11,6 +11,14 @@ class InstagramActions {
   }
 
   // this way! go to server here and dispatch all staff here!
+  searchUsers(query, apiKey) {
+    let request = InstagramSource.searchUsers(query, apiKey);
+    request
+      .then((response) => this.actions.updateUsers(response.data))
+      .catch((response) =>  this.actions.instagramFailed(response.statusText));
+  }
+
+  // this way! go to server here and dispatch all staff here!
   getLocationImages(locationId, apiKey) {
     let request = InstagramSource.getMediaForLocation(locationId, apiKey);
     request
@@ -23,6 +31,11 @@ class InstagramActions {
     request
       .then((response) => this.actions.updateLocationImages(response.data))
       .catch((response) =>  this.actions.instagramFailed(response.statusText));
+  }
+
+  updateUsers(usersResponse) {
+    let { data } = usersResponse;
+    this.dispatch(data);
   }
 
   updateLocations(locationsResponse) {
