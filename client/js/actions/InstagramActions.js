@@ -41,8 +41,15 @@ class InstagramActions {
   }
 
   updateUserPhotos(userPhotosResponse) {
-    let { data } = userPhotosResponse;
-    this.dispatch(data);
+    let { data, pagination } = userPhotosResponse;
+    this.dispatch({
+      data: data,
+      pagination: pagination
+    });
+  }
+
+  clearUserPhotos() {
+    this.dispatch();
   }
 
   updateUsers(usersResponse) {

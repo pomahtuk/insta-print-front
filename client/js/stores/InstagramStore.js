@@ -7,7 +7,7 @@ class InstagramStore {
   constructor() {
     this.locations = [];
     this.users = [];
-    this.userPhotos = [];
+    this.userPhotos = {};
     this.locationImages = [];
     this.currentLocationId = '';
 
@@ -17,7 +17,8 @@ class InstagramStore {
       handleUpdateSettings: SettingsActions.UPDATE_SETTINGS,
       handleUpdateLocationImages: InstagramActions.UPDATE_LOCATION_IMAGES,
       handleUpdateUsers: InstagramActions.UPDATE_USERS,
-      handleUpdateUserPhotos: InstagramActions.UPDATE_USER_PHOTOS
+      handleUpdateUserPhotos: InstagramActions.UPDATE_USER_PHOTOS,
+      handleClearUserPhotos: InstagramActions.CLEAR_USER_PHOTOS
     });
 
     this.exportPublicMethods({
@@ -61,8 +62,12 @@ class InstagramStore {
     this.users = users;
   }
 
-  handleUpdateUserPhotos(users) {
-    this.users = users;
+  handleUpdateUserPhotos(userPhotos) {
+    this.userPhotos = userPhotos;
+  }
+
+  handleClearUserPhotos() {
+    this.userPhotos = {};
   }
 
   handleUpdateSettings() {

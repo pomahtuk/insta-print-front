@@ -25,6 +25,7 @@
     "file-loader": "^0.8.4",
     "jest-cli": "^0.4.15",
     "jquery": "^2.1.4",
+    "lodash": "^3.10.0",
     "moment": "^2.10.6",
     "node-libs-browser": "^0.5.2",
     "node-sass": "^3.2.0",

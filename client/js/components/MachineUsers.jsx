@@ -5,10 +5,12 @@ import SettingsStore from '../stores/SettingsStore';
 import InstagramStore from '../stores/InstagramStore';
 import InstagramActions from '../actions/InstagramActions';
 import { Link } from 'react-router';
+import _ from 'lodash';
 
 let MachineUsers = React.createClass({
   getInitialState() {
     return {
+      query: '',
       settings: {},
       locationImages: [],
       users: []
@@ -20,6 +22,10 @@ let MachineUsers = React.createClass({
     InstagramStore.listen(this._onChange.bind(this, 'users', InstagramStore));
 
     SettingsActions.fetchSettings();
+  },
+
+  componentWillMount() {
+    this._getUsers = _.debounce(this._getUsers, 200);
   },
 
   componentWillUnmount() {
@@ -41,16 +47,16 @@ let MachineUsers = React.createClass({
         updateObj[key] = store.getData();
       }
 
-      console.log(updateObj);
-
       this.setState(updateObj);
     }
   },
 
   _getUsers() {
     let apiKey = this.state.settings['api-key'];
-    if (apiKey) {
-      InstagramActions.searchUsers('i_am_', apiKey);
+    let {query} = this.state;
+
+    if (apiKey && query.length >= 3) {
+      InstagramActions.searchUsers(query, apiKey);
     }
   },
 
@@ -61,19 +67,30 @@ let MachineUsers = React.createClass({
           <img src={user.profile_picture} />
           <br/>
           <span>
-            @{user.name} - {user.full_name}
+            @{user.username} - {user.full_name}
           </span>
         </Link>
       </li>
     );
   },
 
+  _handleInputChange(event) {
+    let value = event.target.value;
+
+    this.setState({query: value});
+    this._getUsers();
+  },
+
   render() {
+    let {query, users} = this.state;
+
+    users = users ? users : [];
+
     return (
       <div className="main-screen-users">
-        <button onClick={this._getUsers}>Get users!</button>
+        <input value={query} type="text" name="query" onChange={this._handleInputChange}/>
         <ul>
-          {this.state.users.map(this._toList, this)}
+          {users.map(this._toList, this)}
         </ul>
       </div>
     );

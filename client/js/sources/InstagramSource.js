@@ -63,8 +63,12 @@ let InstagramSource = {
    * @return {Promise}       [Ajax Promise]
    */
   getUserMedia(userId, token) {
-    let request = axios.get(`${INSTAGRAM_URL}/users/${userId}/media/recent/`, {
+    let request = axios.get(`${PROXY_API_URL}`, {
       params: {
+        url: `${INSTAGRAM_URL}/users/${userId}/media/recent/`,
+        count: 50000,
+        min_timestamp: Date.now() / 1000 - 60 * 60 * 24 * 365 * 5,
+        max_timestamp: Date.now() / 1000,
         access_token: token
       }
     });
