@@ -14,7 +14,7 @@ module.exports = {
     },
     module: {
       loaders: [
-        { test: /\.jsx?$/, loader: 'react-hot-loader!babel-loader?stage=0', exclude: /node_modules/ },
+        { test: /\.jsx?$/, loader: 'babel?stage=0', exclude: /node_modules/ },
         { test: /\.js$/, exclude: /node_modules/, loader: 'babel'},
         { test: /\.png$/, loader: 'url?limit=100000' },
         { test: /\.jpg$/, loader: 'file' },

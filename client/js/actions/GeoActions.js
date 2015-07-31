@@ -10,10 +10,10 @@ class GeoActions {
   }
 
   updateCoordinates(coordinates) {
-    var result = {
+    let result = {
       latitude: coordinates.latitude,
       longitude: coordinates.longitude
-    }
+    };
     this.dispatch(result);
   }
 

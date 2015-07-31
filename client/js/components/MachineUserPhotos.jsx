@@ -4,30 +4,38 @@ import SettingsActions from '../actions/SettingsActions';
 import SettingsStore from '../stores/SettingsStore';
 import InstagramStore from '../stores/InstagramStore';
 import InstagramActions from '../actions/InstagramActions';
-import { Link } from 'react-router';
+import Router from 'react-router';
 
-let MachineUsers = React.createClass({
+let MachineUserPhotos = React.createClass({
+  mixins: [ Router.State ],
+
+  contextTypes: {
+    router: React.PropTypes.func
+  },
+
   getInitialState() {
     return {
+      userId: null,
       settings: {},
-      locationImages: [],
-      users: []
+      userPhotos: []
     };
   },
 
   componentDidMount() {
     SettingsStore.listen(this._onChange.bind(this, 'settings', SettingsStore));
-    InstagramStore.listen(this._onChange.bind(this, 'users', InstagramStore));
+    InstagramStore.listen(this._onChange.bind(this, 'userPhotos', InstagramStore));
 
     SettingsActions.fetchSettings();
+
+    let userId = this.context.router.getCurrentParams().userId;
+    this.setState({
+      userId: userId
+    });
   },
 
   componentWillUnmount() {
     SettingsStore.unlisten(this._onChange.bind(this, 'settings', SettingsStore));
-    InstagramStore.unlisten(this._onChange.bind(this, 'users', InstagramStore));
-  },
-
-  componentWillUpdate(nextProps, nextState) {
+    InstagramStore.unlisten(this._onChange.bind(this, 'userPhotos', InstagramStore));
   },
 
   /* Store events */
@@ -35,8 +43,8 @@ let MachineUsers = React.createClass({
     if (this.isMounted()) {
       let updateObj = {};
 
-      if (key === 'users') {
-        updateObj[key] = store.getUsers();
+      if (key === 'userPhotos') {
+        updateObj[key] = store.getUserPhotos();
       } else {
         updateObj[key] = store.getData();
       }
@@ -47,23 +55,22 @@ let MachineUsers = React.createClass({
     }
   },
 
-  _getUsers() {
+  _getPhotos() {
     let apiKey = this.state.settings['api-key'];
+    let userId = '';
     if (apiKey) {
-      InstagramActions.searchUsers('i_am_', apiKey);
+      InstagramActions.getUserPhotos(userId, apiKey);
     }
   },
 
   _toList(user, index) {
     return (
       <li key={user.id}>
-        <Link to="userPhotos" params={{userId: user.id}}>
-          <img src={user.profile_picture} />
-          <br/>
-          <span>
-            @{user.name} - {user.full_name}
-          </span>
-        </Link>
+        <img src={user.profile_picture} />
+        <br/>
+        <span>
+          @{user.name} - {user.full_name}
+        </span>
       </li>
     );
   },
@@ -71,13 +78,13 @@ let MachineUsers = React.createClass({
   render() {
     return (
       <div className="main-screen-users">
-        <button onClick={this._getUsers}>Get users!</button>
+        <button onClick={this._getPhotos}>Get photos!</button>
         <ul>
-          {this.state.users.map(this._toList, this)}
+          {this.state.userPhotos.map(this._toList, this)}
         </ul>
       </div>
     );
   }
 });
 
-export default MachineUsers;
+export default MachineUserPhotos;

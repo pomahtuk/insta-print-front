@@ -26,11 +26,23 @@ class InstagramActions {
       .catch((response) =>  this.actions.instagramFailed(response.statusText));
   }
 
-  getImagesForCoordinates(lat, lng, token) {
-    let request = InstagramSource.getMediaForLatLng(lat, lng, token);
+  getImagesForCoordinates(lat, lng, apiKey) {
+    let request = InstagramSource.getMediaForLatLng(lat, lng, apiKey);
     request
       .then((response) => this.actions.updateLocationImages(response.data))
       .catch((response) =>  this.actions.instagramFailed(response.statusText));
+  }
+
+  getUserPhotos(userId, apiKey) {
+    let request = InstagramSource.getUserMedia(userId, apiKey);
+    request
+      .then((response) => this.actions.updateUserPhotos(response.data))
+      .catch((response) =>  this.actions.instagramFailed(response.statusText));
+  }
+
+  updateUserPhotos(userPhotosResponse) {
+    let { data } = userPhotosResponse;
+    this.dispatch(data);
   }
 
   updateUsers(usersResponse) {
