@@ -42,6 +42,9 @@ class InstagramActions {
 
   updateUserPhotos(userPhotosResponse) {
     let { data, pagination } = userPhotosResponse;
+
+    //
+
     this.dispatch({
       data: data,
       pagination: pagination
@@ -76,6 +79,18 @@ class InstagramActions {
 
   instagramFailed(errorMessage) {
     this.dispatch(errorMessage);
+  }
+
+  addToCart(userPhoto) {
+    this.dispatch(userPhoto);
+  }
+
+  removeFromCart(userPhoto) {
+    this.dispatch(userPhoto);
+  }
+
+  clearCart() {
+    this.dispatch();
   }
 }
 

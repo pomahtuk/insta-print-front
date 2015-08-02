@@ -2,6 +2,7 @@ import dispatcher from '../dispatcher/appDispatcher';
 import InstagramActions from  '../actions/InstagramActions';
 import SettingsActions from  '../actions/SettingsActions';
 import SettingsStore from  '../stores/SettingsStore';
+import CartStore from  '../stores/CartStore';
 
 class InstagramStore {
   constructor() {
@@ -18,7 +19,10 @@ class InstagramStore {
       handleUpdateLocationImages: InstagramActions.UPDATE_LOCATION_IMAGES,
       handleUpdateUsers: InstagramActions.UPDATE_USERS,
       handleUpdateUserPhotos: InstagramActions.UPDATE_USER_PHOTOS,
-      handleClearUserPhotos: InstagramActions.CLEAR_USER_PHOTOS
+      handleClearUserPhotos: InstagramActions.CLEAR_USER_PHOTOS,
+      setCartItems: InstagramActions.ADD_TO_CART,
+      handleRemoveFromCard: InstagramActions.REMOVE_FROM_CART,
+      resetAllCartItems: InstagramActions.CLEAR_CART
     });
 
     this.exportPublicMethods({
@@ -51,10 +55,6 @@ class InstagramStore {
   }
 
   handleUpdateLocationImages(locationImages) {
-    // generate random sizes
-    // locationImages.map((locationImage) => {
-    //   return locationImage;
-    // });
     this.locationImages = locationImages;
   }
 
@@ -94,6 +94,39 @@ class InstagramStore {
     this.locations.map((location) => {
       location.hovered = location.id === params.id ? params.state : false;
       return location;
+    });
+  }
+
+  resetAllCartItems() {
+    this.userPhotos.data = this.userPhotos.data.map((userPhoto) => {
+      userPhoto.addedToCart = false;
+      return userPhoto;
+    });
+  }
+
+  handleRemoveFromCard(userPhoto) {
+    this.waitFor(CartStore);
+    this.resetAllCartItems();
+    this.setCartItems();
+  }
+
+  setCartItems() {
+    this.waitFor(CartStore);
+
+    let cartItems = CartStore.getState().items;
+
+    this.resetAllCartItems();
+
+    cartItems.forEach((photo) => {
+      // find each location in the array
+      for (var i = 0; i < this.userPhotos.data.length; i += 1) {
+
+        // set has_favorite to true
+        if (this.userPhotos.data[i].id === photo.id) {
+          this.userPhotos.data[i].addedToCart = true;
+          break;
+        }
+      }
     });
   }
 }

@@ -6,6 +6,8 @@ import InstagramStore from '../stores/InstagramStore';
 import InstagramActions from '../actions/InstagramActions';
 import Router from 'react-router';
 
+import classnames from 'classnames';
+
 let MachineUserPhotos = React.createClass({
   mixins: [ Router.State ],
 
@@ -78,20 +80,38 @@ let MachineUserPhotos = React.createClass({
     }
   },
 
+  _addToCart(userImage) {
+    InstagramActions.addToCart(userImage);
+  },
+
+  _removeFromCart(userImage) {
+    InstagramActions.removeFromCart(userImage);
+  },
+
   _toDisplayImage(userImage, index) {
     let {standard_resolution, high_resolution} = userImage.images,
       workImage = high_resolution || standard_resolution,
       colCount = 4,
       colItemWidth = window.innerWidth / colCount;
 
+    let classNames = classnames({
+      'main-screen-photos__image-container': true,
+      'main-screen-photos__image-container--cart': userImage.addedToCart
+    });
+
     return (
-      <img
-        className="main-screen-photos--image"
-        key={userImage.id}
-        src={`${userImage.link}media/?size=l`}
-        width={colItemWidth}
-        height={colItemWidth}
-      />
+      <div className={classNames} key={userImage.id}>
+        <img
+          className='main-screen-photos__image'
+          src={`${userImage.link}media/?size=l`}
+          width={colItemWidth}
+          height={colItemWidth}
+        />
+        <div className="main-screen-photos__image-actions">
+          <button onClick={this._addToCart.bind(this, userImage)}>add to cart</button>
+          <button onClick={this._removeFromCart.bind(this, userImage)}>remove from cart</button>
+        </div>
+      </div>
     );
   },
 
@@ -108,10 +128,9 @@ let MachineUserPhotos = React.createClass({
     } else {
       return (
         <div className="main-screen-users">
-          <button onClick={this._getPhotos}>Get photos!</button>
-          <ul>
+          <div>
             {data.map(this._toDisplayImage, this)}
-          </ul>
+          </div>
         </div>
       );
     }
