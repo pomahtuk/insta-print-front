@@ -1,14 +1,14 @@
 import dispatcher from '../dispatcher/appDispatcher';
-import InstagramActions from  '../actions/InstagramActions';
+import InstagramUserPhotosActions from  '../actions/InstagramUserPhotosActions';
 
 class CartStore {
   constructor() {
     this.items = [];
 
     this.bindListeners({
-      handleAddToCart: InstagramActions.ADD_TO_CART,
-      handleRemoveFromCard: InstagramActions.REMOVE_FROM_CART,
-      handleClearCart: InstagramActions.CLEAR_CART
+      handleAddToCart: InstagramUserPhotosActions.ADD_TO_CART,
+      handleRemoveFromCard: InstagramUserPhotosActions.REMOVE_FROM_CART,
+      handleClearCart: InstagramUserPhotosActions.CLEAR_CART
     });
 
     this.exportPublicMethods({

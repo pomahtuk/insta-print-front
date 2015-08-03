@@ -2,8 +2,8 @@ import React from 'react';
 
 import SettingsActions from '../actions/SettingsActions';
 import SettingsStore from '../stores/SettingsStore';
-import InstagramStore from '../stores/InstagramStore';
-import InstagramActions from '../actions/InstagramActions';
+import InstagramUserPhotosStore from '../stores/InstagramUserPhotosStore';
+import InstagramUserPhotosActions from '../actions/InstagramUserPhotosActions';
 import Router from 'react-router';
 
 import classnames from 'classnames';
@@ -26,7 +26,7 @@ let MachineUserPhotos = React.createClass({
 
   componentDidMount() {
     SettingsStore.listen(this._onChange.bind(this, 'settings', SettingsStore));
-    InstagramStore.listen(this._onChange.bind(this, 'userPhotos', InstagramStore));
+    InstagramUserPhotosStore.listen(this._onChange.bind(this, 'userPhotos', InstagramUserPhotosStore));
 
     SettingsActions.fetchSettings();
   },
@@ -42,30 +42,26 @@ let MachineUserPhotos = React.createClass({
 
   componentWillUnmount() {
     SettingsStore.unlisten(this._onChange.bind(this, 'settings', SettingsStore));
-    InstagramStore.unlisten(this._onChange.bind(this, 'userPhotos', InstagramStore));
-    InstagramActions.clearUserPhotos();
+    InstagramUserPhotosStore.unlisten(this._onChange.bind(this, 'userPhotos', InstagramUserPhotosStore));
+    InstagramUserPhotosActions.clearUserPhotos();
   },
 
   /* Store events */
   _onChange(key, store) {
     if (this.isMounted()) {
       let updateObj = {};
+      updateObj[key] = store.getData();
 
       if (key === 'userPhotos') {
-        updateObj[key] = store.getUserPhotos();
         if (updateObj[key] && updateObj[key].data) {
           updateObj.loaded = true;
         }
       } else {
-        updateObj[key] = store.getData();
-
         let apiKey = updateObj[key]['api-key'];
         let userId = this.state.userId;
-
         if (apiKey && userId) {
-          InstagramActions.getUserPhotos(userId, apiKey);
+          InstagramUserPhotosActions.getUserPhotos(userId, apiKey);
         }
-
       }
 
       this.setState(updateObj);
@@ -76,16 +72,16 @@ let MachineUserPhotos = React.createClass({
     let apiKey = this.state.settings['api-key'];
     let userId = this.state.userId;
     if (apiKey && userId) {
-      InstagramActions.getUserPhotos(userId, apiKey);
+      InstagramUserPhotosActions.getUserPhotos(userId, apiKey);
     }
   },
 
   _addToCart(userImage) {
-    InstagramActions.addToCart(userImage);
+    InstagramUserPhotosActions.addToCart(userImage);
   },
 
   _removeFromCart(userImage) {
-    InstagramActions.removeFromCart(userImage);
+    InstagramUserPhotosActions.removeFromCart(userImage);
   },
 
   _toDisplayImage(userImage, index) {

@@ -2,8 +2,8 @@ import React from 'react';
 
 import SettingsActions from '../actions/SettingsActions';
 import SettingsStore from '../stores/SettingsStore';
-import InstagramStore from '../stores/InstagramStore';
-import InstagramActions from '../actions/InstagramActions';
+import InstagramUserStore from '../stores/InstagramUserStore';
+import InstagramUserActions from '../actions/InstagramUserActions';
 import { Link } from 'react-router';
 import _ from 'lodash';
 
@@ -19,7 +19,7 @@ let MachineUsers = React.createClass({
 
   componentDidMount() {
     SettingsStore.listen(this._onChange.bind(this, 'settings', SettingsStore));
-    InstagramStore.listen(this._onChange.bind(this, 'users', InstagramStore));
+    InstagramUserStore.listen(this._onChange.bind(this, 'users', InstagramUserStore));
 
     SettingsActions.fetchSettings();
   },
@@ -30,7 +30,7 @@ let MachineUsers = React.createClass({
 
   componentWillUnmount() {
     SettingsStore.unlisten(this._onChange.bind(this, 'settings', SettingsStore));
-    InstagramStore.unlisten(this._onChange.bind(this, 'users', InstagramStore));
+    InstagramUserStore.unlisten(this._onChange.bind(this, 'users', InstagramUserStore));
   },
 
   componentWillUpdate(nextProps, nextState) {
@@ -40,13 +40,7 @@ let MachineUsers = React.createClass({
   _onChange(key, store) {
     if (this.isMounted()) {
       let updateObj = {};
-
-      if (key === 'users') {
-        updateObj[key] = store.getUsers();
-      } else {
-        updateObj[key] = store.getData();
-      }
-
+      updateObj[key] = store.getData();
       this.setState(updateObj);
     }
   },
@@ -56,7 +50,7 @@ let MachineUsers = React.createClass({
     let {query} = this.state;
 
     if (apiKey && query.length >= 3) {
-      InstagramActions.searchUsers(query, apiKey);
+      InstagramUserActions.searchUsers(query, apiKey);
     }
   },
 
