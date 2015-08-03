@@ -4,8 +4,10 @@ import SettingsActions from '../actions/SettingsActions';
 import SettingsStore from '../stores/SettingsStore';
 import InstagramUserStore from '../stores/InstagramUserStore';
 import InstagramUserActions from '../actions/InstagramUserActions';
+
 import { Link } from 'react-router';
 import _ from 'lodash';
+import classnames from 'classnames';
 
 let MachineUsers = React.createClass({
   getInitialState() {
@@ -56,9 +58,9 @@ let MachineUsers = React.createClass({
 
   _toList(user, index) {
     return (
-      <li key={user.id}>
-        <Link to="userPhotos" params={{userId: user.id}}>
-          <img src={user.profile_picture} />
+      <li className="found-users-container__user" key={user.id}>
+        <Link to="userPhotos" params={{userId: user.id}} className="found-user">
+          <img className="found-user__image" src={user.profile_picture} />
           <br/>
           <span>
             @{user.username} - {user.full_name}
@@ -80,10 +82,21 @@ let MachineUsers = React.createClass({
 
     users = users ? users : [];
 
+    let inputClassNames = classnames({
+      'user-search-screen__input': true,
+      'user-search-screen__input--useers-found': users.length > 0
+    });
+
     return (
-      <div className="main-screen-users">
-        <input value={query} type="text" name="query" onChange={this._handleInputChange}/>
-        <ul>
+      <div className="app app-bg user-search-screen">
+        <input
+          value={query}
+          type="text"
+          name="query"
+          className={inputClassNames}
+          onChange={this._handleInputChange}
+        />
+        <ul className="found-users-container">
           {users.map(this._toList, this)}
         </ul>
       </div>
