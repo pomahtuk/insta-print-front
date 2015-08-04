@@ -95,6 +95,19 @@ let MachineUserPhotos = React.createClass({
       'single-image__container--cart': userImage.addedToCart
     });
 
+    function addOverlay() {
+      if (userImage.addedToCart) {
+        return (
+          <div className="single-image__actions">
+            in cart: {userImage.countAdded}
+            <br/>
+            <button onClick={this._addToCart.bind(this, userImage)}>add to cart</button>
+            <button onClick={this._removeFromCart.bind(this, userImage)}>remove from cart</button>
+          </div>
+        );
+      }
+    }
+
     return (
       <div className={containerClassNames} key={userImage.id}>
         <img
@@ -102,12 +115,9 @@ let MachineUserPhotos = React.createClass({
           src={`${userImage.link}media/?size=l`}
           width={colItemWidth}
           height={colItemWidth}
+          onClick={this._addToCart.bind(this, userImage)}
         />
-        <div className="single-image__actions">
-          in cart: {userImage.countAdded}
-          <button onClick={this._addToCart.bind(this, userImage)}>add to cart</button>
-          <button onClick={this._removeFromCart.bind(this, userImage)}>remove from cart</button>
-        </div>
+        {addOverlay.call(this)}
       </div>
     );
   },
