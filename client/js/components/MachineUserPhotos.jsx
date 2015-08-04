@@ -88,11 +88,14 @@ let MachineUserPhotos = React.createClass({
     let {standard_resolution, high_resolution} = userImage.images,
       workImage = high_resolution || standard_resolution,
       colCount = 3,
-      colItemWidth = (window.innerWidth * 0.7) / colCount;
+      paddingValue = 5,
+      colItemWidth = ((window.innerWidth * 0.7) - paddingValue * (colCount - 1)) / colCount;
 
     let containerClassNames = classnames({
       'single-image__container': true,
-      'single-image__container--cart': userImage.addedToCart
+      'single-image__container--cart': userImage.addedToCart,
+      'single-image__container--first': index % colCount === 0,
+      'single-image__container--last': index % colCount === colCount
     });
 
     function addOverlay() {
