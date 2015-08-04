@@ -17,20 +17,31 @@ class CartStore {
   }
 
   handleAddToCart(item) {
+    item.countAdded = item.countAdded ? item.countAdded + 1 : 1;
+    item.addedToCart = true;
     this.items.push(item);
   }
 
   handleRemoveFromCard(item) {
-    let i = 0;
-    let max = this.items.length;
-    let newItems = [];
-    for (i = 0; i < max; i++) {
-      let currentItem = this.items[i];
-      if (currentItem.id !== item.id) {
-        newItems.push(currentItem);
+    if (item.countAdded === 1) {
+      // no more items lift in cart
+      let i = 0;
+      let max = this.items.length;
+      let newItems = [];
+
+      item.addedToCart = false;
+      delete item.countAdded;
+
+      for (i = 0; i < max; i++) {
+        let currentItem = this.items[i];
+        if (currentItem.id !== item.id) {
+          newItems.push(currentItem);
+        }
       }
+      this.items = newItems;
+    } else {
+      item.countAdded = item.countAdded - 1;
     }
-    this.items = newItems;
   }
 
   handleClearCart() {

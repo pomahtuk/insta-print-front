@@ -10,9 +10,11 @@ class InstagramUserPhotosStore {
       handleUpdateUserPhotos: InstagramUserPhotosActions.UPDATE_USER_PHOTOS,
       handleClearUserPhotos: InstagramUserPhotosActions.CLEAR_USER_PHOTOS,
       setCartItems: InstagramUserPhotosActions.ADD_TO_CART,
-      handleRemoveFromCard: InstagramUserPhotosActions.REMOVE_FROM_CART,
       resetAllCartItems: InstagramUserPhotosActions.CLEAR_CART
     });
+
+    // no claer way to add as an object
+    this.bindAction(InstagramUserPhotosActions.REMOVE_FROM_CART, this.setCartItems);
 
     this.exportPublicMethods({
       getData: this.getUserPhotos
@@ -36,14 +38,9 @@ class InstagramUserPhotosStore {
   resetAllCartItems() {
     this.userPhotos.data = this.userPhotos.data.map((userPhoto) => {
       userPhoto.addedToCart = false;
+      delete userPhoto.countAdded;
       return userPhoto;
     });
-  }
-
-  handleRemoveFromCard(userPhoto) {
-    this.waitFor(CartStore);
-    this.resetAllCartItems();
-    this.setCartItems();
   }
 
   setCartItems() {
@@ -51,15 +48,14 @@ class InstagramUserPhotosStore {
 
     let cartItems = CartStore.getState().items;
 
-    this.resetAllCartItems();
-
     cartItems.forEach((photo) => {
       // find each location in the array
       for (var i = 0; i < this.userPhotos.data.length; i += 1) {
 
         // set addedToCart to true
         if (this.userPhotos.data[i].id === photo.id) {
-          this.userPhotos.data[i].addedToCart = true;
+          this.userPhotos.data[i].countAdded = photo.countAdded;
+          this.userPhotos.data[i].addedToCart = photo.addedToCart;
           break;
         }
       }
