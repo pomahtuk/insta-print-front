@@ -91,20 +91,29 @@ body {
 
 }
 
-.main-screen-photos {
+.user-photos-screen {
   line-height: 0;
   font-size: 0;
-  /* height: 100vh; */
-  width: 100vw;
-  overflow: hidden;
+  box-sizing: border-box;
+  padding: 10%;
+  background: url('../images/iamsterdam_122.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center center;
 
-  &__image-container {
+  align-items: center;
+  justify-content: center;
+
+  &__images-container {
+    font-size: 0;
+    width: 100%;
+  }
+}
+
+.single-image {
+  &__container {
     position: relative;
     display: inline-block;
-    float: left;
-    box-sizing: border-box;
-    font-size: 0;
-    margin: 2px;
 
     &--cart {
       box-shadow: 0px 0px 5px 3px #b55;
@@ -112,10 +121,10 @@ body {
   }
 
   &__image {
-    display: inline-block;
+
   }
 
-  &__image-actions{
+  &__actions{
     position: absolute;
     left: 0;
     bottom: 0;

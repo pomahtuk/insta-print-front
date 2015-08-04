@@ -87,23 +87,24 @@ let MachineUserPhotos = React.createClass({
   _toDisplayImage(userImage, index) {
     let {standard_resolution, high_resolution} = userImage.images,
       workImage = high_resolution || standard_resolution,
-      colCount = 4,
-      colItemWidth = window.innerWidth / colCount;
+      colCount = 3,
+      colItemWidth = (window.innerWidth * 0.7) / colCount;
 
-    let classNames = classnames({
-      'main-screen-photos__image-container': true,
-      'main-screen-photos__image-container--cart': userImage.addedToCart
+    let containerClassNames = classnames({
+      'single-image__container': true,
+      'single-image__container--cart': userImage.addedToCart
     });
 
     return (
-      <div className={classNames} key={userImage.id}>
+      <div className={containerClassNames} key={userImage.id}>
         <img
-          className='main-screen-photos__image'
+          className="single-image__image"
           src={`${userImage.link}media/?size=l`}
           width={colItemWidth}
           height={colItemWidth}
         />
-        <div className="main-screen-photos__image-actions">
+        <div className="single-image__actions">
+          in cart: {userImage.countAdded}
           <button onClick={this._addToCart.bind(this, userImage)}>add to cart</button>
           <button onClick={this._removeFromCart.bind(this, userImage)}>remove from cart</button>
         </div>
@@ -115,16 +116,23 @@ let MachineUserPhotos = React.createClass({
     let {userPhotos, loaded} = this.state;
     let {data} = userPhotos;
 
+    let classNames = 'app app-bg user-photos-screen';
+
     if (!loaded) {
       return (
-        <div>
-          <img src="/ajax-loader.gif"/>
+        <div className={classNames}>
+          <div className="cssload-container">
+            <div className="cssload-lt"></div>
+            <div className="cssload-rt"></div>
+            <div className="cssload-lb"></div>
+            <div className="cssload-rb"></div>
+          </div>
         </div>
       );
     } else {
       return (
-        <div className="main-screen-users">
-          <div>
+        <div className={classNames}>
+          <div className="user-photos-screen__images-container">
             {data.map(this._toDisplayImage, this)}
           </div>
         </div>
