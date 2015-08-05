@@ -3,8 +3,11 @@ import React from 'react';
 import SettingsActions from '../actions/SettingsActions';
 import SettingsStore from '../stores/SettingsStore';
 import InstagramUserPhotosStore from '../stores/InstagramUserPhotosStore';
+import InstagramUserStore from '../stores/InstagramUserStore';
 import InstagramUserPhotosActions from '../actions/InstagramUserPhotosActions';
 import Router from 'react-router';
+
+import UserBlock from '../components/Machine/UserBlock.jsx';
 
 import classnames from 'classnames';
 
@@ -125,15 +128,39 @@ let MachineUserPhotos = React.createClass({
     );
   },
 
+  _getUserBlock() {
+    // hardcoding user for testing
+    // but it's better to create an ajax call to get users if nothing found
+    let user = InstagramUserStore.getUser(this.state.userId) || {
+      full_name: 'Илья Ловряков',
+      id: '1427599199',
+      profile_picture: 'https://igcdn-photos-c-a.akamaihd.net/hphotos-ak-xap1/t51.2885-19/10561053_1464421077148970_1122327670_a.jpg',
+      username: 'i_am_pomahtuk'
+    };
+
+    return (
+      <UserBlock
+        user={user}
+        linkTo="userPhotos"
+        linkParams={{userId: user.id}}
+      />
+    );
+  },
+
   render() {
     let {userPhotos, loaded} = this.state;
     let {data} = userPhotos;
 
     let classNames = 'app app-bg user-photos-screen';
 
+    let user = this._getUserBlock();
+
+    // show user details
+
     if (!loaded) {
       return (
         <div className={classNames}>
+          {user}
           <div className="cssload-container">
             <div className="cssload-lt"></div>
             <div className="cssload-rt"></div>
@@ -145,6 +172,7 @@ let MachineUserPhotos = React.createClass({
     } else {
       return (
         <div className={classNames}>
+          {user}
           <div className="user-photos-screen__images-container">
             {data.map(this._toDisplayImage, this)}
           </div>

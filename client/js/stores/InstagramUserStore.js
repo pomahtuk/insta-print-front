@@ -10,7 +10,8 @@ class InstagramUserStore {
     });
 
     this.exportPublicMethods({
-      getData: this.getData
+      getData: this.getData,
+      getUser: this.getUser
     });
 
   }
@@ -18,6 +19,14 @@ class InstagramUserStore {
   getData() {
     let {users} = this.getState();
     return users;
+  }
+
+  getUser(userId) {
+    let {users} = this.getState();
+    let userArr = users.filter((user) => {
+      return user.id === userId;
+    });
+    return userArr[0];
   }
 
   handleUpdateUsers(users) {
