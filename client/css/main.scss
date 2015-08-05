@@ -95,7 +95,7 @@ body {
   line-height: 0;
   font-size: 0;
   box-sizing: border-box;
-  padding: 10%;
+  padding: 100px 10%;
   background: url('../images/iamsterdam_122.jpg');
   background-size: cover;
   background-attachment: fixed;
@@ -207,7 +207,7 @@ body {
     }
 
     &--useers-found {
-      margin: 5% auto 0 auto;
+      margin: 100px auto 0 auto;
     }
   }
 }
@@ -221,16 +221,60 @@ body {
   &__user {
     display: inline-block;
     vertical-align: top;
-    width: 50%;
+    width: calc(50% - 10px);
     font-size: 14px;
+    margin: 5px;
   }
 }
 
 .found-user {
+  display: block;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px solid white;
+  border-radius: 5px;
+  overflow: hidden;
+  line-height: 30px;
+
   &__image {
     width: 150px;
     height: 150px;
-    display: inline-block;
-    vertical-align: top;
+    float: left;
+    margin-right: 10px;
   }
+
+  &__user-data-container {
+    display: flex;
+    align-items: center;
+    height: 150px;
+  }
+
+  &__user-data {
+    width: 100%;
+  }
+
+  &__username {
+    font-size: 30px;
+    color: #4b4f54;
+    font-weight: 300;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 10px;
+    line-height: 35px;
+  }
+
+  &__fullname {
+    font-size: 17px;
+    margin-top: 14px;
+    color: #4b4f54;
+  }
+}
+
+.user-photos__user-container {
+  width: 50%;
+  margin-bottom: 100px;
 }

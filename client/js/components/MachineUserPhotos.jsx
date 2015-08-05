@@ -139,11 +139,13 @@ let MachineUserPhotos = React.createClass({
     };
 
     return (
-      <UserBlock
-        user={user}
-        linkTo="userPhotos"
-        linkParams={{userId: user.id}}
-      />
+      <div className="user-photos__user-container">
+        <UserBlock
+          user={user}
+          linkTo="userPhotos"
+          linkParams={{userId: user.id}}
+        />
+      </div>
     );
   },
 
@@ -156,6 +158,7 @@ let MachineUserPhotos = React.createClass({
     let user = this._getUserBlock();
 
     // show user details
+    // infinite scroll and preloading
 
     if (!loaded) {
       return (
