@@ -8,6 +8,7 @@ import InstagramUserPhotosActions from '../actions/InstagramUserPhotosActions';
 import Router from 'react-router';
 
 import UserBlock from '../components/Machine/UserBlock.jsx';
+import { Link } from 'react-router';
 
 import classnames from 'classnames';
 
@@ -175,6 +176,7 @@ let MachineUserPhotos = React.createClass({
     } else {
       return (
         <div className={classNames}>
+          <Link to="users" className="navigation-link">Back!</Link>
           {user}
           <div className="user-photos-screen__images-container">
             {data.map(this._toDisplayImage, this)}

@@ -17,9 +17,16 @@ class CartStore {
   }
 
   handleAddToCart(item) {
-    item.countAdded = item.countAdded ? item.countAdded + 1 : 1;
-    item.addedToCart = true;
-    this.items.push(item);
+    let existingItem = this.items.filter((ourItem) => item.id === ourItem.id);
+    existingItem = existingItem[0];
+    if (existingItem) {
+      existingItem.countAdded = existingItem.countAdded ? existingItem.countAdded + 1 : 1;
+    } else {
+      item.countAdded = item.countAdded ? item.countAdded + 1 : 1;
+      item.addedToCart = true;
+      this.items.push(item);
+    }
+
   }
 
   handleRemoveFromCard(item) {
@@ -49,7 +56,14 @@ class CartStore {
   }
 
   getCartItems() {
-    return this.getState();
+    let {items} = this.getState();
+
+    let totalCount = items.reduce((total, currentItem) => total + currentItem.countAdded, 0);
+
+    return {
+      items: items,
+      totalCount: totalCount
+    };
   }
 
 }
