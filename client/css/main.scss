@@ -110,15 +110,15 @@ body {
   }
 }
 
+.material-icons {
+  vertical-align: middle;
+}
+
 .single-image {
   &__container {
     position: relative;
     display: inline-block;
     margin: 5px;
-
-    &--cart {
-      box-shadow: 0px 0px 5px 3px #b55;
-    }
 
     &--first {
       margin-left: 0;
@@ -131,13 +131,59 @@ body {
 
   &__image {
 
+    &--blur {
+      filter: blur(3px);
+    }
   }
 
   &__actions{
     position: absolute;
     left: 0;
     bottom: 0;
-    font-size: 14px;
+    font-size: 20px;
+    color: white;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+  }
+
+  &__actions-container {
+    flex: 3 1 auto;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__actions-oder {
+    flex: 1 1 24px;
+    cursor: pointer;
+    max-height: 24px;
+    margin-bottom: 10px;
+  }
+
+  &__actions-oder-description {
+    display: inline-block;
+    font-size: 16px;
+    margin-left: 5px;
+  }
+
+  &__actions-remove,
+  &__actions-add{
+    -webkit-appearance: none;
+    border: none;
+    outline: none;
+    display: inline-block;
+    background: inherit;
+    vertical-align: middle;
+    flex: 1;
+  }
+
+  &__actions-amount {
+    flex: 1;
+    text-align: center;
+    font-size: 36px;
   }
 }
 
@@ -285,4 +331,22 @@ body {
   width: 100%;
   top: 0;
   left: 0;
+  box-sizing: border-box;
+  padding: 5px 10px;
+
+  &__wallet,
+  &__basket {
+    display: inline-block;
+  }
+
+  &__basket {
+    margin-left: 10px;
+  }
+
+  &__wallet-amount,
+  &__basket-count {
+    display: inline-block;
+    vertical-align: top;
+    padding: 3px 0 0 5px;
+  }
 }

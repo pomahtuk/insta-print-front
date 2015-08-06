@@ -97,19 +97,34 @@ let MachineUserPhotos = React.createClass({
 
     let containerClassNames = classnames({
       'single-image__container': true,
-      'single-image__container--cart': userImage.addedToCart,
       'single-image__container--first': index % colCount === 0,
       'single-image__container--last': index % colCount === colCount
+    });
+
+    let imageClassNames = classnames({
+      'single-image__image': true,
+      'single-image__image--blur': userImage.addedToCart
     });
 
     function addOverlay() {
       if (userImage.addedToCart) {
         return (
           <div className="single-image__actions">
-            in cart: {userImage.countAdded}
-            <br/>
-            <button onClick={this._addToCart.bind(this, userImage)}>add to cart</button>
-            <button onClick={this._removeFromCart.bind(this, userImage)}>remove from cart</button>
+            <div className="single-image__actions-container">
+              <button className="single-image__actions-remove" onClick={this._removeFromCart.bind(this, userImage)}>
+                <i className="material-icons">exposure_neg_1</i>
+              </button>
+              <div className="single-image__actions-amount">
+                {userImage.countAdded}
+              </div>
+              <button className="single-image__actions-add" onClick={this._addToCart.bind(this, userImage)}>
+                <i className="material-icons">exposure_plus_1</i>
+              </button>
+            </div>
+            <div className="single-image__actions-oder">
+              <i className="material-icons">print</i>
+              <span className="single-image__actions-oder-description">Print order</span>
+            </div>
           </div>
         );
       }
@@ -118,7 +133,7 @@ let MachineUserPhotos = React.createClass({
     return (
       <div className={containerClassNames} key={userImage.id}>
         <img
-          className="single-image__image"
+          className={imageClassNames}
           src={`${userImage.link}media/?size=l`}
           width={colItemWidth}
           height={colItemWidth}

@@ -33,13 +33,14 @@ let StatusBarContainer = React.createClass({
 
     return (
       <div className="topbar">
-        <span key="payment">
+        <div className="topbar__wallet">
           <i className="material-icons">account_balance_wallet</i>
-        </span>
-        <span>
-          <i className="material-icons dp48">shopping_cart</i>
-          {cart.totalCount}
-        </span>
+          <span className="topbar__wallet-amount">1€</span>
+        </div>
+        <div className="topbar__basket">
+          <i className="material-icons">shopping_cart</i>
+          <span className="topbar__basket-count">{cart.totalCount || 0}</span>
+        </div>
       </div>
     );
   }
