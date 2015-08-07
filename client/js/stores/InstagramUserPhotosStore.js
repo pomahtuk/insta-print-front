@@ -5,12 +5,16 @@ import CartStore from  '../stores/CartStore';
 class InstagramUserPhotosStore {
   constructor() {
     this.userPhotos = {};
+    this.error = {};
+    this.fullUpdate = false;
 
     this.bindListeners({
       handleUpdateUserPhotos: InstagramUserPhotosActions.UPDATE_USER_PHOTOS,
+      handleUpdateSingleUserPhoto: InstagramUserPhotosActions.UPDATE_SINGLE_USER_PHOTO,
       handleClearUserPhotos: InstagramUserPhotosActions.CLEAR_USER_PHOTOS,
       setCartItems: InstagramUserPhotosActions.ADD_TO_CART,
-      resetAllCartItems: InstagramUserPhotosActions.CLEAR_CART
+      resetAllCartItems: InstagramUserPhotosActions.CLEAR_CART,
+      handleError: InstagramUserPhotosActions.INSTAGRAM_FAILED
     });
 
     // no claer way to add as an object
@@ -23,16 +27,37 @@ class InstagramUserPhotosStore {
   }
 
   getUserPhotos() {
-    let {userPhotos} = this.getState();
-    return userPhotos;
+    let data = this.getState();
+    return data;
   }
 
   handleUpdateUserPhotos(userPhotos) {
-    this.userPhotos = userPhotos;
+    if (userPhotos) {
+      userPhotos.data.forEach((photo) => photo.preloaded = false);
+      this.userPhotos = userPhotos;
+      this.error = null;
+      this.fullUpdate = true;
+    }
+  }
+
+  handleUpdateSingleUserPhoto(userPhoto) {
+    let photos = this.userPhotos.data || [];
+    photos.some((photo) => {
+      if (userPhoto.id === photo.id) {
+        photo = userPhoto;
+        return true;
+      }
+    });
+    this.fullUpdate = false;
   }
 
   handleClearUserPhotos() {
     this.userPhotos = {};
+  }
+
+  handleError(errorData) {
+    this.error = errorData;
+    this.handleClearUserPhotos();
   }
 
   resetAllCartItems() {

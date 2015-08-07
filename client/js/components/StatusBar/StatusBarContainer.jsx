@@ -30,6 +30,9 @@ let StatusBarContainer = React.createClass({
 
   render() {
     let {cart} = this.state;
+    let totalCount = cart.totalCount || 0;
+    // may be a more complex logic but for now it is good
+    let totalPrice = totalCount > 0 ? ` (${totalCount}€)` : '';
 
     return (
       <div className="topbar">
@@ -39,7 +42,7 @@ let StatusBarContainer = React.createClass({
         </div>
         <div className="topbar__basket">
           <i className="material-icons">shopping_cart</i>
-          <span className="topbar__basket-count">{cart.totalCount || 0}</span>
+          <span className="topbar__basket-count">{totalCount}{totalPrice}</span>
         </div>
       </div>
     );

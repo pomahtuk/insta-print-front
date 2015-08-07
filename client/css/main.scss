@@ -96,7 +96,7 @@ body {
   font-size: 0;
   box-sizing: border-box;
   padding: 100px 10%;
-  background: url('../images/iamsterdam_122.jpg');
+  background: url('../images/rsz_iamsterdam_122.png');
   background-size: cover;
   background-attachment: fixed;
   background-position: center center;
@@ -119,6 +119,13 @@ body {
     position: relative;
     display: inline-block;
     margin: 5px;
+    vertical-align: middle;
+
+    &--cart {
+      box-shadow: 0 0 0px 1px white;
+      border-radius: 2px;
+      overflow: hidden;
+    }
 
     &--first {
       margin-left: 0;
@@ -228,7 +235,7 @@ body {
 }
 
 .user-search-screen {
-  background: url('../images/iamsterdam_122.jpg');
+  background: url('../images/rsz_iamsterdam_122.png');
   background-size: cover;
   background-attachment: fixed;
   background-position: center center;

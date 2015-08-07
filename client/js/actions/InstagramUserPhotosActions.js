@@ -11,12 +11,35 @@ class InstagramUserPhotosActions {
   }
 
   updateUserPhotos(userPhotosResponse) {
-    let { data, pagination } = userPhotosResponse;
+    let { data, pagination, meta } = userPhotosResponse;
 
-    this.dispatch({
-      data: data,
-      pagination: pagination
+    if (meta.code !== 200) {
+      this.actions.instagramFailed(meta);
+    } else {
+      this.dispatch({
+        data: data,
+        pagination: pagination
+      });
+    }
+  }
+
+  preloadPhotos(photos) {
+    photos.forEach((photo, index) => {
+      if (photo.preloaded) return true;
+
+      let img = new Image();
+      let imageLink = `${photo.link}media/?size=l`;
+      img.onload = () => {
+        photo.imageLink = imageLink;
+        photo.preloaded = true;
+        this.actions.updateSingleUserPhoto(photo);
+      };
+      img.src = imageLink;
     });
+  }
+
+  updateSingleUserPhoto(photo) {
+    this.dispatch(photo);
   }
 
   clearUserPhotos() {
@@ -35,8 +58,8 @@ class InstagramUserPhotosActions {
     this.dispatch();
   }
 
-  instagramFailed(errorMessage) {
-    this.dispatch(errorMessage);
+  instagramFailed(errorData) {
+    this.dispatch(errorData);
   }
 
 }
