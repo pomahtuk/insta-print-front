@@ -10,9 +10,28 @@ class InstagramUserPhotosActions {
       .catch((response) =>  this.actions.instagramFailed(response.statusText));
   }
 
+  getMoreUserPhotos(link) {
+    let request = InstagramSource.getMoreUserMedia(link);
+    request
+      .then((response) => this.actions.addUserPhotos(response.data))
+      .catch((response) =>  this.actions.instagramFailed(response.statusText));
+  }
+
   updateUserPhotos(userPhotosResponse) {
     let { data, pagination, meta } = userPhotosResponse;
 
+    if (meta.code !== 200) {
+      this.actions.instagramFailed(meta);
+    } else {
+      this.dispatch({
+        data: data,
+        pagination: pagination
+      });
+    }
+  }
+
+  addUserPhotos(userPhotosResponse) {
+    let { data, pagination, meta } = userPhotosResponse;
     if (meta.code !== 200) {
       this.actions.instagramFailed(meta);
     } else {

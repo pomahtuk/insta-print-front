@@ -7,9 +7,11 @@ class InstagramUserPhotosStore {
     this.userPhotos = {};
     this.error = {};
     this.fullUpdate = false;
+    this.hasMorePhotos = true;
 
     this.bindListeners({
       handleUpdateUserPhotos: InstagramUserPhotosActions.UPDATE_USER_PHOTOS,
+      handleAddUserPhotos: InstagramUserPhotosActions.ADD_USER_PHOTOS,
       handleUpdateSingleUserPhoto: InstagramUserPhotosActions.UPDATE_SINGLE_USER_PHOTO,
       handleClearUserPhotos: InstagramUserPhotosActions.CLEAR_USER_PHOTOS,
       setCartItems: InstagramUserPhotosActions.ADD_TO_CART,
@@ -31,11 +33,24 @@ class InstagramUserPhotosStore {
     return data;
   }
 
+  handleAddUserPhotos(userPhotos) {
+    //and now we talk!
+    userPhotos.data.forEach((photo) => photo.preloaded = false);
+    // should be shorter way
+    this.userPhotos.data = this.userPhotos.data.concat(userPhotos.data);
+    this.userPhotos.pagination = userPhotos.pagination;
+    this.hasMorePhotos = !!userPhotos.pagination.next_url;
+    this.error = null;
+    this.fullUpdate = true;
+  }
+
   handleUpdateUserPhotos(userPhotos) {
     if (userPhotos) {
       userPhotos.data.forEach((photo) => photo.preloaded = false);
       this.userPhotos = userPhotos;
       this.error = null;
+      this.hasMorePhotos = !!userPhotos.pagination.next_url;
+      this.hasMorePhotos = false;
       this.fullUpdate = true;
     }
   }
@@ -52,12 +67,15 @@ class InstagramUserPhotosStore {
   }
 
   handleClearUserPhotos() {
-    this.userPhotos = {};
+    this.userPhotos = {
+
+    };
   }
 
   handleError(errorData) {
     this.error = errorData;
-    this.handleClearUserPhotos();
+    // errors must be handles smarter
+    // this.handleClearUserPhotos();
   }
 
   resetAllCartItems() {

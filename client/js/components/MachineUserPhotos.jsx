@@ -10,8 +10,11 @@ import Router from 'react-router';
 import UserBlock from '../components/Machine/UserBlock.jsx';
 import ImageBlock from '../components/Machine/ImageBlock.jsx';
 import { Link } from 'react-router';
+import Waypoint from 'react-waypoint';
 
 import classnames from 'classnames';
+
+// add check for loading more images
 
 let MachineUserPhotos = React.createClass({
   mixins: [ Router.State ],
@@ -22,6 +25,7 @@ let MachineUserPhotos = React.createClass({
 
   getInitialState() {
     return {
+      isInfiniteLoading: false,
       loaded: false,
       userId: null,
       settings: {},
@@ -66,6 +70,7 @@ let MachineUserPhotos = React.createClass({
         if (userPhotos && userPhotos.data) {
           let {userPhotos, fullUpdate} = updateObj[key];
           updateObj.loaded = true;
+          updateObj.isInfiniteLoading = false;
           // only do a preloading on a full update
           if (fullUpdate) {
             InstagramUserPhotosActions.preloadPhotos(userPhotos.data);
@@ -106,7 +111,6 @@ let MachineUserPhotos = React.createClass({
     );
   },
 
-
   _getUserBlock() {
     // hardcoding user for testing
     // but it's better to create an ajax call to get users if nothing found
@@ -126,6 +130,32 @@ let MachineUserPhotos = React.createClass({
         />
       </div>
     );
+  },
+
+  _loadMoreItems() {
+    this.setState({
+      isInfiniteLoading: true
+    });
+
+    let {pagination} = this.state.userPhotosData.userPhotos;
+    InstagramUserPhotosActions.getMoreUserPhotos(pagination.next_url);
+  },
+
+  _renderWaypoint() {
+    if (this.state.isInfiniteLoading) {
+      return (
+        <p className="infinite-scroll-example__loading-message">
+          Loading...
+        </p>
+      );
+    } else {
+      return (
+        <Waypoint
+          onEnter={this._loadMoreItems}
+          threshold={0.2}
+        />
+      );
+    }
   },
 
   render() {
@@ -168,6 +198,7 @@ let MachineUserPhotos = React.createClass({
           {user}
           <div className="user-photos-screen__images-container">
             {data.map(this._toDisplayImage, this)}
+            {this._renderWaypoint()}
           </div>
         </div>
       );

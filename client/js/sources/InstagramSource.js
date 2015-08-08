@@ -76,6 +76,22 @@ let InstagramSource = {
   },
 
   /**
+   * Making a request to Instagram API to get more user data
+   *
+   * @param  {String} url         [next formed url]
+   * @return {Promise}            [Ajax Promise]
+   */
+  getMoreUserMedia(url) {
+    let request = axios.get(`${PROXY_API_URL}`, {
+      params: {
+        url: url
+      }
+    });
+
+    return request;
+  },
+
+  /**
    * Making a request to Instagram API to fetch selected media details
    *
    * https://api.instagram.com/v1/media/{media-id}?access_token=ACCESS-TOKEN
