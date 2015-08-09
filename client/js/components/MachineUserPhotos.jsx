@@ -26,6 +26,7 @@ let MachineUserPhotos = React.createClass({
   getInitialState() {
     return {
       isInfiniteLoading: false,
+      isInfiniteLoadingEnabled: false,
       loaded: false,
       userId: null,
       settings: {},
@@ -33,6 +34,7 @@ let MachineUserPhotos = React.createClass({
         userPhotos: {
           data: []
         },
+        hasMorePhotos: true,
         fullUpdate: false,
         error: null
       }
@@ -90,14 +92,6 @@ let MachineUserPhotos = React.createClass({
     }
   },
 
-  _getPhotos() {
-    let apiKey = this.state.settings['api-key'];
-    let userId = this.state.userId;
-    if (apiKey && userId) {
-      InstagramUserPhotosActions.getUserPhotos(userId, apiKey);
-    }
-  },
-
   _toDisplayImage(userImage, index) {
     return (
       <ImageBlock
@@ -132,6 +126,12 @@ let MachineUserPhotos = React.createClass({
     );
   },
 
+  _enableInfiniteLoading() {
+    this.setState({
+      isInfiniteLoadingEnabled: true
+    });
+  },
+
   _loadMoreItems() {
     this.setState({
       isInfiniteLoading: true
@@ -142,7 +142,26 @@ let MachineUserPhotos = React.createClass({
   },
 
   _renderWaypoint() {
-    if (this.state.isInfiniteLoading) {
+    let {state} = this;
+    let {userPhotosData} = state;
+
+    if (!state.isInfiniteLoadingEnabled) {
+      return (
+        <div
+          className="load-more"
+        >
+          <span
+            className="load-more__button"
+            onClick={this._enableInfiniteLoading}
+          >
+            Load more
+          </span>
+        </div>
+      );
+    } else if (userPhotosData.hasMorePhotos === false) {
+      // do nothing if we have nothing to show
+      return true;
+    } else if (state.isInfiniteLoading) {
       return (
         <p className="infinite-scroll-example__loading-message">
           Loading...
@@ -164,11 +183,7 @@ let MachineUserPhotos = React.createClass({
     let {error} = userPhotosData;
 
     let classNames = 'app app-bg user-photos-screen';
-
     let user = this._getUserBlock();
-
-    // show user details
-    // infinite scroll and preloading
 
     if (!loaded) {
       return (

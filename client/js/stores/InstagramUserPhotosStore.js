@@ -50,7 +50,6 @@ class InstagramUserPhotosStore {
       this.userPhotos = userPhotos;
       this.error = null;
       this.hasMorePhotos = !!userPhotos.pagination.next_url;
-      this.hasMorePhotos = false;
       this.fullUpdate = true;
     }
   }

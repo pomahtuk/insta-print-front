@@ -8,6 +8,8 @@ import StatusBarEmptyView from './components/StatusBarEmptyView.jsx';
 import MachineUsers from './components/MachineUsers.jsx';
 import MachineUserPhotos from './components/MachineUserPhotos.jsx';
 
+import MachineOrder from './components/MachineOrder.jsx';
+
 let routes = (
   <Route handler={EmptyView}>
     <Route name="tools" path="/tools" handler={Tools} />
@@ -16,6 +18,12 @@ let routes = (
       <Route name="userPhotos" path=":userId" handler={MachineUserPhotos} />
 
       <DefaultRoute name="users" handler={MachineUsers} />
+    </Route>
+
+    <Route path="/order" handler={StatusBarEmptyView}>
+
+
+      <DefaultRoute name="order" handler={MachineOrder} />
     </Route>
 
     <DefaultRoute name="index" handler={Machine} />

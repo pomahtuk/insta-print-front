@@ -6,7 +6,12 @@ module.exports = {
     entry: [
       './client/js/app.jsx',
       './client/css/app.css',
-      './client/css/main.scss'
+      './client/css/main.scss',
+      './client/css/layout.scss',
+      './client/css/topbar.scss',
+      './client/css/users.scss',
+      './client/css/images.scss',
+      './client/css/locations.scss'
     ],
     output: {
       path: './client/build',

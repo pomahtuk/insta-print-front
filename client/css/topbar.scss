@@ -1,0 +1,25 @@
+.topbar {
+  position: absolute;
+  text-align: right;
+  width: 100%;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  padding: 5px 10px;
+
+  &__wallet,
+  &__basket {
+    display: inline-block;
+  }
+
+  &__basket {
+    margin-left: 10px;
+  }
+
+  &__wallet-amount,
+  &__basket-count {
+    display: inline-block;
+    vertical-align: top;
+    padding: 3px 0 0 5px;
+  }
+}

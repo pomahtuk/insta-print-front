@@ -1,6 +1,9 @@
 import React from 'react';
-import classnames from 'classnames';
+
 import InstagramUserPhotosActions from '../../actions/InstagramUserPhotosActions';
+
+import { Link } from 'react-router';
+import classnames from 'classnames';
 
 let ImageBlock = React.createClass({
   _addToCart(userImage) {
@@ -13,7 +16,8 @@ let ImageBlock = React.createClass({
 
   render() {
     let {index, userImage, colCount, paddingValue} = this.props,
-      colItemWidth = ((window.innerWidth * 0.7) - paddingValue * (colCount - 1)) / colCount;
+      // 15 is hardcoded for browser scrollbar size
+      colItemWidth = (((window.innerWidth - 15) * 0.75) - paddingValue * (colCount - 1)) / colCount;
 
     let containerClassNames = classnames({
       'single-image__container': true,
@@ -44,7 +48,7 @@ let ImageBlock = React.createClass({
             </div>
             <div className="single-image__actions-oder">
               <i className="material-icons">print</i>
-              <span className="single-image__actions-oder-description">Print order</span>
+              <Link to="order" className="single-image__actions-oder-description">Print order</Link>
             </div>
           </div>
         );
