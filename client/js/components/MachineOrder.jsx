@@ -1,9 +1,9 @@
 import React from 'react';
 
-import SettingsActions from '../actions/SettingsActions';
-import SettingsStore from '../stores/SettingsStore';
-import InstagramUserStore from '../stores/InstagramUserStore';
-import InstagramUserActions from '../actions/InstagramUserActions';
+import CartStore from '../stores/CartStore';
+import InstagramUserPhotosActions from '../actions/InstagramUserPhotosActions';
+
+import ImageBlock from '../components/Machine/ImageBlock.jsx';
 
 import { Link } from 'react-router';
 import classnames from 'classnames';
@@ -11,23 +11,22 @@ import classnames from 'classnames';
 let MachineUsers = React.createClass({
   getInitialState() {
     return {
-      query: '',
-      settings: {},
-      locationImages: [],
-      users: []
+      isPrintingInProcess: false,
+      cart: {
+        items: []
+      }
     };
   },
 
   componentDidMount() {
-    SettingsStore.listen(this._onChange.bind(this, 'settings', SettingsStore));
-    InstagramUserStore.listen(this._onChange.bind(this, 'users', InstagramUserStore));
-
-    SettingsActions.fetchSettings();
+    CartStore.listen(this._onChange.bind(this, 'cart', CartStore));
+    this.setState({
+      cart: CartStore.getData()
+    });
   },
 
   componentWillUnmount() {
-    SettingsStore.unlisten(this._onChange.bind(this, 'settings', SettingsStore));
-    InstagramUserStore.unlisten(this._onChange.bind(this, 'users', InstagramUserStore));
+    CartStore.unlisten(this._onChange.bind(this, 'cart', CartStore));
   },
 
   /* Store events */
@@ -39,10 +38,39 @@ let MachineUsers = React.createClass({
     }
   },
 
-  render() {
+  _toDisplayImage(cartItem, index) {
     return (
-      <div className="app app-bg user-search-screen">
-        222
+      <ImageBlock
+        className="1111"
+        key={cartItem.id}
+        index={index}
+        userImage={cartItem}
+        colCount={3}
+        paddingValue={5}
+        orderMode={true}
+      />
+    );
+  },
+
+  render() {
+    let {cart} = this.state;
+
+    console.log(cart);
+
+    return (
+      <div className="app user-search-screen">
+        {/* 1) title - "Confirm your order"*/}
+        <h1 className="">
+          Confirm your order (you are almost done!)
+        </h1>
+        {/* 2) all photos in cart with option to remove from cart*/}
+        <div className="user-photos-screen__images-container">
+          {cart.items.map(this._toDisplayImage, this)}
+        </div>
+        {/* 3) line with current balance and required balance*/}
+        {/* 4) print button, disabled if balance is less than required*/}
+        <button>Print</button>
+        {/* 5) (optional - some loader while printing order)*/}
       </div>
     );
   }
