@@ -38,7 +38,6 @@ let Machine = React.createClass({
   componentWillUpdate(nextProps, nextState) {
     let {geo, settings} = nextState,
       oldSettings = this.state.settings,
-      oldApiKey = oldSettings['api-key'],
       apiKey = settings['api-key'],
       {coordinates} = geo,
       {latitude, longitude} = coordinates,
@@ -71,9 +70,7 @@ let Machine = React.createClass({
   },
 
   _toDisplayImage(locationImage, index) {
-    let {standard_resolution, high_resolution} = locationImage.images,
-      workImage = high_resolution || standard_resolution,
-      colCount = 4,
+    let colCount = 4,
       colItemWidth = window.innerWidth / colCount;
 
     return (

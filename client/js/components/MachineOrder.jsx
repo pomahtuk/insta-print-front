@@ -1,7 +1,9 @@
 import React from 'react';
 
 import CartStore from '../stores/CartStore';
+import WalletStore from '../stores/WalletStore';
 import InstagramUserPhotosActions from '../actions/InstagramUserPhotosActions';
+import WalletActions from '../actions/WalletActions';
 
 import ImageBlock from '../components/Machine/ImageBlock.jsx';
 
@@ -12,6 +14,7 @@ let MachineUsers = React.createClass({
   getInitialState() {
     return {
       isPrintingInProcess: false,
+      wallet: {},
       cart: {
         items: []
       }
@@ -20,6 +23,7 @@ let MachineUsers = React.createClass({
 
   componentDidMount() {
     CartStore.listen(this._onChange.bind(this, 'cart', CartStore));
+    WalletStore.listen(this._onChange.bind(this, 'wallet', WalletStore));
     this.setState({
       cart: CartStore.getData()
     });
@@ -27,6 +31,7 @@ let MachineUsers = React.createClass({
 
   componentWillUnmount() {
     CartStore.unlisten(this._onChange.bind(this, 'cart', CartStore));
+    WalletStore.unlisten(this._onChange.bind(this, 'wallet', WalletStore));
   },
 
   /* Store events */
@@ -53,9 +58,9 @@ let MachineUsers = React.createClass({
   },
 
   render() {
-    let {cart} = this.state;
+    let {cart, wallet} = this.state;
 
-    console.log(cart);
+    console.log(cart, wallet);
 
     return (
       <div className="app user-search-screen">

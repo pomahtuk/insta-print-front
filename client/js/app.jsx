@@ -10,6 +10,8 @@ import MachineUserPhotos from './components/MachineUserPhotos.jsx';
 
 import MachineOrder from './components/MachineOrder.jsx';
 
+import WalletActions from './actions/WalletActions';
+
 let routes = (
   <Route handler={EmptyView}>
     <Route name="tools" path="/tools" handler={Tools} />
@@ -31,5 +33,6 @@ let routes = (
 );
 
 Router.run(routes, Router.HistoryLocation, function (Handler) {
+  WalletActions.openSocket();
   React.render(<Handler/>, document.getElementById('react'));
 });

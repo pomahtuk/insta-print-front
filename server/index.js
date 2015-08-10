@@ -6,6 +6,7 @@ const cors = require('koa-cors');
 const path = require('path');
 const fs = require('fs');
 const mongoose = require('mongoose');
+const ws = require('./socketServer');
 
 /**
  * Setting config vars
@@ -14,7 +15,6 @@ const staticPath = path.normalize(path.join(__dirname, '/../client/build'));
 const assetsPath = path.normalize(path.join(__dirname, '/../client/images'));
 const modelsPath = path.normalize(path.join(__dirname, '/models'));
 const appPort = 3000;
-const apiPort = 3001;
 
 /**
  * Connect to database
@@ -40,6 +40,7 @@ const app = koa();
 // require after models initialization to prevent errors
 const appRouter = require('./routes/app.js');
 const proxyRouter = require('./routes/proxy.js');
+const coinsRouter = require('./routes/coins.js');
 
 app.use(cors({ origin: '*' }));
 app.use(logger());
@@ -48,11 +49,12 @@ app.use(koaStatic(staticPath));
 app.use(koaStatic(assetsPath));
 
 app.use(proxyRouter.routes());
+app.use(coinsRouter.routes());
 app.use(appRouter.routes());
 
 // Start app
 if (!module.parent) {
-  app.listen(appPort);
-  app.listen(apiPort);
-  console.log('Server started, listening on ports: ' + appPort + ', ' + apiPort);
+  app.server = app.listen(appPort);
+  ws.listen(app.server);
+  console.log('Server started, listening on ports: ' + appPort);
 }

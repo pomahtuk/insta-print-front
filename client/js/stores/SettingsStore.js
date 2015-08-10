@@ -1,8 +1,6 @@
 import dispatcher from '../dispatcher/appDispatcher.js';
 import SettingsActions from  '../actions/SettingsActions';
 import SettingsSource from  '../sources/SettingsSource';
-import InstagramStore from  '../stores/InstagramStore';
-
 
 class SettingsStore {
   constructor() {
