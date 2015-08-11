@@ -73,6 +73,7 @@ let MachineUsers = React.createClass({
           {cart.items.map(this._toDisplayImage, this)}
         </div>
         {/* 3) line with current balance and required balance*/}
+        {wallet.money} / {cart.totalCount}
         {/* 4) print button, disabled if balance is less than required*/}
         <button>Print</button>
         {/* 5) (optional - some loader while printing order)*/}

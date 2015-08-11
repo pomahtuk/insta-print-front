@@ -19,7 +19,8 @@ class WalletStore {
   }
 
   handleUpdateWallet(money) {
-    this.money = money;
+    let {params} = money;
+    this.money = params;
   }
 }
 
