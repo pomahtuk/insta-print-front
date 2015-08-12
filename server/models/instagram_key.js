@@ -1,5 +1,5 @@
-"use strict";
-var mongoose = require("mongoose");
+'use strict';
+var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 /**
@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
  */
 var InstagramKeySchema = new Schema({
   key: {type: String, default: ''},
-  value: { type: String, default: '' },
+  value: { type: String, default: '' }
 });
 
-mongoose.model("InstagramKey", InstagramKeySchema);
+mongoose.model('InstagramKey', InstagramKeySchema);

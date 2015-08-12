@@ -11,7 +11,7 @@
   },
   "author": "pman",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "alt": "^0.17.1",
     "autoprefixer-core": "^5.2.1",
     "axios": "^0.5.4",
@@ -44,9 +44,7 @@
     "style-loader": "^0.12.3",
     "url-loader": "^0.5.6",
     "webpack": "^1.10.1",
-    "webpack-dev-server": "^1.10.1"
-  },
-  "dependencies": {
+    "webpack-dev-server": "^1.10.1",
     "koa": "^0.21.0",
     "koa-bodyparser": "^2.0.0",
     "koa-cors": "0.0.16",
