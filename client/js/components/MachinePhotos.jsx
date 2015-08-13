@@ -49,9 +49,11 @@ let MachinePhotos = React.createClass({
   },
 
   componentWillMount() {
-    let userId = this.context.router.getCurrentParams().userId;
+    let id = this.context.router.getCurrentParams().id;
+    let type = this.context.router.getCurrentParams().type;
     this.setState({
-      userId: userId
+      id: id,
+      type: type
     });
   },
 
@@ -82,9 +84,11 @@ let MachinePhotos = React.createClass({
         }
       } else {
         let apiKey = updateObj[key]['api-key'];
-        let userId = this.state.userId;
-        if (apiKey && userId) {
-          InstagramPhotosActions.getPhotos('user', userId, apiKey);
+        let {id, key} = this.state;
+        if (apiKey && id && key === 'user') {
+          InstagramPhotosActions.getPhotos('user', id, apiKey);
+        } else if (apiKey && id && key === 'tag') {
+          InstagramPhotosActions.getPhotos('tag', id, apiKey);
         }
       }
 
@@ -119,8 +123,11 @@ let MachinePhotos = React.createClass({
       <div className="user-photos__user-container">
         <UserBlock
           user={user}
-          linkTo="userPhotos"
-          linkParams={{userId: user.id}}
+          linkTo="photos"
+          linkParams={{
+            userId: user.id,
+            type: user
+          }}
         />
       </div>
     );

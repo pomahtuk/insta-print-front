@@ -1,17 +1,17 @@
 import dispatcher from '../dispatcher/appDispatcher.js';
 import InstagramSource from '../sources/InstagramSource.js';
 
-class InstagramUserActions {
+class InstagramTagsActions {
   // this way! go to server here and dispatch all staff here!
-  searchUsers(query, apiKey) {
-    let request = InstagramSource.searchUsers(query, apiKey);
+  searchTags(query, apiKey) {
+    let request = InstagramSource.searchTags(query, apiKey);
     request
-      .then((response) => this.actions.updateUsers(response.data))
+      .then((response) => this.actions.updateTags(response.data))
       .catch((response) =>  this.actions.instagramFailed(response.statusText));
   }
 
-  updateUsers(usersResponse) {
-    let { data } = usersResponse;
+  updateTags(tagsResponse) {
+    let { data } = tagsResponse;
     this.dispatch(data);
   }
 
@@ -21,4 +21,4 @@ class InstagramUserActions {
 
 }
 
-export default dispatcher.createActions(InstagramUserActions);
+export default dispatcher.createActions(InstagramTagsActions);

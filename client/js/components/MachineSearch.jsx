@@ -3,7 +3,9 @@ import React from 'react';
 import SettingsActions from '../actions/SettingsActions';
 import SettingsStore from '../stores/SettingsStore';
 import InstagramUserStore from '../stores/InstagramUserStore';
+import InstagramTagStore from '../stores/InstagramTagStore';
 import InstagramUserActions from '../actions/InstagramUserActions';
+import InstagramTagsActions from '../actions/InstagramTagsActions';
 
 import UserBlock from '../components/Machine/UserBlock.jsx';
 
@@ -11,30 +13,34 @@ import { Link } from 'react-router';
 import _ from 'lodash';
 import classnames from 'classnames';
 
-let MachineUsers = React.createClass({
+let MachineSearch = React.createClass({
   getInitialState() {
     return {
       query: '',
       settings: {},
       locationImages: [],
-      users: []
+      users: [],
+      tags: []
     };
   },
 
   componentDidMount() {
     SettingsStore.listen(this._onChange.bind(this, 'settings', SettingsStore));
     InstagramUserStore.listen(this._onChange.bind(this, 'users', InstagramUserStore));
+    InstagramTagStore.listen(this._onChange.bind(this, 'tags', InstagramTagStore));
 
     SettingsActions.fetchSettings();
   },
 
   componentWillMount() {
     this._getUsers = _.debounce(this._getUsers, 200);
+    this._getTags = _.debounce(this._getTags, 200);
   },
 
   componentWillUnmount() {
     SettingsStore.unlisten(this._onChange.bind(this, 'settings', SettingsStore));
     InstagramUserStore.unlisten(this._onChange.bind(this, 'users', InstagramUserStore));
+    InstagramTagStore.unlisten(this._onChange.bind(this, 'tags', InstagramTagStore));
   },
 
   componentWillUpdate(nextProps, nextState) {
@@ -58,14 +64,34 @@ let MachineUsers = React.createClass({
     }
   },
 
-  _toList(user, index) {
+  _getTags() {
+    let apiKey = this.state.settings['api-key'];
+    let {query} = this.state;
+
+    if (apiKey && query.length >= 3) {
+      InstagramTagsActions.searchTags(query, apiKey);
+    }
+  },
+
+  _toUserList(user, index) {
     return (
       <li className="found-users-container__user" key={user.id}>
         <UserBlock
           user={user}
-          linkTo="userPhotos"
-          linkParams={{userId: user.id}}
+          linkTo="photos"
+          linkParams={{
+            id: user.id,
+            type: 'user'
+          }}
         />
+      </li>
+    );
+  },
+
+  _toTagList(tag, index) {
+    return (
+      <li className="found-users-container__tag" key={index}>
+        {tag.name}
       </li>
     );
   },
@@ -75,10 +101,11 @@ let MachineUsers = React.createClass({
 
     this.setState({query: value});
     this._getUsers();
+    this._getTags();
   },
 
   render() {
-    let {query, users} = this.state;
+    let {query, users, tags} = this.state;
 
     users = users ? users : [];
 
@@ -97,11 +124,14 @@ let MachineUsers = React.createClass({
           onChange={this._handleInputChange}
         />
         <ul className="found-users-container">
-          {users.map(this._toList, this)}
+          {users.map(this._toUserList, this)}
+        </ul>
+        <ul className="found-tags-container">
+          {tags.map(this._toTagList, this)}
         </ul>
       </div>
     );
   }
 });
 
-export default MachineUsers;
+export default MachineSearch;
