@@ -1,7 +1,10 @@
+let {API_URL, SOCKET_URL, PROXY_API_URL, REDIRECT_URI, CLIENT_ID} = window.M;
+
 export default {
-  STATIC_URL: 'http://localhost:3000',
-  API_URL: 'http://localhost:3000',
-  SOCKET_URL: 'ws://localhost:3000',
-  PROXY_API_URL: 'http://localhost:3000/proxy',
+  API_URL: API_URL,
+  SOCKET_URL: SOCKET_URL,
+  PROXY_API_URL: PROXY_API_URL,
+  CLIENT_ID: CLIENT_ID,
+  REDIRECT_URI: REDIRECT_URI,
   INSTAGRAM_URL: 'https://api.instagram.com/v1'
 };

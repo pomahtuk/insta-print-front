@@ -11,7 +11,7 @@ class InstagramUserPhotosActions {
   }
 
   getMoreUserPhotos(link) {
-    let request = InstagramSource.getMoreUserMedia(link);
+    let request = InstagramSource.getMoreMedia(link);
     request
       .then((response) => this.actions.addUserPhotos(response.data))
       .catch((response) =>  this.actions.instagramFailed(response.statusText));

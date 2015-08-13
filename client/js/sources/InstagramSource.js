@@ -50,6 +50,29 @@ let InstagramSource = {
   },
 
   /**
+   * Making a request to Instagram API to fetch tags matching current query
+   *
+   * COUNT	Number of tags to return.
+   *
+   * https://api.instagram.com/v1/tags/search?q=snowy&access_token=ACCESS-TOKEN
+   *
+   * @param  {String} query [Part of username to search for]
+   * @param  {String} token [acess token for all requests]
+   * @return {Promise}      [Ajax Promise]
+   */
+  searchTags(query, token) {
+    let request = axios.get(`${PROXY_API_URL}`, {
+      params: {
+        url: `${INSTAGRAM_URL}/tags/search`,
+        q: query,
+        access_token: token
+      }
+    });
+    return request;
+  },
+
+
+  /**
    * Making a request to Instagram API to fetch selected user's media
    *
    * COUNT	Count of media to return.
@@ -76,12 +99,38 @@ let InstagramSource = {
   },
 
   /**
+   * Making a request to Instagram API to fetch selected tag media
+   *
+   * COUNT	Count of media to return.
+   * MIN_ID	Return media later than this min_id.
+   * MAX_ID	Return media earlier than this max_id.
+   *
+   * https://api.instagram.com/v1/tags/{tag-name}/media/recent/?access_token=ACCESS-TOKEN
+   *
+   * @param  {String} userId [name of selected tag]
+   * @param  {String} token  [acess token for all requests]
+   * @return {Promise}       [Ajax Promise]
+   */
+  getTagMedia(tagName, token) {
+    let request = axios.get(`${PROXY_API_URL}`, {
+      params: {
+        url: `${INSTAGRAM_URL}/tags/${tagName}/media/recent/`,
+        count: 50000,
+        min_timestamp: Date.now() / 1000 - 60 * 60 * 24 * 365 * 5,
+        max_timestamp: Date.now() / 1000,
+        access_token: token
+      }
+    });
+    return request;
+  },
+
+  /**
    * Making a request to Instagram API to get more user data
    *
    * @param  {String} url         [next formed url]
    * @return {Promise}            [Ajax Promise]
    */
-  getMoreUserMedia(url) {
+  getMoreMedia(url) {
     let request = axios.get(`${PROXY_API_URL}`, {
       params: {
         url: url

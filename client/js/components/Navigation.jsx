@@ -1,9 +1,8 @@
 import React from 'react/addons';
 import { Link } from 'react-router';
+import { CLIENT_ID, REDIRECT_URI } from '../constants/App';
 
-let clientId = '0e746470835249b0a01487361b63d20d';
-let redirectUri = 'http://localhost:3000/tools';
-let instaLink = `https://api.instagram.com/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token`;
+let instaLink = `https://api.instagram.com/oauth/authorize/?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token`;
 
 class Navigation extends React.Component {
   render() {

@@ -1,5 +1,4 @@
 const router = require('koa-router')();
-const sendfile = require('koa-sendfile');
 const path = require('path');
 const mongoose = require('mongoose');
 const InstagramKey = mongoose.model('InstagramKey');
@@ -80,8 +79,16 @@ router.get('/settings', function* () {
 
 // pass everything to react
 router.get('*', function* () {
-  var stats = yield* sendfile.call(this, indexPath);
-  if (!this.status) this.throw(404);
+  var siteUrl = process.env.SITE_URL ? process.env.SITE_URL : 'localhost:3000';
+
+  yield this.render('index', {
+    title: 'Instagram vending machine',
+    API_URL: 'http://' + siteUrl,
+    SOCKET_URL: 'ws://' + siteUrl,
+    CLIENT_ID: '0e746470835249b0a01487361b63d20d',
+    REDIRECT_URI: 'http://' + siteUrl + '/tools',
+    PROXY_API_URL: 'http://' + siteUrl + '/proxy'
+  });
 });
 
 

@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const mongoose = require('mongoose');
 const ws = require('./socketServer');
+const hbs = require('koa-hbs');
 
 /**
  * Setting config vars
@@ -50,6 +51,9 @@ app.use(json());
 app.use(bodyParser());
 app.use(koaStatic(staticPath));
 app.use(koaStatic(assetsPath));
+app.use(hbs.middleware({
+  viewPath: path.normalize(path.join(__dirname, '../views'))
+}));
 
 app.use(proxyRouter.routes());
 app.use(coinsRouter.routes());
