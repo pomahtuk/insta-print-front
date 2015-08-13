@@ -1,24 +1,29 @@
 import dispatcher from '../dispatcher/appDispatcher.js';
 import InstagramSource from '../sources/InstagramSource.js';
 
-class InstagramUserPhotosActions {
+class InstagramPhotosActions {
 
-  getUserPhotos(userId, apiKey) {
-    let request = InstagramSource.getUserMedia(userId, apiKey);
+  getPhotos(type = 'user', key, apiKey) {
+    let request = null;
+    if (type === 'user') {
+      request = InstagramSource.getUserMedia(key, apiKey);
+    } else {
+      request = InstagramSource.getTagMedia(key, apiKey);
+    }
     request
-      .then((response) => this.actions.updateUserPhotos(response.data))
+      .then((response) => this.actions.updatePhotos(response.data))
       .catch((response) =>  this.actions.instagramFailed(response.statusText));
   }
 
-  getMoreUserPhotos(link) {
+  getMorePhotos(link) {
     let request = InstagramSource.getMoreMedia(link);
     request
-      .then((response) => this.actions.addUserPhotos(response.data))
+      .then((response) => this.actions.addPhotos(response.data))
       .catch((response) =>  this.actions.instagramFailed(response.statusText));
   }
 
-  updateUserPhotos(userPhotosResponse) {
-    let { data, pagination, meta } = userPhotosResponse;
+  updatePhotos(photosResponse) {
+    let { data, pagination, meta } = photosResponse;
 
     if (meta.code !== 200) {
       this.actions.instagramFailed(meta);
@@ -30,8 +35,8 @@ class InstagramUserPhotosActions {
     }
   }
 
-  addUserPhotos(userPhotosResponse) {
-    let { data, pagination, meta } = userPhotosResponse;
+  addPhotos(photosResponse) {
+    let { data, pagination, meta } = photosResponse;
     if (meta.code !== 200) {
       this.actions.instagramFailed(meta);
     } else {
@@ -51,26 +56,26 @@ class InstagramUserPhotosActions {
       img.onload = () => {
         photo.imageLink = imageLink;
         photo.preloaded = true;
-        this.actions.updateSingleUserPhoto(photo);
+        this.actions.updateSinglePhoto(photo);
       };
       img.src = imageLink;
     });
   }
 
-  updateSingleUserPhoto(photo) {
+  updateSinglePhoto(photo) {
     this.dispatch(photo);
   }
 
-  clearUserPhotos() {
+  clearPhotos() {
     this.dispatch();
   }
 
-  addToCart(userPhoto) {
-    this.dispatch(userPhoto);
+  addToCart(photo) {
+    this.dispatch(photo);
   }
 
-  removeFromCart(userPhoto) {
-    this.dispatch(userPhoto);
+  removeFromCart(photo) {
+    this.dispatch(photo);
   }
 
   clearCart() {
@@ -83,4 +88,4 @@ class InstagramUserPhotosActions {
 
 }
 
-export default dispatcher.createActions(InstagramUserPhotosActions);
+export default dispatcher.createActions(InstagramPhotosActions);

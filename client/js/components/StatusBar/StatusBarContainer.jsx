@@ -1,6 +1,5 @@
 import React from 'react';
 
-import InstagramUserPhotosActions from '../../actions/InstagramUserPhotosActions';
 import CartStore from '../../stores/CartStore';
 import WalletStore from '../../stores/WalletStore';
 import WalletActions from '../../actions/WalletActions';

@@ -2,7 +2,6 @@ import React from 'react';
 
 import CartStore from '../stores/CartStore';
 import WalletStore from '../stores/WalletStore';
-import InstagramUserPhotosActions from '../actions/InstagramUserPhotosActions';
 import WalletActions from '../actions/WalletActions';
 
 import ImageBlock from '../components/Machine/ImageBlock.jsx';
@@ -49,7 +48,7 @@ let MachineUsers = React.createClass({
         className="1111"
         key={cartItem.id}
         index={index}
-        userImage={cartItem}
+        image={cartItem}
         colCount={3}
         paddingValue={5}
         orderMode={true}

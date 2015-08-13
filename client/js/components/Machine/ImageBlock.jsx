@@ -1,21 +1,21 @@
 import React from 'react';
 
-import InstagramUserPhotosActions from '../../actions/InstagramUserPhotosActions';
+import InstagramPhotosActions from '../../actions/InstagramPhotosActions';
 
 import { Link } from 'react-router';
 import classnames from 'classnames';
 
 let ImageBlock = React.createClass({
-  _addToCart(userImage) {
-    InstagramUserPhotosActions.addToCart(userImage);
+  _addToCart(image) {
+    InstagramPhotosActions.addToCart(image);
   },
 
-  _removeFromCart(userImage) {
-    InstagramUserPhotosActions.removeFromCart(userImage);
+  _removeFromCart(image) {
+    InstagramPhotosActions.removeFromCart(image);
   },
 
   render() {
-    let {index, userImage, colCount, paddingValue} = this.props,
+    let {index, image, colCount, paddingValue} = this.props,
       // 15 is hardcoded for browser scrollbar size
       colItemWidth = (((window.innerWidth - 15) * 0.75) - paddingValue * (colCount - 1)) / colCount;
 
@@ -23,26 +23,26 @@ let ImageBlock = React.createClass({
       'single-image__container': true,
       'single-image__container--first': index % colCount === 0,
       'single-image__container--last': index % colCount === colCount,
-      'single-image__container--cart': userImage.addedToCart
+      'single-image__container--cart': image.addedToCart
     });
 
     let imageClassNames = classnames({
       'single-image__image': true,
-      'single-image__image--blur': userImage.addedToCart
+      'single-image__image--blur': image.addedToCart
     });
 
     function addOverlay() {
-      if (userImage.addedToCart) {
+      if (image.addedToCart) {
         return (
           <div className="single-image__actions">
             <div className="single-image__actions-container">
-              <button className="single-image__actions-remove" onClick={this._removeFromCart.bind(this, userImage)}>
+              <button className="single-image__actions-remove" onClick={this._removeFromCart.bind(this, image)}>
                 <i className="material-icons">exposure_neg_1</i>
               </button>
               <div className="single-image__actions-amount">
-                {userImage.countAdded}
+                {image.countAdded}
               </div>
-              <button className="single-image__actions-add" onClick={this._addToCart.bind(this, userImage)}>
+              <button className="single-image__actions-add" onClick={this._addToCart.bind(this, image)}>
                 <i className="material-icons">exposure_plus_1</i>
               </button>
             </div>
@@ -61,10 +61,10 @@ let ImageBlock = React.createClass({
       >
         <img
           className={imageClassNames}
-          src={userImage.preloaded ? userImage.imageLink : ''}
+          src={image.preloaded ? image.imageLink : ''}
           width={colItemWidth}
           height={colItemWidth}
-          onClick={this._addToCart.bind(this, userImage)}
+          onClick={this._addToCart.bind(this, image)}
         />
         {addOverlay.call(this)}
       </div>

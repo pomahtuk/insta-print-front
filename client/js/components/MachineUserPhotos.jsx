@@ -2,9 +2,9 @@ import React from 'react';
 
 import SettingsActions from '../actions/SettingsActions';
 import SettingsStore from '../stores/SettingsStore';
-import InstagramUserPhotosStore from '../stores/InstagramUserPhotosStore';
+import InstagramPhotosStore from '../stores/InstagramPhotosStore';
 import InstagramUserStore from '../stores/InstagramUserStore';
-import InstagramUserPhotosActions from '../actions/InstagramUserPhotosActions';
+import InstagramPhotosActions from '../actions/InstagramPhotosActions';
 import Router from 'react-router';
 
 import UserBlock from '../components/Machine/UserBlock.jsx';
@@ -30,8 +30,8 @@ let MachineUserPhotos = React.createClass({
       loaded: false,
       userId: null,
       settings: {},
-      userPhotosData: {
-        userPhotos: {
+      photosData: {
+        photos: {
           data: []
         },
         hasMorePhotos: true,
@@ -43,7 +43,7 @@ let MachineUserPhotos = React.createClass({
 
   componentDidMount() {
     SettingsStore.listen(this._onChange.bind(this, 'settings', SettingsStore));
-    InstagramUserPhotosStore.listen(this._onChange.bind(this, 'userPhotosData', InstagramUserPhotosStore));
+    InstagramPhotosStore.listen(this._onChange.bind(this, 'photosData', InstagramPhotosStore));
 
     SettingsActions.fetchSettings();
   },
@@ -57,8 +57,8 @@ let MachineUserPhotos = React.createClass({
 
   componentWillUnmount() {
     SettingsStore.unlisten(this._onChange.bind(this, 'settings', SettingsStore));
-    InstagramUserPhotosStore.unlisten(this._onChange.bind(this, 'userPhotosData', InstagramUserPhotosStore));
-    InstagramUserPhotosActions.clearUserPhotos();
+    InstagramPhotosStore.unlisten(this._onChange.bind(this, 'photosData', InstagramPhotosStore));
+    InstagramPhotosActions.clearPhotos();
   },
 
   /* Store events */
@@ -67,15 +67,15 @@ let MachineUserPhotos = React.createClass({
       let updateObj = {};
       updateObj[key] = store.getData();
 
-      if (key === 'userPhotosData') {
-        let {userPhotos, error} = updateObj[key];
-        if (userPhotos && userPhotos.data) {
-          let {userPhotos, fullUpdate} = updateObj[key];
+      if (key === 'photosData') {
+        let {photos, error} = updateObj[key];
+        if (photos && photos.data) {
+          let {photos, fullUpdate} = updateObj[key];
           updateObj.loaded = true;
           updateObj.isInfiniteLoading = false;
           // only do a preloading on a full update
           if (fullUpdate) {
-            InstagramUserPhotosActions.preloadPhotos(userPhotos.data);
+            InstagramPhotosActions.preloadPhotos(photos.data);
           }
         } else if (error) {
           updateObj.loaded = true;
@@ -84,7 +84,7 @@ let MachineUserPhotos = React.createClass({
         let apiKey = updateObj[key]['api-key'];
         let userId = this.state.userId;
         if (apiKey && userId) {
-          InstagramUserPhotosActions.getUserPhotos(userId, apiKey);
+          InstagramPhotosActions.getPhotos('user', userId, apiKey);
         }
       }
 
@@ -92,13 +92,13 @@ let MachineUserPhotos = React.createClass({
     }
   },
 
-  _toDisplayImage(userImage, index) {
+  _toDisplayImage(image, index) {
     return (
       <ImageBlock
         className="1111"
-        key={userImage.id}
+        key={image.id}
         index={index}
-        userImage={userImage}
+        image={image}
         colCount={3}
         paddingValue={5}
       />
@@ -137,13 +137,13 @@ let MachineUserPhotos = React.createClass({
       isInfiniteLoading: true
     });
 
-    let {pagination} = this.state.userPhotosData.userPhotos;
-    InstagramUserPhotosActions.getMoreUserPhotos(pagination.next_url);
+    let {pagination} = this.state.photosData.photos;
+    InstagramPhotosActions.getMorePhotos(pagination.next_url);
   },
 
   _renderWaypoint() {
     let {state} = this;
-    let {userPhotosData} = state;
+    let {photosData} = state;
 
     if (!state.isInfiniteLoadingEnabled) {
       return (
@@ -158,7 +158,7 @@ let MachineUserPhotos = React.createClass({
           </span>
         </div>
       );
-    } else if (userPhotosData.hasMorePhotos === false) {
+    } else if (photosData.hasMorePhotos === false) {
       // do nothing if we have nothing to show
       return true;
     } else if (state.isInfiniteLoading) {
@@ -178,9 +178,9 @@ let MachineUserPhotos = React.createClass({
   },
 
   render() {
-    let {userPhotosData, loaded} = this.state;
-    let {data} = userPhotosData.userPhotos;
-    let {error} = userPhotosData;
+    let {photosData, loaded} = this.state;
+    let {data} = photosData.photos;
+    let {error} = photosData;
 
     let classNames = 'app app-bg user-photos-screen';
     let user = this._getUserBlock();
