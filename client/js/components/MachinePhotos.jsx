@@ -16,7 +16,7 @@ import classnames from 'classnames';
 
 // add check for loading more images
 
-let MachineUserPhotos = React.createClass({
+let MachinePhotos = React.createClass({
   mixins: [ Router.State ],
 
   contextTypes: {
@@ -221,4 +221,4 @@ let MachineUserPhotos = React.createClass({
   }
 });
 
-export default MachineUserPhotos;
+export default MachinePhotos;
