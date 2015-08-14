@@ -4,9 +4,10 @@
   "description": "Front end for insta-print vending machine",
   "main": "index.js",
   "scripts": {
-    "start": "webpack -p --config webpack.config.js --progress --profile --colors && node --harmony ./server/index.js",
+    "start": "node --harmony ./server/index.js",
     "build": "webpack -p --config webpack.config.js --progress --profile --colors",
     "test": "jest",
+    "postinstall": "webpack -p --config webpack.config.js --progress --profile --colors",
     "dev": "nodemon --ignore client/ --ignore node_modules/ --harmony ./server/index.js & webpack -w --devtool source-map --progress --colors="
   },
   "author": "pman",
