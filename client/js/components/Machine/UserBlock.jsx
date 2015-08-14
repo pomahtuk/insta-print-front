@@ -1,11 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 class UserBlock extends React.Component {
   render() {
-    let {user, linkTo} = this.props;
+    let {user, linkTo, params, query} = this.props;
 
     return (
-      <a href={linkTo} className="found-user">
+      <Link to={linkTo} params={params} query={query} className="found-user">
         <img className="found-user__image" src={user.profile_picture} />
         <div className="found-user__user-data-container">
           <span className="found-user__user-data">
@@ -13,7 +14,7 @@ class UserBlock extends React.Component {
             <div className="found-user__fullname">{user.full_name}</div>
           </span>
         </div>
-      </a>
+      </Link>
     );
   }
 }

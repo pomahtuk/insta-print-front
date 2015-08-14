@@ -50,7 +50,8 @@ let MachinePhotos = React.createClass({
   },
 
   componentWillMount() {
-    let {itemId, type} = this.context.router.getCurrentParams();
+    let {itemId} = this.context.router.getCurrentQuery();
+    let {type} = this.context.router.getCurrentParams();
     this.setState({
       itemId: itemId,
       type: type
@@ -121,7 +122,13 @@ let MachinePhotos = React.createClass({
       <div className="user-photos__user-container">
         <UserBlock
           user={user}
-          linkTo={`/search/user/${user.id}`}
+          linkTo="photos"
+          query={{
+            itemId: user.id
+          }}
+          params={{
+            type: 'user'
+          }}
         />
       </div>
     );

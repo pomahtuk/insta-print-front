@@ -78,7 +78,13 @@ let MachineSearch = React.createClass({
       <li className="found-users-container__user" key={user.id}>
         <UserBlock
           user={user}
-          linkTo={`/search/user/${user.id}`}
+          linkTo="photos"
+          query={{
+            itemId: user.id
+          }}
+          params={{
+            type: 'user'
+          }}
         />
       </li>
     );
