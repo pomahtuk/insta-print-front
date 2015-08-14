@@ -39,7 +39,7 @@ class InstagramPhotosStore {
     // should be shorter way
     this.photos.data = this.photos.data.concat(photos.data);
     this.photos.pagination = photos.pagination;
-    this.photos = !!photos.pagination.next_url;
+    this.hasMorePhotos = !!photos.pagination.next_url;
     this.error = null;
     this.fullUpdate = true;
   }

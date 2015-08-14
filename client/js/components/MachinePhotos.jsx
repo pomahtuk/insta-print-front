@@ -28,7 +28,8 @@ let MachinePhotos = React.createClass({
       isInfiniteLoading: false,
       isInfiniteLoadingEnabled: false,
       loaded: false,
-      userId: null,
+      itemId: null,
+      type: 'user',
       settings: {},
       photosData: {
         photos: {
@@ -49,10 +50,9 @@ let MachinePhotos = React.createClass({
   },
 
   componentWillMount() {
-    let id = this.context.router.getCurrentParams().id;
-    let type = this.context.router.getCurrentParams().type;
+    let {itemId, type} = this.context.router.getCurrentParams();
     this.setState({
-      id: id,
+      itemId: itemId,
       type: type
     });
   },
@@ -84,11 +84,9 @@ let MachinePhotos = React.createClass({
         }
       } else {
         let apiKey = updateObj[key]['api-key'];
-        let {id, key} = this.state;
-        if (apiKey && id && key === 'user') {
-          InstagramPhotosActions.getPhotos('user', id, apiKey);
-        } else if (apiKey && id && key === 'tag') {
-          InstagramPhotosActions.getPhotos('tag', id, apiKey);
+        let {itemId, type} = this.state;
+        if (apiKey && itemId && type) {
+          InstagramPhotosActions.getPhotos(type, itemId, apiKey);
         }
       }
 
@@ -112,7 +110,7 @@ let MachinePhotos = React.createClass({
   _getUserBlock() {
     // hardcoding user for testing
     // but it's better to create an ajax call to get users if nothing found
-    let user = InstagramUserStore.getUser(this.state.userId) || {
+    let user = InstagramUserStore.getUser(this.state.itemId) || {
       full_name: 'Илья Ловряков',
       id: '1427599199',
       profile_picture: 'https://igcdn-photos-c-a.akamaihd.net/hphotos-ak-xap1/t51.2885-19/10561053_1464421077148970_1122327670_a.jpg',
@@ -123,11 +121,7 @@ let MachinePhotos = React.createClass({
       <div className="user-photos__user-container">
         <UserBlock
           user={user}
-          linkTo="photos"
-          linkParams={{
-            userId: user.id,
-            type: user
-          }}
+          linkTo={`/search/user/${user.id}`}
         />
       </div>
     );
@@ -204,7 +198,7 @@ let MachinePhotos = React.createClass({
           </div>
         </div>
       );
-    } else if (error) {
+    } else if (error || !data) {
       return (
         <div className={classNames}>
           {user}
@@ -216,7 +210,6 @@ let MachinePhotos = React.createClass({
     } else {
       return (
         <div className={classNames}>
-          <Link to="users" className="navigation-link">Back!</Link>
           {user}
           <div className="user-photos-screen__images-container">
             {data.map(this._toDisplayImage, this)}

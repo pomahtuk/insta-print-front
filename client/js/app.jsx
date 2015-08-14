@@ -17,7 +17,9 @@ let routes = (
     <Route name="tools" path="/tools" handler={Tools} />
 
     <Route path="/search" handler={StatusBarEmptyView}>
-      <Route name="photos" path=":type/:id" handler={MachinePhotos} />
+      <Route path=":type" handler={EmptyView} >
+        <Route name="photos" path=":itemId" handler={MachinePhotos} />
+      </Route>
 
       <DefaultRoute name="search" handler={MachineSearch} />
     </Route>

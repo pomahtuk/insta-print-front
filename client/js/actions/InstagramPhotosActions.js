@@ -19,7 +19,7 @@ class InstagramPhotosActions {
     let request = InstagramSource.getMoreMedia(link);
     request
       .then((response) => this.actions.addPhotos(response.data))
-      .catch((response) =>  this.actions.instagramFailed(response.statusText));
+      .catch((response) =>  this.actions.instagramFailed(response));
   }
 
   updatePhotos(photosResponse) {
@@ -83,7 +83,7 @@ class InstagramPhotosActions {
   }
 
   instagramFailed(errorData) {
-    this.dispatch(errorData);
+    this.dispatch(errorData.statusText);
   }
 
 }
