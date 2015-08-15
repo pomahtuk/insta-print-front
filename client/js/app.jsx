@@ -1,5 +1,7 @@
 import React from 'react';
 import Router, { DefaultRoute, Link, Route } from 'react-router';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
 
 import Tools from './components/Tools.jsx';
 import Machine from './components/Machine.jsx';

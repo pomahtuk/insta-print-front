@@ -8,8 +8,13 @@ import InstagramUserActions from '../actions/InstagramUserActions';
 import InstagramTagsActions from '../actions/InstagramTagsActions';
 
 import UserBlock from '../components/Machine/UserBlock.jsx';
+import Keyboard from '../components/Machine/Keyboard.jsx';
 
 import { Link } from 'react-router';
+import { List, ListItem, Avatar, Styles } from 'material-ui';
+
+let ThemeManager = new Styles.ThemeManager();
+
 import _ from 'lodash';
 import classnames from 'classnames';
 
@@ -21,6 +26,16 @@ let MachineSearch = React.createClass({
       locationImages: [],
       users: [],
       tags: []
+    };
+  },
+
+  childContextTypes: {
+    muiTheme: React.PropTypes.object
+  },
+
+  getChildContext() {
+    return {
+      muiTheme: ThemeManager.getCurrentTheme()
     };
   },
 
@@ -118,19 +133,39 @@ let MachineSearch = React.createClass({
 
     return (
       <div className="app app-bg user-search-screen">
-        <input
-          value={query}
-          type="text"
-          name="query"
-          className={inputClassNames}
-          onChange={this._handleInputChange}
-        />
-        <ul className="found-users-container">
-          {users.map(this._toUserList, this)}
-        </ul>
-        <ul className="found-tags-container">
-          {tags.map(this._toTagList, this)}
-        </ul>
+        <div className="content-holder">
+          <input
+            value={query}
+            type="text"
+            name="query"
+            className={inputClassNames}
+            onChange={this._handleInputChange}
+          />
+
+          <List subheader="Users">
+            {users.map((user) =>
+              <ListItem
+                key={user.id}
+                leftAvatar={<Avatar src={user.profile_picture} />}
+                primaryText={user.username}
+                rightIcon={<i className="material-icons">send</i>}
+              />
+            )}
+          </List>
+
+          <List subheader="Tags">
+            {tags.map((tag) =>
+              <ListItem
+                key={tag.name}
+                leftAvatar={<Avatar><i className="material-icons">share</i></Avatar>}
+                primaryText={tag.name}
+                rightIcon={<i className="material-icons">send</i>}
+              />
+            )}
+          </List>
+
+        </div>
+        <Keyboard />
       </div>
     );
   }
