@@ -126,43 +126,40 @@ let MachineSearch = React.createClass({
 
     users = users ? users : [];
 
-    let inputClassNames = classnames({
-      'user-search-screen__input': true,
-      'user-search-screen__input--useers-found': users.length > 0
-    });
-
     return (
-      <div className="app app-bg user-search-screen">
+      <div className="app-search user-search-screen">
         <div className="content-holder">
           <input
             value={query}
             type="text"
             name="query"
-            className={inputClassNames}
+            className="user-search-screen__input"
             onChange={this._handleInputChange}
           />
 
-          <List subheader="Users">
-            {users.map((user) =>
-              <ListItem
-                key={user.id}
-                leftAvatar={<Avatar src={user.profile_picture} />}
-                primaryText={user.username}
-                rightIcon={<i className="material-icons">send</i>}
-              />
-            )}
-          </List>
+          <div className="lists-wrapper">
 
-          <List subheader="Tags">
-            {tags.map((tag) =>
-              <ListItem
-                key={tag.name}
-                leftAvatar={<Avatar><i className="material-icons">share</i></Avatar>}
-                primaryText={tag.name}
-                rightIcon={<i className="material-icons">send</i>}
-              />
-            )}
-          </List>
+            <List subheader="Users" className="users-list">
+              {users.map((user) =>
+                <ListItem
+                  key={user.id}
+                  leftAvatar={<Avatar src={user.profile_picture} />}
+                  primaryText={user.username}
+                />
+              )}
+            </List>
+
+            <List subheader="Tags" className="tags-list">
+              {tags.map((tag) =>
+                <ListItem
+                  key={tag.name}
+                  leftAvatar={<Avatar><i className="material-icons">share</i></Avatar>}
+                  primaryText={tag.name}
+                />
+              )}
+            </List>
+
+          </div>
 
         </div>
         <Keyboard />

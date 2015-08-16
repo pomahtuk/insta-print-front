@@ -1,12 +1,8 @@
 .user-search-screen {
-  background: url('../images/rsz_iamsterdam_122.png');
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center center;
 
   &__input {
     width: 60%;
-    margin: 20% auto 0 auto;
+    margin: 0 auto 0 auto;
     display: block;
     padding: 6px 12px;
     font-size: 20px;
@@ -22,10 +18,23 @@
       border-color: #66afe9;
       outline: 0;
     }
+  }
 
-    &--useers-found {
-      margin: 100px auto 0 auto;
-    }
+  .content-holder {
+    height: calc(100% - 240px);
+  }
+
+}
+
+.lists-wrapper{
+  height: calc(100% - 55px);
+  overflow: auto;
+
+  .users-list,
+  .tags-list {
+    display: inline-block;
+    width: 50%;
+    vertical-align: top;
   }
 }
 

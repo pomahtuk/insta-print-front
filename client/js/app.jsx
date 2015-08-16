@@ -18,14 +18,13 @@ let routes = (
   <Route handler={EmptyView}>
     <Route name="tools" path="/tools" handler={Tools} />
 
-    <Route path="/search" handler={StatusBarEmptyView}>
+    <Route path="/search" handler={EmptyView}>
       <Route name="photos" path=":type" handler={MachinePhotos} />
 
       <DefaultRoute name="search" handler={MachineSearch} />
     </Route>
 
-    <Route path="/order" handler={StatusBarEmptyView}>
-
+    <Route path="/order" handler={EmptyView}>
 
       <DefaultRoute name="order" handler={MachineOrder} />
     </Route>
