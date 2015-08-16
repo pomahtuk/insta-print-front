@@ -1,9 +1,7 @@
 const router = require('koa-router')();
 const path = require('path');
-const mongoose = require('mongoose');
-const InstagramKey = mongoose.model('InstagramKey');
-
-const indexPath = path.normalize(path.join(__dirname, '/../../index.html'));
+const models  = require('../models');
+const InstagramKey = models.InstagramKey;
 
 function* updateDBRecord(key, context) {
   const payload = context.request.body;
@@ -17,14 +15,15 @@ function* updateDBRecord(key, context) {
   }
 
   try {
-    var dbRecord = yield InstagramKey.findOne({'key': key}).exec();
-    if (!dbRecord) {
-      dbRecord = new InstagramKey({
-        key: key
-      });
+    var dbRecord = yield InstagramKey.findOrCreate({
+      where: {key: key}
+    });
+    if (dbRecord && dbRecord[0] ) {
+      dbRecord = dbRecord[0];
+    } else {
+      throw new Error('returned not an drray at db update');
     }
-    dbRecord.value = payload.code;
-    yield dbRecord.save();
+    yield dbRecord.update({value: payload.code});
   } catch (err) {
     context.throw(err);
   }
@@ -34,7 +33,7 @@ function* updateDBRecord(key, context) {
 
 function* retreiveDBRecord(key, context) {
   try {
-    var dbRecord = yield InstagramKey.findOne({'key': key}).exec();
+    var dbRecord = yield InstagramKey.findOne({where: {key: key}});
   } catch (err) {
     context.throw(err);
   }
@@ -68,7 +67,7 @@ router.get('/location-id', function* () {
 });
 
 router.get('/settings', function* () {
-  var dbRecords = yield InstagramKey.find().exec();
+  var dbRecords = yield InstagramKey.findAll();
   var result = {};
   dbRecords.map(function(record) {
     result[record.key] = record.value;

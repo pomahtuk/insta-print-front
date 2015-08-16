@@ -1,15 +1,20 @@
 const router = require('koa-router')();
-const mongoose = require('mongoose');
-const Event = mongoose.model('Event');
+const models = require('../models');
+const Event = models.Event;
 
 
 function* retreiveDBRecords(context) {
   var dbRecords = [];
   try {
-    dbRecords = yield Event.find().exec();
+    dbRecords = yield Event.findAll();
   } catch (err) {
     context.throw(err);
   }
+
+  dbRecords.forEach(function(record) {
+    record.data = JSON.parse(record.data);
+  });
+
   return dbRecords;
 }
 
@@ -33,12 +38,10 @@ function* updateDBRecord(context) {
     data = payload.data;
 
   try {
-    dbRecord = new Event({
+    dbRecord = yield Event.create({
       eventType: eventType,
-      data: data
+      data: JSON.stringify(data)
     });
-
-    yield dbRecord.save();
   } catch (err) {
     context.throw(err);
   }

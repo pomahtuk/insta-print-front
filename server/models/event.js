@@ -1,23 +1,9 @@
-'use strict';
+module.exports = function(sequelize, DataTypes) {
+  var Event = sequelize.define('Event', {
+    eventType: DataTypes.STRING,
+    timeStamp: { type: DataTypes.DATE, allowNull: false, defaultValue: new Date() },
+    data: DataTypes.STRING
+  });
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-
-/**
- * Schema
- */
-var EventSchema = new Schema({
-  eventType: {
-    type: String,
-    default: 'generic'
-  },
-  timeStamp: {
-    type: Date,
-    default: new Date()
-  },
-  data: {}
-});
-
-// Event.markModified('data');
-
-mongoose.model('Event', EventSchema);
+  return Event;
+};

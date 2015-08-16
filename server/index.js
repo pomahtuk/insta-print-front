@@ -15,27 +15,7 @@ const hbs = require('koa-hbs');
  */
 const staticPath = path.normalize(path.join(__dirname, '/../client/build'));
 const assetsPath = path.normalize(path.join(__dirname, '/../client/images'));
-const modelsPath = path.normalize(path.join(__dirname, '/models'));
 const appPort = process.env.PORT || 3000;
-
-/**
- * Connect to database
- */
-const mongoURI = process.env.MONGOHQ_URL || 'mongodb://localhost/insta-print';
-
-mongoose.connect(mongoURI);
-mongoose.connection.on('error', function(err) {
-  console.log(err);
-});
-
-/**
- * Load the models
- */
-fs.readdirSync(modelsPath).forEach(function(file) {
-  if (~file.indexOf('js')) {
-    require(modelsPath + '/' + file);
-  }
-});
 
 
 const app = koa();
