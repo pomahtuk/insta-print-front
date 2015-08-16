@@ -10,7 +10,7 @@ import InstagramTagsActions from '../actions/InstagramTagsActions';
 import UserBlock from '../components/Machine/UserBlock.jsx';
 import Keyboard from '../components/Machine/Keyboard.jsx';
 
-import { Link } from 'react-router';
+import { Link, Navigation } from 'react-router';
 import { List, ListItem, Avatar, Styles } from 'material-ui';
 
 let ThemeManager = new Styles.ThemeManager();
@@ -19,6 +19,8 @@ import _ from 'lodash';
 import classnames from 'classnames';
 
 let MachineSearch = React.createClass({
+   mixins: [Navigation],
+
   getInitialState() {
     return {
       query: '',
@@ -121,6 +123,12 @@ let MachineSearch = React.createClass({
     this._getTags();
   },
 
+  _goToPhotos(id, type) {
+    setTimeout(() => {
+      this.transitionTo('photos', {type: type}, {itemId: id});
+    }, 500);
+  },
+
   render() {
     let {query, users, tags} = this.state;
 
@@ -145,6 +153,7 @@ let MachineSearch = React.createClass({
                   key={user.id}
                   leftAvatar={<Avatar src={user.profile_picture} />}
                   primaryText={user.username}
+                  onClick={() => this._goToPhotos(user.id, 'user')}
                 />
               )}
             </List>
@@ -155,6 +164,7 @@ let MachineSearch = React.createClass({
                   key={tag.name}
                   leftAvatar={<Avatar><i className="material-icons">share</i></Avatar>}
                   primaryText={tag.name}
+                  onClick={() => this._goToPhotos(tag.name, 'tag')}
                 />
               )}
             </List>

@@ -1,8 +1,10 @@
 #keyboard {
-	margin:0;
-	padding:0;
-	list-style:none;
-	height: 240px;
+	padding: 2px 2px 0 7px;
+	list-style: none;
+	height: 238px;
+	background-color: #eee;
+	width: 688px;
+	margin: 0 auto;
 }
 #keyboard li {
 	float:left;
