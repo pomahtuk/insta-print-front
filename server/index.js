@@ -6,7 +6,6 @@ const koaStatic = require('koa-static');
 const cors = require('koa-cors');
 const path = require('path');
 const fs = require('fs');
-const mongoose = require('mongoose');
 const ws = require('./socketServer');
 const hbs = require('koa-hbs');
 
@@ -24,6 +23,7 @@ const appRouter = require('./routes/app.js');
 const proxyRouter = require('./routes/proxy.js');
 const coinsRouter = require('./routes/coins.js');
 const eventsRouter = require('./routes/events.js');
+const printerRouter = require('./routes/printer.js');
 
 app.use(cors({ origin: '*' }));
 app.use(logger());
@@ -38,6 +38,7 @@ app.use(hbs.middleware({
 app.use(proxyRouter.routes());
 app.use(coinsRouter.routes());
 app.use(eventsRouter.routes());
+app.use(printerRouter.routes());
 app.use(appRouter.routes());
 
 // Start app
