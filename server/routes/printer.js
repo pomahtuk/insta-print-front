@@ -4,7 +4,6 @@ const request = require('koa-request').defaults({ encoding: null });
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const mime = require('mime');
 
 // pass everything to react
 router.get('/printer', function* () {
