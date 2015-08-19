@@ -17,19 +17,35 @@ const pageHeight = 101.6 * mmToPixel;
 const pageWidth = 152.4 * mmToPixel;
 
 // mock data
-var printData = require('../mocks/printRequest.js');
+var mockPrintData = require('../mocks/printRequest.js');
 
 const fontRegularPath = path.normalize(path.join(__dirname, '/../../client/fonts/Roboto-Regular.ttf'));
 
 // allow iterate over object making async calls
-function *mapGen (arr, callback) {
-  for (var i = 0; i < arr.length; i++) {
-    yield callback(arr[i], i);
+function* mapGen (arr, callback) {
+  var pritingItem = null;
+  var counter = 0;
+  var arrayLength = arr.length;
+  var i = 0, j = 0;
+
+  for (i = 0; i < arrayLength; i++) {
+    pritingItem = arr[i];
+    // if we requested only one copy or using mock data
+    // just envoke a callback
+    if (!pritingItem.countAdded || pritingItem.countAdded === 1) {
+      counter += 1;
+      yield callback(pritingItem, counter);
+    } else {
+      // if we requested several copies - call few callbacks
+      for (j = 0; j < pritingItem.countAdded; j++) {
+        counter += 1;
+        yield callback(pritingItem, counter);
+      }
+    }
   }
 }
 
-// pass everything to react
-router.get('/printer', function* () {
+function* printerFunction(printData) {
   var doc = new PDFDocument({
     layout: 'landscape',
     size: [pageHeight, pageWidth]
@@ -38,6 +54,11 @@ router.get('/printer', function* () {
   doc.registerFont('Roboto', fontRegularPath);
 
   var printDataSize = printData.length - 1;
+
+  if (printDataSize < 0) {
+    finalizeDocument();
+    return doc;
+  }
 
   function recurseExtract(text, searchArr, i, container) {
     // no text left
@@ -79,6 +100,20 @@ router.get('/printer', function* () {
     recurseExtract(text, hashTagsArray, 0, resultArray);
 
     return resultArray;
+  }
+
+  function finalizeDocument() {
+    // set cutting line for now
+    doc
+      .lineCap('butt')
+      .moveTo(2 * margin + imageSize, 5)
+      .lineTo(2 * margin + imageSize, pageHeight)
+      .dash(5, {space: 5})
+      .strokeColor('#eee')
+      .stroke();
+
+    doc.end();
+
   }
 
   function* drawImage (image, index) {
@@ -132,20 +167,36 @@ router.get('/printer', function* () {
       doc.addPage();
     }
   }
+
+  yield* mapGen(printData, drawImage);
+
+  finalizeDocument();
+
+  return doc;
+}
+
+
+//main functuon
+router.post('/printer', function* () {
+  var printingData = this.request.body;
+
   try {
 
-    yield* mapGen(printData, drawImage);
+    var doc = yield printerFunction(mockPrintData);
 
-    // set cutting line for now
-    doc
-      .lineCap('butt')
-      .moveTo(2 * margin + imageSize, 5)
-      .lineTo(2 * margin + imageSize, pageHeight)
-      .dash(5, {space: 5})
-      .strokeColor('#eee')
-      .stroke();
+    this.status = 200;
+    this.type = 'application/pdf';
+    this.body = doc;
+  } catch (err) {
+    this.throw(err);
+  }
+});
 
-    doc.end();
+// testing function - still want to be able to test
+router.get('/printer', function* () {
+  try {
+
+    var doc = yield printerFunction(mockPrintData);
 
     this.status = 200;
     this.type = 'application/pdf';

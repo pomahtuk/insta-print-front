@@ -3,6 +3,8 @@ import React from 'react';
 import CartStore from '../stores/CartStore';
 import WalletStore from '../stores/WalletStore';
 import WalletActions from '../actions/WalletActions';
+import PrinterActions from '../actions/PrinterActions';
+import PrinterStore from '../stores/PrinterStore';
 
 import ImageBlock from '../components/Machine/ImageBlock.jsx';
 
@@ -23,6 +25,7 @@ let MachineUsers = React.createClass({
   componentDidMount() {
     CartStore.listen(this._onChange.bind(this, 'cart', CartStore));
     WalletStore.listen(this._onChange.bind(this, 'wallet', WalletStore));
+    PrinterStore.listen(this._onChange.bind(this, 'printer', PrinterStore));
     this.setState({
       cart: CartStore.getData()
     });
@@ -31,6 +34,7 @@ let MachineUsers = React.createClass({
   componentWillUnmount() {
     CartStore.unlisten(this._onChange.bind(this, 'cart', CartStore));
     WalletStore.unlisten(this._onChange.bind(this, 'wallet', WalletStore));
+    PrinterStore.unlisten(this._onChange.bind(this, 'printer', PrinterStore));
   },
 
   /* Store events */
@@ -56,10 +60,15 @@ let MachineUsers = React.createClass({
     );
   },
 
-  render() {
-    let {cart, wallet} = this.state;
+  _printSelectedImages() {
+    let {items} = this.state.cart;
+    PrinterActions.printImages(items);
+  },
 
-    console.log(cart, wallet);
+  render() {
+    let {cart, wallet, printer} = this.state;
+
+    console.log(cart, wallet, printer);
 
     return (
       <div className="app user-search-screen">
@@ -74,7 +83,7 @@ let MachineUsers = React.createClass({
         {/* 3) line with current balance and required balance*/}
         {wallet.money} / {cart.totalCount}
         {/* 4) print button, disabled if balance is less than required*/}
-        <button>Print</button>
+        <button onClick={this._printSelectedImages}>Print</button>
         {/* 5) (optional - some loader while printing order)*/}
       </div>
     );
