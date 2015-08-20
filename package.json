@@ -48,7 +48,7 @@
     "normalize-css": "^2.3.1",
     "pdfkit": "^0.7.1",
     "postcss-loader": "^0.5.1",
-    "printer": "^0.1.1",
+    "printer": "git+https://github.com/tojocky/node-printer.git",
     "purecss": "^0.6.0",
     "react": "^0.13.3",
     "react-google-maps": "^1.7.1",

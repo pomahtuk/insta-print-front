@@ -181,8 +181,7 @@ router.post('/printer', function* () {
   var printingData = this.request.body;
 
   try {
-
-    var doc = yield printerFunction(mockPrintData);
+    var doc = yield printerFunction(printingData);
 
     this.status = 200;
     this.type = 'application/pdf';
@@ -195,7 +194,6 @@ router.post('/printer', function* () {
 // testing function - still want to be able to test
 router.get('/printer', function* () {
   try {
-
     var doc = yield printerFunction(mockPrintData);
 
     this.status = 200;
