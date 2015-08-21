@@ -4,7 +4,8 @@ const request = require('koa-request').defaults({ encoding: null });
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const co = require('co');
+const util = require('util');
+var twitter = require('twitter-text');
 
 // set conversion values
 const mmToPixel = 3.779527559055;
@@ -45,56 +46,82 @@ function* mapGen (arr, callback) {
   }
 }
 
+function getPrintDataSize(images) {
+  var result = 0;
+  images.forEach(function(image) {
+    result += image.countAdded ? image.countAdded : 1;
+  });
+  return result;
+}
+
 function* printerFunction(printData) {
+  var images = printData.images;
+  var fileName = path.join(os.tmpdir(), '/print' + Date.now() + '.pdf');
   var doc = new PDFDocument({
     layout: 'landscape',
     size: [pageHeight, pageWidth]
   });
+  doc.pipe(fs.createWriteStream(fileName));
 
   doc.registerFont('Roboto', fontRegularPath);
 
-  var printDataSize = printData.length - 1;
+  var printDataSize = getPrintDataSize(images);
 
   if (printDataSize < 0) {
     finalizeDocument();
-    return doc;
+    return fileName;
   }
 
   function recurseExtract(text, searchArr, i, container) {
     // no text left
+    // or no tags found
     if (!text) return;
 
-    var search = searchArr[i];
-    var splittingArr = text.split(search);
-    var index = text.indexOf(search);
+    var search = searchArr ? searchArr[i] : null;
 
-    if (index === 0) {
+    if (!search) {
+      // no tags found in text
       container.push({
-        text: search,
-        type: 'tag'
-      });
-      container.push({
-        text: splittingArr[0],
+        text: text,
         type: 'text'
       });
-    }else if (index !== 0) {
-      container.push({
-        text: splittingArr[0],
-        type: 'text'
-      });
-      container.push({
-        text: search,
-        type: 'tag'
-      });
+
+      // do not go further
+      return;
+
+    } else {
+      // { hashtag: 'лето', indices: [ 90, 95 ] },
+      var searchTag = '#' + search.hashtag;
+      var splittingArr = text.split(searchTag) || [];
+      var index = text.indexOf(searchTag);
+      if (index === 0) {
+        container.push({
+          text: searchTag,
+          type: 'tag'
+        });
+        container.push({
+          text: splittingArr[0],
+          type: 'text'
+        });
+      } else if (index !== 0) {
+        container.push({
+          text: splittingArr[0],
+          type: 'text'
+        });
+        container.push({
+          text: searchTag,
+          type: 'tag'
+        });
+      }
+      recurseExtract(splittingArr[1], searchArr, i += 1, container);
     }
-
-    recurseExtract(splittingArr[1], searchArr, i += 1, container);
 
   }
 
   function extractHashTags(text) {
     // here we have a hashtags
-    var hashTagsArray = text.match(/#\w+/g);
+    // using twitter one for better extraction
+    var hashTagsArray = twitter.extractHashtagsWithIndices(text);
     var resultArray = [];
 
     recurseExtract(text, hashTagsArray, 0, resultArray);
@@ -114,13 +141,14 @@ function* printerFunction(printData) {
 
     doc.end();
 
+    // for now
+    console.log(fileName);
+
   }
 
   function* drawImage (image, index) {
-    image = image.data;
-
-    var divisionLeftover = index % 2;
-    var shouldCreateNewPage = printDataSize - index > 0 && divisionLeftover === 1;
+    var divisionLeftover = (index - 1) % 2;
+    var shouldCreateNewPage = (printDataSize - index) > 0 && divisionLeftover === 1;
     var leftOffset = margin + (2 * margin + imageSize) * divisionLeftover;
 
     var url = image.images.standard_resolution.url;
@@ -145,15 +173,18 @@ function* printerFunction(printData) {
     });
 
     textsArray.forEach(function(textItem) {
-      if (textItem.type === 'text') {
-        currentText = currentText.fillColor('black');
-      } else if (textItem.type === 'tag') {
-        currentText = currentText.fillColor('blue');
+      // in other case we have nothing to draw
+      // and huge space will be drawn
+      if (textItem.text.length > 0) {
+        if (textItem.type === 'text') {
+          currentText = currentText.fillColor('black');
+        } else if (textItem.type === 'tag') {
+          currentText = currentText.fillColor('blue');
+        }
+        currentText = currentText.text(textItem.text, {
+          continued: true
+        });
       }
-
-      currentText = currentText.text(textItem.text, {
-        continued: true
-      });
     });
 
     // reset text, nothing will be added
@@ -168,11 +199,11 @@ function* printerFunction(printData) {
     }
   }
 
-  yield* mapGen(printData, drawImage);
+  yield* mapGen(images, drawImage);
 
   finalizeDocument();
 
-  return doc;
+  return fileName;
 }
 
 
@@ -181,11 +212,13 @@ router.post('/printer', function* () {
   var printingData = this.request.body;
 
   try {
-    var doc = yield printerFunction(printingData);
+    var fileName = yield printerFunction(printingData);
 
     this.status = 200;
     this.type = 'application/pdf';
-    this.body = doc;
+    this.body = {
+      output: fileName
+    };
   } catch (err) {
     this.throw(err);
   }

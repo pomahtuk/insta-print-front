@@ -1,4 +1,4 @@
-const printData = [
+const printData = { images: [
   {
     'data': {
       'type': 'image',
@@ -45,6 +45,6 @@ const printData = [
       'location': null
     }
   }
-];
+]};
 
 module.exports = printData;
