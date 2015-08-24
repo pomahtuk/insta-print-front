@@ -115,12 +115,15 @@ let MachineSearch = React.createClass({
     );
   },
 
-  _handleInputChange(event) {
-    let value = event.target.value;
-
+  _processNewQuery(value) {
     this.setState({query: value});
     this._getUsers();
     this._getTags();
+  },
+
+  _handleInputChange(event) {
+    let value = event.target.value;
+    this._processNewQuery(value);
   },
 
   _goToPhotos(id, type) {
@@ -172,7 +175,7 @@ let MachineSearch = React.createClass({
           </div>
 
         </div>
-        <Keyboard />
+        <Keyboard parentValue={query} onChange={this._processNewQuery} />
       </div>
     );
   }

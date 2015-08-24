@@ -7,7 +7,7 @@ let Keyboard = React.createClass({
     return {
       shiftKey: false,
       capsLockKey: false,
-      resultingOutput: '',
+      resultingOutput: this.props.parentValue,
       symbolsUpperRow: [
         ['`', '~'],
         ['1', '!'],
@@ -67,6 +67,7 @@ let Keyboard = React.createClass({
 
   _handleKey(key) {
     let {resultingOutput} = this.state;
+    let {onChange} = this.props;
 
     switch (key) {
       case 'shift':
@@ -101,6 +102,14 @@ let Keyboard = React.createClass({
         });
     }
 
+    onChange(resultingOutput);
+
+  },
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      resultingOutput: nextProps.parentValue
+    });
   },
 
   render() {
