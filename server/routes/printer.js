@@ -24,6 +24,7 @@ const pageWidth = 152.4 * mmToPixel;
 var mockPrintData = require('../mocks/printRequest.js');
 
 const fontRegularPath = path.normalize(path.join(__dirname, '/../../client/fonts/Roboto-Regular.ttf'));
+const fontEmojiPath = path.normalize(path.join(__dirname, '/../../client/fonts/color_emoji.ttf'));
 
 // allow iterate over object making async calls
 function* mapGen (arr, callback) {
@@ -164,6 +165,7 @@ function* printerFunction(printData) {
     // get text and extract hastags
     var origText = image.caption ? image.caption.text : '';
     var textsArray = extractHashTags(origText);
+    // use different font for emoji
 
     doc.font('Roboto');
     doc.fontSize(11);
