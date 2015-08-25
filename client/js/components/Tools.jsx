@@ -8,7 +8,6 @@ import InstagramActions from '../actions/InstagramActions';
 import React from 'react/addons';
 import Router from 'react-router';
 
-import ToolsButtons from './Tools/ToolsButtons.jsx';
 import ToolsMap from './Tools/ToolsMap.jsx';
 import Navigation from './Navigation.jsx';
 

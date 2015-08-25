@@ -16,7 +16,9 @@ import WalletActions from './actions/WalletActions';
 
 let routes = (
   <Route handler={EmptyView}>
-    <Route name="tools" path="/tools" handler={Tools} />
+    <Route path="/tools" handler={EmptyView}>
+      <DefaultRoute name="tools" handler={Tools} />
+    </Route>
 
     <Route path="/search" handler={EmptyView}>
       <Route name="photos" path=":type" handler={MachinePhotos} />
