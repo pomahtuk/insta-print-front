@@ -12,7 +12,6 @@ if (config.logging !== false) {
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
-
 const db = {};
 
 fs

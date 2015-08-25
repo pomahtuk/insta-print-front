@@ -1,8 +1,8 @@
 module.exports = function(sequelize, DataTypes) {
-  var InstagramKey = sequelize.define('InstagramKey', {
+  var keyValueStore = sequelize.define('keyValueStore', {
     key: DataTypes.STRING,
     value: DataTypes.STRING
   });
 
-  return InstagramKey;
+  return keyValueStore;
 };

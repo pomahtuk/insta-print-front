@@ -1,7 +1,7 @@
 const router = require('koa-router')();
 const path = require('path');
 const models  = require('../models');
-const InstagramKey = models.InstagramKey;
+const keyValueStore = models.keyValueStore;
 
 function* updateDBRecord(key, context) {
   const payload = context.request.body;
@@ -15,7 +15,7 @@ function* updateDBRecord(key, context) {
   }
 
   try {
-    var dbRecord = yield InstagramKey.findOrCreate({
+    var dbRecord = yield keyValueStore.findOrCreate({
       where: {key: key}
     });
     if (dbRecord && dbRecord[0] ) {
@@ -33,7 +33,7 @@ function* updateDBRecord(key, context) {
 
 function* retreiveDBRecord(key, context) {
   try {
-    var dbRecord = yield InstagramKey.findOne({where: {key: key}});
+    var dbRecord = yield keyValueStore.findOne({where: {key: key}});
   } catch (err) {
     context.throw(err);
   }
@@ -67,7 +67,7 @@ router.get('/location-id', function* () {
 });
 
 router.get('/settings', function* () {
-  var dbRecords = yield InstagramKey.findAll();
+  var dbRecords = yield keyValueStore.findAll();
   var result = {};
   dbRecords.map(function(record) {
     result[record.key] = record.value;

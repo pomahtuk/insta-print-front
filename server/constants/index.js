@@ -1,4 +1,5 @@
 module.exports = {
+  COIN_KEY: 'coinStatus',
   EVENT_TYPES: {
     COIN_ACCEPTED: 'coinReceived',
     PHOTO_PRINTED: 'printingDone',
