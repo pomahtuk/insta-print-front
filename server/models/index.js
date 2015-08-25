@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
 const basename  = path.basename(module.filename);
 const config = require(path.join(__dirname, '/../config/config.json'))[env];
-const sequelizeLogger = require('../utils/sequlize-log-highlite');
+const sequelizeLogger = require('sequelize-log-syntax-colors');
 
 if (config.logging !== false) {
   config.logging = sequelizeLogger;

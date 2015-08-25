@@ -14,9 +14,9 @@ const constants = require('../constants');
 const mmToPixel = 3.779527559055;
 const mmToInch = 0.0393700787;
 // sizes setup
-const imageSize = 66.2 * mmToPixel;
+const imageSize = 70.2 * mmToPixel;
 const textHeight = 20.4 * mmToPixel;
-const margin = 5 * mmToPixel;
+const margin = 3 * mmToPixel;
 const pageHeight = 101.6 * mmToPixel;
 const pageWidth = 152.4 * mmToPixel;
 
@@ -68,6 +68,9 @@ function* printerFunction(printData) {
   doc.pipe(fs.createWriteStream(fileName));
 
   doc.registerFont('Roboto', fontRegularPath);
+  doc.registerFont('Emoji', fontEmojiPath);
+
+  createDashedLine();
 
   var printDataSize = getPrintDataSize(images);
 
@@ -98,6 +101,7 @@ function* printerFunction(printData) {
       var searchTag = '#' + search.hashtag;
       var splittingArr = text.split(searchTag) || [];
       var index = text.indexOf(searchTag);
+
       if (index === 0) {
         container.push({
           text: searchTag,
@@ -117,6 +121,7 @@ function* printerFunction(printData) {
           type: 'tag'
         });
       }
+
       recurseExtract(splittingArr[1], searchArr, i += 1, container);
     }
 
@@ -133,7 +138,7 @@ function* printerFunction(printData) {
     return resultArray;
   }
 
-  function finalizeDocument() {
+  function createDashedLine() {
     // set cutting line for now
     doc
       .lineCap('butt')
@@ -143,8 +148,10 @@ function* printerFunction(printData) {
       .strokeColor('#eee')
       .stroke();
 
-    doc.end();
+  }
 
+  function finalizeDocument() {
+    doc.end();
     // for now
     console.log(fileName);
 
@@ -181,11 +188,18 @@ function* printerFunction(printData) {
       // in other case we have nothing to draw
       // and huge space will be drawn
       if (textItem.text.length > 0) {
-        if (textItem.type === 'text') {
-          currentText = currentText.fillColor('black');
-        } else if (textItem.type === 'tag') {
-          currentText = currentText.fillColor('blue');
+
+        currentText = currentText.font('Roboto').fillColor('black');
+
+        switch (textItem.type) {
+          case 'tag':
+            currentText = currentText.fillColor('blue');
+            break;
+          case 'emoji':
+            currentText = currentText.font('Emoji');
+            break;
         }
+
         currentText = currentText.text(textItem.text, {
           continued: true
         });
@@ -201,6 +215,7 @@ function* printerFunction(printData) {
 
     if (shouldCreateNewPage) {
       doc.addPage();
+      createDashedLine();
     }
   }
 
