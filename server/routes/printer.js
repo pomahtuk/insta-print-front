@@ -9,6 +9,7 @@ const twitter = require('twitter-text');
 const models = require('../models');
 const Event = models.Event;
 const constants = require('../constants');
+const emojiRegex = require('emoji-regex');
 
 // set conversion values
 const mmToPixel = 3.779527559055;
@@ -24,7 +25,7 @@ const pageWidth = 152.4 * mmToPixel;
 var mockPrintData = require('../mocks/printRequest.js');
 
 const fontRegularPath = path.normalize(path.join(__dirname, '/../../client/fonts/Roboto-Regular.ttf'));
-const fontEmojiPath = path.normalize(path.join(__dirname, '/../../client/fonts/color_emoji.ttf'));
+const fontEmojiPath = path.normalize(path.join(__dirname, '/../../client/fonts/android-emoji.ttf'));
 
 // allow iterate over object making async calls
 function* mapGen (arr, callback) {
@@ -58,6 +59,42 @@ function getPrintDataSize(images) {
   return result;
 }
 
+// thx to MDN
+function knownCharCodeAt(str, idx) {
+  str += '';
+  var code,
+      end = str.length;
+
+  var surrogatePairs = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+  while ((surrogatePairs.exec(str)) != null) {
+    var li = surrogatePairs.lastIndex;
+    if (li - 2 < idx) {
+      idx++;
+    }
+    else {
+      break;
+    }
+  }
+
+  if (idx >= end || idx < 0) {
+    return NaN;
+  }
+
+  code = str.charCodeAt(idx);
+
+  var hi, low;
+  if ((code >= 0xD800) && (code <= 0xDBFF)) {
+    hi = code;
+    low = str.charCodeAt(idx + 1);
+    // Go one further, since one of the "characters" is part of a surrogate pair
+    return ((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000;
+  }
+
+  //return unicode representation
+  return code.toString(16);
+}
+
+
 function* printerFunction(printData) {
   var images = printData.images;
   var fileName = path.join(os.tmpdir(), '/print' + Date.now() + '.pdf');
@@ -68,7 +105,7 @@ function* printerFunction(printData) {
   doc.pipe(fs.createWriteStream(fileName));
 
   doc.registerFont('Roboto', fontRegularPath);
-  doc.registerFont('Emoji', fontEmojiPath);
+  doc.registerFont('AndroidEmoji', fontEmojiPath);
 
   createDashedLine();
 
@@ -90,7 +127,8 @@ function* printerFunction(printData) {
       // no tags found in text
       container.push({
         text: text,
-        type: 'text'
+        type: 'text',
+        isEmoji: false
       });
 
       // do not go further
@@ -105,20 +143,24 @@ function* printerFunction(printData) {
       if (index === 0) {
         container.push({
           text: searchTag,
-          type: 'tag'
+          type: 'tag',
+          isEmoji: false
         });
         container.push({
           text: splittingArr[0],
-          type: 'text'
+          type: 'text',
+          isEmoji: false
         });
       } else if (index !== 0) {
         container.push({
           text: splittingArr[0],
-          type: 'text'
+          type: 'text',
+          isEmoji: false
         });
         container.push({
           text: searchTag,
-          type: 'tag'
+          type: 'tag',
+          isEmoji: false
         });
       }
 
@@ -136,6 +178,54 @@ function* printerFunction(printData) {
     recurseExtract(text, hashTagsArray, 0, resultArray);
 
     return resultArray;
+  }
+
+  function extractEmojis(textsArray) {
+    var finalArray = [];
+
+    textsArray.forEach(function(textsArrayElem) {
+      var text = textsArrayElem.text;
+      var hasEmojs = emojiRegex().test(text);
+      var positionsArray = [];
+
+      if (hasEmojs) {
+        // getting all positions
+        text.replace(emojiRegex(), function(match, position) {
+          positionsArray.push(position);
+          return match;
+        });
+
+        finalArray.push({
+          text: text.slice(0, positionsArray[0]),
+          type: textsArrayElem.type,
+          isEmoji: false
+        });
+
+        positionsArray.forEach(function(emojiPosition, index) {
+          var emojiLength = 3;
+          // pushing emoji itself
+          finalArray.push({
+            text: text.slice(positionsArray[index], positionsArray[index] + emojiLength),
+            type: textsArrayElem.type,
+            isEmoji: true
+          });
+
+          if (index < positionsArray.length - 2) {
+            // pushing rest text
+            finalArray.push({
+              text: text.slice(positionsArray[index] + emojiLength, positionsArray[index + 1]),
+              type: textsArrayElem.type,
+              isEmoji: true
+            });
+          }
+        });
+
+      } else {
+        finalArray.push(textsArrayElem);
+      }
+    });
+
+    return finalArray;
   }
 
   function createDashedLine() {
@@ -173,6 +263,9 @@ function* printerFunction(printData) {
     var origText = image.caption ? image.caption.text : '';
     var textsArray = extractHashTags(origText);
     // use different font for emoji
+    var newTextsArray = extractEmojis(textsArray);
+
+    // console.log(newTextsArray);
 
     doc.font('Roboto');
     doc.fontSize(11);
@@ -184,20 +277,23 @@ function* printerFunction(printData) {
       continued: true
     });
 
-    textsArray.forEach(function(textItem) {
+    newTextsArray.forEach(function(textItem) {
       // in other case we have nothing to draw
       // and huge space will be drawn
       if (textItem.text.length > 0) {
 
-        currentText = currentText.font('Roboto').fillColor('black');
+        console.log(textItem.text);
 
-        switch (textItem.type) {
-          case 'tag':
-            currentText = currentText.fillColor('blue');
-            break;
-          case 'emoji':
-            currentText = currentText.font('Emoji');
-            break;
+        doc.font('Roboto');
+
+        currentText = currentText.fillColor('black');
+
+        if (textItem.isEmoji) {
+          doc.font('Emoji');
+        }
+
+        if (textItem.type === 'tag') {
+          currentText = currentText.fillColor('blue');
         }
 
         currentText = currentText.text(textItem.text, {
@@ -235,10 +331,10 @@ router.post('/printer', function* () {
   try {
     var fileName = yield printerFunction(printingData);
 
-    dbRecord = yield Event.create({
-      eventType: constants.EVENT_TYPES.PHOTO_PRINTED,
-      data: JSON.stringify(printingData)
-    });
+    // dbRecord = yield Event.create({
+    //   eventType: constants.EVENT_TYPES.PHOTO_PRINTED,
+    //   data: JSON.stringify(printingData)
+    // });
 
     this.status = 200;
     this.type = 'application/pdf';
@@ -247,10 +343,10 @@ router.post('/printer', function* () {
     };
   } catch (err) {
 
-    dbRecord = yield Event.create({
-      eventType: constants.EVENT_TYPES.PHOTO_FAIL,
-      data: printingData
-    });
+    // dbRecord = yield Event.create({
+    //   eventType: constants.EVENT_TYPES.PHOTO_FAIL,
+    //   data: JSON.stringify(printingData)
+    // });
 
     this.throw(err);
   }
