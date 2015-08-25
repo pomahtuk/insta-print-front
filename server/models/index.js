@@ -4,7 +4,15 @@ const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
 const basename  = path.basename(module.filename);
 const config = require(path.join(__dirname, '/../config/config.json'))[env];
+const sequelizeLogger = require('../utils/sequlize-log-highlite');
+
+if (config.logging !== false) {
+  config.logging = sequelizeLogger;
+}
+
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
+
+
 const db = {};
 
 fs

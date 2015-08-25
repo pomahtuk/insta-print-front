@@ -5,7 +5,10 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const util = require('util');
-var twitter = require('twitter-text');
+const twitter = require('twitter-text');
+const models = require('../models');
+const Event = models.Event;
+const constants = require('../constants');
 
 // set conversion values
 const mmToPixel = 3.779527559055;
@@ -210,9 +213,15 @@ function* printerFunction(printData) {
 //main functuon
 router.post('/printer', function* () {
   var printingData = this.request.body;
+  var dbRecord = null;
 
   try {
     var fileName = yield printerFunction(printingData);
+
+    dbRecord = yield Event.create({
+      eventType: constants.EVENT_TYPES.PHOTO_PRINTED,
+      data: JSON.stringify(printingData)
+    });
 
     this.status = 200;
     this.type = 'application/pdf';
@@ -220,6 +229,12 @@ router.post('/printer', function* () {
       output: fileName
     };
   } catch (err) {
+
+    dbRecord = yield Event.create({
+      eventType: constants.EVENT_TYPES.PHOTO_FAIL,
+      data: printingData
+    });
+
     this.throw(err);
   }
 });

@@ -1,5 +1,8 @@
 const router = require('koa-router')();
 const request = require('koa-request');
+const models = require('../models');
+const Event = models.Event;
+const constants = require('../constants');
 
 // pass everything to react
 router.get('/proxy', function* () {
@@ -15,6 +18,11 @@ router.get('/proxy', function* () {
     };
 
     var result = yield request(options);
+
+    var dbRecord = yield Event.create({
+      eventType: constants.EVENT_TYPES.REQUEST_DONE,
+      data: JSON.stringify(options)
+    });
 
     this.status = 200;
     this.body = result.body;
