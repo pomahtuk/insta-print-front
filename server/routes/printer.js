@@ -25,7 +25,7 @@ const pageWidth = 152.4 * mmToPixel;
 var mockPrintData = require('../mocks/printRequest.js');
 
 const fontRegularPath = path.normalize(path.join(__dirname, '/../../client/fonts/Roboto-Regular.ttf'));
-const fontEmojiPath = path.normalize(path.join(__dirname, '/../../client/fonts/android-emoji.ttf'));
+const fontEmojiPath = path.normalize(path.join(__dirname, '/../../client/fonts/Symbola.ttf'));
 
 // allow iterate over object making async calls
 function* mapGen (arr, callback) {
@@ -91,7 +91,7 @@ function knownCharCodeAt(str, idx) {
   }
 
   //return unicode representation
-  return code.toString(16);
+  return code;
 }
 
 
@@ -104,8 +104,8 @@ function* printerFunction(printData) {
   });
   doc.pipe(fs.createWriteStream(fileName));
 
-  doc.registerFont('Roboto', fontRegularPath);
-  doc.registerFont('AndroidEmoji', fontEmojiPath);
+  doc.registerFont('Symbola', fontEmojiPath);
+  doc.registerFont('Main', fontRegularPath, 'Roboto');
 
   createDashedLine();
 
@@ -204,8 +204,10 @@ function* printerFunction(printData) {
         positionsArray.forEach(function(emojiPosition, index) {
           var emojiLength = 3;
           // pushing emoji itself
+          var emoji = text.slice(positionsArray[index], positionsArray[index] + emojiLength);
+
           finalArray.push({
-            text: text.slice(positionsArray[index], positionsArray[index] + emojiLength),
+            text: emoji,
             type: textsArrayElem.type,
             isEmoji: true
           });
@@ -267,11 +269,11 @@ function* printerFunction(printData) {
 
     // console.log(newTextsArray);
 
-    doc.font('Roboto');
+    doc.font('Main');
     doc.fontSize(11);
     doc.moveTo(0, 0);
 
-    var currentText = doc.text('', leftOffset, imageSize + (2 * margin), {
+    var currentText = doc.font('Symbola').text('🌍', leftOffset, imageSize + (2 * margin), {
       width: imageSize,
       height: textHeight,
       continued: true
@@ -284,12 +286,11 @@ function* printerFunction(printData) {
 
         console.log(textItem.text);
 
-        doc.font('Roboto');
-
+        currentText = currentText.font('Main');
         currentText = currentText.fillColor('black');
 
         if (textItem.isEmoji) {
-          doc.font('Emoji');
+          currentText = currentText.font('Symbola');
         }
 
         if (textItem.type === 'tag') {
