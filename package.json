@@ -7,7 +7,7 @@
     "start": "node --harmony ./server/index.js",
     "build": "webpack -p --config webpack.config.js --progress --profile --colors",
     "test": "jest",
-    "postinstall": "webpack -p --config webpack.config.js --progress --profile --colors",
+    "postinstall": "cd ./vendor/fontkit && npm i && cd ../../ && webpack -p --config webpack.config.js --progress --profile --colors",
     "dev": "nodemon --ignore client/ --ignore node_modules/ --harmony ./server/index.js & webpack -w --devtool source-map --progress --colors="
   },
   "author": "pman",
@@ -26,6 +26,7 @@
     "eslint": "^0.24.1",
     "extract-text-webpack-plugin": "^0.8.2",
     "file-loader": "^0.8.4",
+    "fontkit": "git://github.com/devongovett/fontkit.git",
     "jest-cli": "^0.4.19",
     "jquery": "^2.1.4",
     "koa": "^0.21.0",
