@@ -1,4 +1,5 @@
 const router = require('koa-router')();
+// const PDFDocument = require('../../../pdfkit');
 const PDFDocument = require('pdfkit');
 const request = require('koa-request').defaults({ encoding: null });
 const fs = require('fs');
@@ -25,7 +26,10 @@ const pageWidth = 152.4 * mmToPixel;
 var mockPrintData = require('../mocks/printRequest.js');
 
 const fontRegularPath = path.normalize(path.join(__dirname, '/../../client/fonts/Roboto-Regular.ttf'));
-const fontEmojiPath = path.normalize(path.join(__dirname, '/../../client/fonts/Symbola.ttf'));
+// this font works with pdfkit's branch fontkit manually assembled
+// but will output BW icons, need to fina a way of using color versions
+const fontEmojiPath = path.normalize(path.join(__dirname, '/../../client/fonts/SegoeUISymbol.ttf'));
+// const fontEmojiPath = path.normalize(path.join(__dirname, '/../../client/fonts/ss-emoji-apple.ttf'));
 
 // allow iterate over object making async calls
 function* mapGen (arr, callback) {
@@ -105,7 +109,7 @@ function* printerFunction(printData) {
   doc.pipe(fs.createWriteStream(fileName));
 
   doc.registerFont('Symbola', fontEmojiPath);
-  doc.registerFont('Main', fontRegularPath, 'Roboto');
+  doc.registerFont('Main', fontRegularPath);
 
   createDashedLine();
 
