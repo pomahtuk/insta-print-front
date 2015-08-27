@@ -1,6 +1,6 @@
 const router = require('koa-router')();
-// const PDFDocument = require('../../../pdfkit');
-const PDFDocument = require('pdfkit');
+const PDFDocument = require('../../../pdfkit');
+// const PDFDocument = require('pdfkit');
 const request = require('koa-request').defaults({ encoding: null });
 const fs = require('fs');
 const path = require('path');
@@ -28,8 +28,9 @@ var mockPrintData = require('../mocks/printRequest.js');
 const fontRegularPath = path.normalize(path.join(__dirname, '/../../client/fonts/Roboto-Regular.ttf'));
 // this font works with pdfkit's branch fontkit manually assembled
 // but will output BW icons, need to fina a way of using color versions
-const fontEmojiPath = path.normalize(path.join(__dirname, '/../../client/fonts/SegoeUISymbol.ttf'));
-// const fontEmojiPath = path.normalize(path.join(__dirname, '/../../client/fonts/ss-emoji-apple.ttf'));
+const fontEmojiBWPath = path.normalize(path.join(__dirname, '/../../client/fonts/SegoeUISymbol.ttf'));
+// this will be treted differently
+const fontEmojiColorPath = path.normalize(path.join(__dirname, '/../../client/fonts/ss-emoji-apple.ttf'));
 
 // allow iterate over object making async calls
 function* mapGen (arr, callback) {
@@ -108,7 +109,7 @@ function* printerFunction(printData) {
   });
   doc.pipe(fs.createWriteStream(fileName));
 
-  doc.registerFont('Symbola', fontEmojiPath);
+  doc.registerFont('Symbola', fontEmojiBWPath);
   doc.registerFont('Main', fontRegularPath);
 
   createDashedLine();
@@ -118,6 +119,27 @@ function* printerFunction(printData) {
   if (printDataSize < 0) {
     finalizeDocument();
     return fileName;
+  }
+
+  function getCurrentStringOnLine(currentTotalString, newString) {
+    if (doc.widthOfString(currentTotalString) <= imageSize) {
+      currentTotalString += newString;
+    } else {
+      // new line!!!
+      var totalArr = currentTotalString.split(' ');
+      var lastTotal = '';
+      totalArr.forEach(function(word, index) {
+        lastTotal += index < totalArr.length - 1 ? word + ' ' : word;
+        if (doc.widthOfString(lastTotal + word) > imageSize) {
+          lastTotal = word;
+        } else {
+          lastTotal += word;
+        }
+      });
+      currentTotalString = lastTotal;
+    }
+
+    return currentTotalString;
   }
 
   function recurseExtract(text, searchArr, i, container) {
@@ -254,6 +276,10 @@ function* printerFunction(printData) {
   }
 
   function* drawImage (image, index) {
+    // global
+    var emojisPositions = [];
+    var currentTotalString = '';
+
     var divisionLeftover = (index - 1) % 2;
     var shouldCreateNewPage = (printDataSize - index) > 0 && divisionLeftover === 1;
     var leftOffset = margin + (2 * margin + imageSize) * divisionLeftover;
@@ -277,23 +303,38 @@ function* printerFunction(printData) {
     doc.fontSize(11);
     doc.moveTo(0, 0);
 
+    emojisPositions.push({
+      symbol: '🌍',
+      x: leftOffset + doc.widthOfString(currentTotalString),
+      y: imageSize + (2 * margin)
+    });
+
     var currentText = doc.font('Symbola').text('🌍', leftOffset, imageSize + (2 * margin), {
       width: imageSize,
       height: textHeight,
       continued: true
     });
 
+    currentTotalString = getCurrentStringOnLine(currentTotalString, '🌍');
+
     newTextsArray.forEach(function(textItem) {
       // in other case we have nothing to draw
       // and huge space will be drawn
       if (textItem.text.length > 0) {
 
-        console.log(textItem.text);
+        // console.log(textItem.text);
 
         currentText = currentText.font('Main');
         currentText = currentText.fillColor('black');
 
         if (textItem.isEmoji) {
+          // save position
+          emojisPositions.push({
+            symbol: textItem.text,
+            x: leftOffset + doc.widthOfString(currentTotalString),
+            y: currentText.y
+          });
+
           currentText = currentText.font('Symbola');
         }
 
@@ -304,7 +345,27 @@ function* printerFunction(printData) {
         currentText = currentText.text(textItem.text, {
           continued: true
         });
+
+        currentTotalString = getCurrentStringOnLine(currentTotalString, textItem.text);
       }
+    });
+
+    currentText = currentText.font('Main').text('this one should go to second line', {
+      continued: true
+    });
+
+    currentTotalString = getCurrentStringOnLine(currentTotalString, 'this one should go to second line');
+
+    emojisPositions.push({
+      symbol: '🌍',
+      x: leftOffset + doc.widthOfString(currentTotalString),
+      y: currentText.y
+    });
+
+    currentTotalString = getCurrentStringOnLine(currentTotalString, '🌍');
+
+    currentText.font('Symbola').text('🌍', {
+      continued: true
     });
 
     // reset text, nothing will be added
@@ -312,12 +373,12 @@ function* printerFunction(printData) {
       continued: false
     });
 
-    // here comes the text
-
     if (shouldCreateNewPage) {
       doc.addPage();
       createDashedLine();
     }
+
+    console.log(emojisPositions, 'and max', imageSize);
   }
 
   yield* mapGen(images, drawImage);
