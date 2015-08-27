@@ -1,7 +1,7 @@
 const router = require('koa-router')();
 // const PDFDocument = require('../../../pdfkit');
-const PDFDocument = require('pdfkit');
-const fontkit = require('../../vendor/fontkit');
+const PDFDocument = require('../../vendor/pdfkit');
+// const fontkit = require('../../vendor/fontkit');
 const request = require('koa-request').defaults({ encoding: null });
 const fs = require('fs');
 const path = require('path');
@@ -22,6 +22,7 @@ const textHeight = 20.4 * mmToPixel;
 const margin = 3 * mmToPixel;
 const pageHeight = 101.6 * mmToPixel;
 const pageWidth = 152.4 * mmToPixel;
+const fontSize = 9;
 
 // mock data
 var mockPrintData = require('../mocks/printRequest.js');
@@ -31,7 +32,7 @@ const fontRegularPath = path.normalize(path.join(__dirname, '/../../client/fonts
 const fontEmojiBWPath = path.normalize(path.join(__dirname, '/../../client/fonts/SegoeUISymbol.ttf'));
 const fontEmojiColorPath = path.normalize(path.join(__dirname, '/../../client/fonts/color_emoji.ttf'));
 
-const emojiFontKitFont = fontkit.openSync(fontEmojiColorPath);
+// const emojiFontKitFont = fontkit.openSync(fontEmojiColorPath);
 
 // allow iterate over object making async calls
 function* mapGen (arr, callback) {
@@ -112,6 +113,8 @@ function* printerFunction(printData) {
 
   doc.registerFont('Main', fontRegularPath);
   doc.registerFont('Emoji', fontEmojiBWPath);
+  // doc.registerFont('Emoji', fontEmojiColorPath);
+
 
   createDashedLine();
 
@@ -239,7 +242,7 @@ function* printerFunction(printData) {
         });
 
         positionsArray.forEach(function(emojiPosition, index) {
-          var emojiLength = 3;
+          var emojiLength = 2;
           // pushing emoji itself
           var emoji = text.slice(positionsArray[index], positionsArray[index] + emojiLength);
           var emojiCode  = knownCharCodeAt(emoji, 0);
@@ -315,7 +318,7 @@ function* printerFunction(printData) {
     var newTextsArray = extractEmojis(textsArray);
 
     doc.font('Main');
-    doc.fontSize(10);
+    doc.fontSize(fontSize);
     doc.moveTo(0, 0);
 
     var currentText = doc.text('', leftOffset, imageSize + (2 * margin), {
@@ -334,8 +337,8 @@ function* printerFunction(printData) {
         if (textItem.isEmoji) {
           var image = path.normalize(path.join(__dirname, '/../../client/images/apple/' + textItem.emojiCode + '.png'));
 
-          // set transparent color and replace with something 1-symbol wired?
           currentText = currentText.fillColor('white');
+          // currentText = currentText.font('Emoji');
 
           // save position
           emojisPositions.push({
@@ -345,8 +348,6 @@ function* printerFunction(printData) {
             x: leftOffset + doc.widthOfString(currentTotalString),
             y: currentText.y
           });
-
-          // textItem.text = ' m ';
         }
 
         if (textItem.type === 'tag') {
@@ -368,7 +369,7 @@ function* printerFunction(printData) {
 
     emojisPositions.forEach(function (emojiPosition, index) {
       doc.image(emojiPosition.image, emojiPosition.x, emojiPosition.y, {
-        width: 10
+        width: fontSize
       });
     });
 
