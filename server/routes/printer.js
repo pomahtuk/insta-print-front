@@ -403,10 +403,10 @@ router.post('/printer', function* () {
 
     console.timeEnd('printing');
 
-    // dbRecord = yield Event.create({
-    //   eventType: constants.EVENT_TYPES.PHOTO_PRINTED,
-    //   data: JSON.stringify(printingData)
-    // });
+    dbRecord = yield Event.create({
+      eventType: constants.EVENT_TYPES.PHOTO_PRINTED,
+      data: JSON.stringify(printingData)
+    });
 
     this.status = 200;
     this.type = 'application/pdf';
@@ -415,10 +415,10 @@ router.post('/printer', function* () {
     };
   } catch (err) {
 
-    // dbRecord = yield Event.create({
-    //   eventType: constants.EVENT_TYPES.PHOTO_FAIL,
-    //   data: JSON.stringify(printingData)
-    // });
+    dbRecord = yield Event.create({
+      eventType: constants.EVENT_TYPES.PHOTO_FAIL,
+      data: JSON.stringify(printingData)
+    });
 
     this.throw(err);
   }
