@@ -29,7 +29,6 @@ var mockPrintData = require('../mocks/printRequest.js');
 
 const fontRegularPath = path.normalize(path.join(__dirname, '/../../client/fonts/Roboto-Regular.ttf'));
 // this will be treted differently
-const fontEmojiBWPath = path.normalize(path.join(__dirname, '/../../client/fonts/SegoeUISymbol.ttf'));
 const fontEmojiColorPath = path.normalize(path.join(__dirname, '/../../client/fonts/color_emoji.ttf'));
 
 const emojiFontKitFont = fontkit.openSync(fontEmojiColorPath);
@@ -112,9 +111,6 @@ function* printerFunction(printData) {
   doc.pipe(fs.createWriteStream(fileName));
 
   doc.registerFont('Main', fontRegularPath);
-  doc.registerFont('Emoji', fontEmojiBWPath);
-  // doc.registerFont('Emoji', fontEmojiColorPath);
-
 
   createDashedLine();
 
@@ -126,17 +122,12 @@ function* printerFunction(printData) {
   }
 
   function getCurrentStringOnLine(currentTotalString, newString) {
-    // if (newString.indexOf(' ') !== 0) {
-    //   newString = ' ' + newString;
-    // }
     currentTotalString += newString;
 
     doc.font('Main');
 
     if (doc.widthOfString(currentTotalString) >= imageSize) {
-      console.log('new line! :', currentTotalString);
-      // new line!!!
-      // inaccurate right now
+      // new line
       var totalArr = currentTotalString.split(' ');
       var lastIndex = 0;
       var lastTotal = '';
@@ -152,7 +143,6 @@ function* printerFunction(printData) {
       lastTotal = totalArr.splice(lastIndex, totalArr.length);
       lastTotal = lastTotal.join(' ');
       currentTotalString = lastTotal;
-      console.log('new line! leftover:', currentTotalString);
     }
 
     return currentTotalString;
@@ -229,6 +219,7 @@ function* printerFunction(printData) {
       var text = textsArrayElem.text;
       var hasEmojs = emojiRegex().test(text);
       var positionsArray = [];
+      var firstSymbols = '';
 
       if (hasEmojs) {
         // getting all positions
@@ -237,24 +228,29 @@ function* printerFunction(printData) {
           return match;
         });
 
-        finalArray.push({
-          text: text.slice(0, positionsArray[0]),
-          type: textsArrayElem.type,
-          isEmoji: false
-        });
+        firstSymbols = text.slice(0, positionsArray[0]);
+
+        if (firstSymbols) {
+          finalArray.push({
+            text: firstSymbols,
+            type: textsArrayElem.type,
+            isEmoji: false
+          });
+        }
 
         positionsArray.forEach(function(emojiPosition, index) {
+          // using two unicode chars for 1 emoji
           var emojiLength = 2;
           // pushing emoji itself
           var emoji = text.slice(positionsArray[index], positionsArray[index] + emojiLength);
-          var emojiCode = knownCharCodeAt(emoji, 0);
-          emojiCode = emojiCode.toString(16);
+          // var emojiCode = knownCharCodeAt(emoji, 0);
+          // emojiCode = emojiCode.toString(16);
 
           // exlude codes
-          if (emojiCode && emojiCode !== 'undefined' && emojiCode !== '1f3fc') {
+          if (emoji.charCodeAt(0) !== 55356) {
             finalArray.push({
               text: emoji,
-              emojiCode: emojiCode,
+              // emojiCode: emojiCode,
               type: textsArrayElem.type,
               isEmoji: true
             });
@@ -306,6 +302,7 @@ function* printerFunction(printData) {
     var shouldCreateNewPage = (printDataSize - index) > 0 && divisionLeftover === 1;
     var leftOffset = margin + (2 * margin + imageSize) * divisionLeftover;
 
+    // mos likely i will be able to send image from FE
     var url = image.images.standard_resolution.url;
     var img = yield request(url);
 
@@ -336,28 +333,27 @@ function* printerFunction(printData) {
         currentText = currentText.font('Main');
         currentText = currentText.fillColor('black');
 
+        if (textItem.type === 'tag') {
+          currentText = currentText.fillColor('blue');
+        }
+
         if (textItem.isEmoji) {
-          // var image = path.normalize(path.join(__dirname, '/../../client/images/apple/' + textItem.emojiCode + '.png'));
           var glyph = emojiFontKitFont.glyphsForString(textItem.text)[0];
           var image = glyph.getImageForSize(32);
 
           currentText = currentText.fillColor('white');
-          // currentText = currentText.font('Emoji');
 
           // save position
           emojisPositions.push({
             symbol: textItem.text,
             image: image.data,
-            // this calculation sucks badly
             x: leftOffset + doc.widthOfString(currentTotalString),
             y: currentText.y
           });
 
+          // this is just a placeholder
+          // to match emiji width
           textItem.text = ' ... ';
-        }
-
-        if (textItem.type === 'tag') {
-          currentText = currentText.fillColor('blue');
         }
 
         currentTotalString = getCurrentStringOnLine(currentTotalString, textItem.text);
@@ -384,7 +380,6 @@ function* printerFunction(printData) {
       createDashedLine();
     }
 
-    // console.log(emojisPositions);
   }
 
   yield* mapGen(images, drawImage);
@@ -401,7 +396,12 @@ router.post('/printer', function* () {
   var dbRecord = null;
 
   try {
+
+    console.time('printing');
+
     var fileName = yield printerFunction(printingData);
+
+    console.timeEnd('printing');
 
     // dbRecord = yield Event.create({
     //   eventType: constants.EVENT_TYPES.PHOTO_PRINTED,
