@@ -7,7 +7,7 @@
     "start": "node --harmony ./server/index.js",
     "build": "webpack -p --config webpack.config.js --progress --profile --colors",
     "test": "jest",
-    "postinstall": "cd ./vendor/fontkit && npm i && cd ../../ && webpack -p --config webpack.config.js --progress --profile --colors",
+    "postinstall": "cd ./vendor/fontkit && npm i && cd ../pdfkit && npm i && cd ./node_modules && rm -Rf ./fontkit && ln -s ../../fontkit . && cd ../ && make js && cd ../../ && webpack -p --config webpack.config.js --progress --profile --colors",
     "dev": "nodemon --ignore client/ --ignore node_modules/ --harmony ./server/index.js & webpack -w --devtool source-map --progress --colors="
   },
   "author": "pman",
