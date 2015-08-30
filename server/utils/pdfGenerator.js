@@ -93,7 +93,7 @@ function knownCharCodeAt(str, idx) {
   return code;
 }
 
-function* printerFunction(printData) {
+function* generatePdf(printData) {
   var images = printData.images;
   var fileName = path.join(os.tmpdir(), '/print' + Date.now() + '.pdf');
   var doc = new PDFDocument({
@@ -382,4 +382,4 @@ function* printerFunction(printData) {
   return fileName;
 }
 
-module.exports = printerFunction;
+module.exports = generatePdf;

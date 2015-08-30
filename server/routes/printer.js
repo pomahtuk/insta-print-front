@@ -2,22 +2,25 @@ const router = require('koa-router')();
 const models = require('../models');
 const Event = models.Event;
 const constants = require('../constants');
-const printerFunction = require('../utils/pdfGenerator');
+const generatePdf = require('../utils/pdfGenerator');
+const nodePrinter = require('printer');
 
-// mock data
-var mockPrintData = require('../mocks/printRequest.js');
+// get list of system printers
+router.get('/printer/list', function* () {
+  var printerList = nodePrinter.getPrinters();
+  this.status = 200;
+  this.body = printerList;
+});
 
 //main functuon
 router.post('/printer', function* () {
   var printingData = this.request.body;
   var dbRecord = null;
+  var fileName = '';
 
   try {
-
     console.time('printing');
-
-    var fileName = yield printerFunction(printingData);
-
+    fileName = yield generatePdf(printingData);
     console.timeEnd('printing');
 
     dbRecord = yield Event.create({
@@ -26,30 +29,14 @@ router.post('/printer', function* () {
     });
 
     this.status = 200;
-    this.type = 'application/pdf';
     this.body = {
       output: fileName
     };
   } catch (err) {
-
     dbRecord = yield Event.create({
       eventType: constants.EVENT_TYPES.PHOTO_FAIL,
       data: JSON.stringify(printingData)
     });
-
-    this.throw(err);
-  }
-});
-
-// testing function - still want to be able to test
-router.get('/printer', function* () {
-  try {
-    var doc = yield printerFunction(mockPrintData);
-
-    this.status = 200;
-    this.type = 'application/pdf';
-    this.body = doc;
-  } catch (err) {
     this.throw(err);
   }
 });
