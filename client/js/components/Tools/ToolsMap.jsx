@@ -1,5 +1,9 @@
-import InstagramActions from '../../actions/InstagramActions';
+import SettingsActions from '../../actions/SettingsActions';
 import GeoActions from '../../actions/GeoActions';
+import SettingsStore from '../../stores/SettingsStore';
+import GeoStore from '../../stores/GeoStore';
+import InstagramStore from '../../stores/InstagramStore';
+import InstagramActions from '../../actions/InstagramActions';
 
 import React from 'react/addons';
 import Router from 'react-router';
@@ -33,29 +37,43 @@ let ToolsMap = React.createClass({
     };
   },
 
-  // once parrent container receive state updates
-  // we will be able to reflect this
-  componentWillReceiveProps(nextProps) {
-    let {geo, locations, settings} = nextProps;
+  componentDidMount() {
+    SettingsStore.listen(this._onChange.bind(this, 'settings', SettingsStore));
+    GeoStore.listen(this._onChange.bind(this, 'geo', GeoStore));
+    InstagramStore.listen(this._onChange.bind(this, 'locations', InstagramStore));
 
-    if (settings) {
-      this.setState({
-        settings: settings
-      });
+    SettingsActions.fetchSettings();
+    GeoActions.getCoordinates();
+  },
+
+  componentWillUnmount() {
+    SettingsStore.unlisten(this._onChange.bind(this, 'settings', SettingsStore));
+    GeoStore.unlisten(this._onChange.bind(this, 'geo', GeoStore));
+    InstagramStore.unlisten(this._onChange.bind(this, 'locations', InstagramStore));
+  },
+
+  componentWillUpdate(nextProps, nextState) {
+    let {geo, settings} = nextState,
+      {coordinates} = geo,
+      {latitude, longitude} = coordinates,
+      oldCoords = this.state.geo.coordinates,
+      apiKey = settings['api-key'];
+
+    let coordsDiffer = (latitude !== oldCoords.latitude || longitude !== oldCoords.longitude);
+
+    if (apiKey && latitude && longitude && coordsDiffer) {
+      InstagramActions.searchLocations(latitude, longitude, apiKey);
     }
+  },
 
-    if (locations) {
-      this.setState({
-        locations: locations
-      });
+
+  /* Store events */
+  _onChange(key, store) {
+    if (this.isMounted()) {
+      let updateObj = {};
+      updateObj[key] = store.getData();
+      this.setState(updateObj);
     }
-
-    if (geo) {
-      this.setState({
-        geo: geo
-      });
-    }
-
   },
 
   // all map related actions
@@ -108,7 +126,7 @@ let ToolsMap = React.createClass({
           position={{lat: location.latitude, lng: location.longitude}}
           key={location.id}
           ref={location.id}
-          icon={`${STATIC_URL}/marker.png`}
+          icon={'/marker.png'}
           onClick={this._setLocationHover.bind(this, location, true)}
         >
 

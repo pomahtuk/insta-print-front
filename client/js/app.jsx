@@ -39,3 +39,5 @@ Router.run(routes, Router.HistoryLocation, function (Handler) {
   WalletActions.openSocket();
   React.render(<Handler/>, document.getElementById('react'));
 });
+
+React.initializeTouchEvents(true);

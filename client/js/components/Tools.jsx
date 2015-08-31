@@ -1,38 +1,34 @@
 import SettingsActions from '../actions/SettingsActions';
-import GeoActions from '../actions/GeoActions';
 import SettingsStore from '../stores/SettingsStore';
-import GeoStore from '../stores/GeoStore';
-import InstagramStore from '../stores/InstagramStore';
-import InstagramActions from '../actions/InstagramActions';
 
 import React from 'react/addons';
 import Router from 'react-router';
 
 import ToolsMap from './Tools/ToolsMap.jsx';
-import Navigation from './Navigation.jsx';
+
+import { AppBar, LeftNav, IconButton } from 'material-ui';
+import {THEME_MANAGER, MENU_ITEMS} from '../constants/App';
 
 let Tools = React.createClass({
   mixins: [ Router.State ],
 
   getInitialState() {
     return {
-      settings: {},
-      geo: {
-        coordinates: {},
-        zoom: 18
-      },
-      locations: []
+      menuOpened: false
+    };
+  },
+
+  childContextTypes: {
+    muiTheme: React.PropTypes.object
+  },
+
+  getChildContext() {
+    return {
+      muiTheme: THEME_MANAGER.getCurrentTheme()
     };
   },
 
   componentDidMount() {
-    SettingsStore.listen(this._onChange.bind(this, 'settings', SettingsStore));
-    GeoStore.listen(this._onChange.bind(this, 'geo', GeoStore));
-    InstagramStore.listen(this._onChange.bind(this, 'locations', InstagramStore));
-
-    SettingsActions.fetchSettings();
-    GeoActions.getCoordinates();
-
     // handle instagram auth token
     const {router} = this.context;
     let token = window.location.hash.split('=')[1];
@@ -45,50 +41,50 @@ let Tools = React.createClass({
     }
   },
 
-  componentWillUnmount() {
-    SettingsStore.unlisten(this._onChange.bind(this, 'settings', SettingsStore));
-    GeoStore.unlisten(this._onChange.bind(this, 'geo', GeoStore));
-    InstagramStore.unlisten(this._onChange.bind(this, 'locations', InstagramStore));
+  _NavClosed() {
+    this.setState({
+      menuOpened: false
+    });
   },
 
-  componentWillUpdate(nextProps, nextState) {
-    let {geo, settings} = nextState,
-      {coordinates} = geo,
-      {latitude, longitude} = coordinates,
-      oldCoords = this.state.geo.coordinates,
-      apiKey = settings['api-key'];
-
-    let coordsDiffer = (latitude !== oldCoords.latitude || longitude !== oldCoords.longitude);
-
-    if (apiKey && latitude && longitude && coordsDiffer) {
-      InstagramActions.searchLocations(latitude, longitude, apiKey);
-    }
+  _NavOpened() {
+    this.setState({
+      menuOpened: true
+    });
   },
 
-  /* Store events */
-  _onChange(key, store) {
-    if (this.isMounted()) {
-      let updateObj = {};
-      updateObj[key] = store.getData();
-      this.setState(updateObj);
-    }
+  _toggleMenuState() {
+    this.refs.leftNav.toggle();
+  },
+
+  _onLeftNavChange(e, key, payload) {
+    // Do DOM Diff refresh
+    this.context.router.transitionTo(payload.route);
   },
 
   render() {
-    let {geo, settings, oldCoords, locations} = this.state;
+    let { menuOpened } = this.state;
 
     return (
-      <div className="app">
+      <div>
 
-        <Navigation />
+        <AppBar
+          title="PrintBox"
+          iconElementLeft={menuOpened ?
+            <IconButton onClick={this._toggleMenuState} iconClassName="material-icons">close</IconButton> :
+            <IconButton onClick={this._toggleMenuState} iconClassName="material-icons">menu</IconButton>
+          }
+        />
 
-        <div className="app-content">
-          <ToolsMap
-            settings={settings}
-            geo={geo}
-            locations={locations}
-          />
-        </div>
+        <LeftNav
+          ref="leftNav"
+          docked={false}
+          onNavClose={this._NavClosed}
+          onNavOpen={this._NavOpened}
+          onChange={this._onLeftNavChange}
+          selectedIndex={1}
+          menuItems={MENU_ITEMS}
+        />
 
       </div>
     );

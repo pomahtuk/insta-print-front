@@ -11,15 +11,15 @@ import UserBlock from '../components/Machine/UserBlock.jsx';
 import Keyboard from '../components/Machine/Keyboard.jsx';
 
 import { Link, Navigation } from 'react-router';
-import { List, ListItem, Avatar, Styles } from 'material-ui';
+import { List, ListItem, Avatar } from 'material-ui';
 
-let ThemeManager = new Styles.ThemeManager();
+import {THEME_MANAGER} from '../constants/App';
 
 import _ from 'lodash';
 import classnames from 'classnames';
 
 let MachineSearch = React.createClass({
-   mixins: [Navigation],
+  mixins: [Navigation],
 
   getInitialState() {
     return {
@@ -37,7 +37,7 @@ let MachineSearch = React.createClass({
 
   getChildContext() {
     return {
-      muiTheme: ThemeManager.getCurrentTheme()
+      muiTheme: THEME_MANAGER.getCurrentTheme()
     };
   },
 
