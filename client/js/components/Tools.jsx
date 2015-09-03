@@ -6,7 +6,7 @@ import Router from 'react-router';
 
 import ToolsMap from './Tools/ToolsMap.jsx';
 
-import { AppBar, LeftNav, IconButton } from 'material-ui';
+import { AppBar, LeftNav, IconButton, Paper, Toggle, DropDownMenu } from 'material-ui';
 import {THEME_MANAGER, MENU_ITEMS} from '../constants/App';
 
 let Tools = React.createClass({
@@ -64,6 +64,13 @@ let Tools = React.createClass({
 
   render() {
     let { menuOpened } = this.state;
+    let menuItems = [
+       { payload: '1', text: 'Never' },
+       { payload: '2', text: 'Every Night' },
+       { payload: '3', text: 'Weeknights' },
+       { payload: '4', text: 'Weekends' },
+       { payload: '5', text: 'Weekly' }
+    ];
 
     return (
       <div>
@@ -86,6 +93,47 @@ let Tools = React.createClass({
           menuItems={MENU_ITEMS}
         />
 
+        <div className="app-holder">
+
+          <Paper zDepth={1}>
+            <div className="paper-container-items">
+              <div className="paper-container-items--sub">
+                <h2> Base modes </h2>
+
+                <Toggle
+                  name="toggleName1"
+                  value="toggleValue1"
+                  label="Demo mode"
+                  defaultToggled={false}
+                />
+
+                <Toggle
+                  name="toggleName2"
+                  value="toggleValue2"
+                  label="Hash tag mode"
+                  defaultToggled={false}
+                />
+
+                <Toggle
+                  name="toggleName3"
+                  value="toggleValue3"
+                  label="Use pre-set location"
+                  defaultToggled={false}
+                />
+              </div>
+            </div>
+          </Paper>
+
+          <Paper zDepth={1}>
+            <div className="paper-container-items">
+              <div className="paper-container-items--sub">
+                <h2> Printer select </h2>
+                <DropDownMenu menuItems={menuItems} />
+              </div>
+            </div>
+          </Paper>
+
+        </div>
       </div>
     );
   }
