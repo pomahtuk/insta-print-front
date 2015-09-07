@@ -93,12 +93,11 @@ let Tools = React.createClass({
           menuItems={MENU_ITEMS}
         />
 
-        <div className="app-holder">
-
-          <Paper zDepth={1}>
-            <div className="paper-container-items">
-              <div className="paper-container-items--sub">
-                <h2> Base modes </h2>
+      <div className="grid base-padding">
+          <div className="col-1-2">
+            <Paper zDepth={1}>
+              <div className="paper-container-items">
+                <div> Base modes </div>
 
                 <Toggle
                   name="toggleName1"
@@ -121,17 +120,17 @@ let Tools = React.createClass({
                   defaultToggled={false}
                 />
               </div>
-            </div>
-          </Paper>
+            </Paper>
+          </div>
 
-          <Paper zDepth={1}>
-            <div className="paper-container-items">
-              <div className="paper-container-items--sub">
-                <h2> Printer select </h2>
+          <div className="col-1-2">
+            <Paper zDepth={1}>
+              <div className="paper-container-items">
+                <div> Printer select </div>
                 <DropDownMenu menuItems={menuItems} />
               </div>
-            </div>
-          </Paper>
+            </Paper>
+          </div>
 
         </div>
       </div>

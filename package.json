@@ -51,7 +51,6 @@
     "npm": "^2.14.1",
     "postcss-loader": "^0.5.1",
     "printer": "git+https://github.com/tojocky/node-printer.git",
-    "purecss": "^0.6.0",
     "react": "^0.13.3",
     "react-google-maps": "^1.7.1",
     "react-hot-loader": "^1.2.8",
