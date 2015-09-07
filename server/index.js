@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const ws = require('./socketServer');
 const hbs = require('koa-hbs');
+const SerialPort = require("serialport").SerialPort;
 
 /**
  * Setting config vars
@@ -21,7 +22,7 @@ const app = koa();
 // require after models initialization to prevent errors
 const appRouter = require('./routes/app.js');
 const proxyRouter = require('./routes/proxy.js');
-const coinsRouter = require('./routes/coins.js');
+//const coinsRouter = require('./routes/coins.js');
 const eventsRouter = require('./routes/events.js');
 const printerRouter = require('./routes/printer.js');
 
@@ -36,7 +37,7 @@ app.use(hbs.middleware({
 }));
 
 app.use(proxyRouter.routes());
-app.use(coinsRouter.routes());
+//app.use(coinsRouter.routes());
 app.use(eventsRouter.routes());
 app.use(printerRouter.routes());
 app.use(appRouter.routes());
@@ -46,4 +47,21 @@ if (!module.parent) {
   app.server = app.listen(appPort);
   ws.listen(app.server);
   console.log('Server started, listening on ports: ' + appPort);
+}
+// start serial
+try {
+  // may be pick this from settings?
+  var serialPort = new SerialPort("/dev/tty.wchusbserial1410", {
+    baudrate: 9600
+  });
+
+  serialPort.on('open', function () {
+    console.log('port opened');
+
+    serialPort.on('data', function(data) {
+      console.log('data received: ' + data);
+    });
+  });
+} catch (err) {
+  console.log(err);
 }

@@ -13,13 +13,13 @@ function* getCoinsStore() {
 }
 
 function* writeEvent(value) {
-  var dbRecord = yield Event.create({
+  yield Event.create({
     eventType: constants.EVENT_TYPES.COIN_ACCEPTED,
     data: value
   });
 }
 
-router.get('/coins', function* () {
+function* coinAcceptorHandler() {
   try {
     var payload = this.query;
     var value = payload.value;
@@ -40,6 +40,6 @@ router.get('/coins', function* () {
     this.throw(err);
   }
 
-});
+}
 
-module.exports = router;
+module.exports = coinAcceptorHandler;

@@ -1,6 +1,7 @@
 const router = require('koa-router')();
 const models = require('../models');
 const Event = models.Event;
+const constants = require('../constants');
 
 
 function* retreiveDBRecords(context) {
@@ -17,6 +18,7 @@ function* retreiveDBRecords(context) {
 
   return dbRecords;
 }
+
 
 function* updateDBRecord(context) {
   const payload = context.request.body;
@@ -48,6 +50,32 @@ function* updateDBRecord(context) {
 
   return dbRecord;
 }
+
+function* calculateStatistics(context) {
+  var statsObject = {};
+  var eventTypes = constants.EVENT_TYPES;
+  var eventKeys = Object.keys(eventTypes);
+
+  try {
+    for (var i = 0; i < eventKeys.length; i++) {
+      var eventKey = eventKeys[i];
+      var eventName = eventTypes[eventKey];
+
+      statsObject[eventName] = yield Event.findAll({
+        where: {
+          eventType: eventName
+        }
+      });
+    }
+  } catch (err) {
+    context.throw(err);
+  }
+
+  // clculate revenue
+
+  return statsObject;
+}
+
 
 router.post('/events', function* () {
   var record = yield updateDBRecord(this);

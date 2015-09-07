@@ -108,6 +108,9 @@ function* generatePdf(printData) {
 
   var printDataSize = getPrintDataSize(images);
 
+  // update object reference
+  printData.imageCount = printDataSize;
+
   if (printDataSize < 0) {
     finalizeDocument();
     return fileName;

@@ -6,20 +6,20 @@ const constants = require('../constants');
 
 // pass everything to react
 router.get('/proxy', function* () {
+  var payload = this.query;
+  var url = payload.url;
+  delete payload.url;
+
+  var options = {
+    method: 'GET',
+    uri: url,
+    qs: payload
+  };
+
   try {
-    var payload = this.query;
-    var url = payload.url;
-    delete payload.url;
-
-    var options = {
-      method: 'GET',
-      uri: url,
-      qs: payload
-    };
-
     var result = yield request(options);
 
-    var dbRecord = yield Event.create({
+    yield Event.create({
       eventType: constants.EVENT_TYPES.REQUEST_DONE,
       data: JSON.stringify(options)
     });
@@ -29,6 +29,11 @@ router.get('/proxy', function* () {
 
   } catch (err) {
     this.throw(err);
+
+    yield Event.create({
+      eventType: constants.EVENT_TYPES.REQUEST_FAIL,
+      data: JSON.stringify(options)
+    });
   }
 
 });

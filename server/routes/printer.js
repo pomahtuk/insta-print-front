@@ -15,7 +15,6 @@ router.get('/printer/list', function* () {
 //main functuon
 router.post('/printer', function* () {
   var printingData = this.request.body;
-  var dbRecord = null;
   var fileName = '';
 
   try {
@@ -23,7 +22,7 @@ router.post('/printer', function* () {
     fileName = yield generatePdf(printingData);
     console.timeEnd('printing');
 
-    dbRecord = yield Event.create({
+    yield Event.create({
       eventType: constants.EVENT_TYPES.PHOTO_PRINTED,
       data: JSON.stringify(printingData)
     });
@@ -33,7 +32,7 @@ router.post('/printer', function* () {
       output: fileName
     };
   } catch (err) {
-    dbRecord = yield Event.create({
+    yield Event.create({
       eventType: constants.EVENT_TYPES.PHOTO_FAIL,
       data: JSON.stringify(printingData)
     });
