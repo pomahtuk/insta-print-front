@@ -71,7 +71,7 @@ function* calculateStatistics(context) {
     context.throw(err);
   }
 
-  // clculate revenue
+  // clculate revenuex
 
   return statsObject;
 }

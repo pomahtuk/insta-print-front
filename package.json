@@ -52,6 +52,7 @@
     "postcss-loader": "^0.5.1",
     "printer": "git+https://github.com/tojocky/node-printer.git",
     "react": "^0.13.3",
+    "react-d3-components": "^0.4.8",
     "react-google-maps": "^1.7.1",
     "react-hot-loader": "^1.2.8",
     "react-infinite": "^0.4.1",

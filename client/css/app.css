@@ -1,6 +1,5 @@
 /* css for material design */
 @import '~normalize-css/normalize.css';
-@import '~purecss/build/pure.css';
 @import './preloader.css';
 @import './keyboard.css';
 @import './grid.css';

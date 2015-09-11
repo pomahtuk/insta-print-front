@@ -8,7 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const ws = require('./socketServer');
 const hbs = require('koa-hbs');
-const SerialPort = require("serialport").SerialPort;
+const SerialPort = require('serialport').SerialPort;
 
 /**
  * Setting config vars
@@ -48,20 +48,20 @@ if (!module.parent) {
   ws.listen(app.server);
   console.log('Server started, listening on ports: ' + appPort);
 }
-// start serial
-try {
-  // may be pick this from settings?
-  var serialPort = new SerialPort("/dev/tty.wchusbserial1410", {
-    baudrate: 9600
-  });
-
-  serialPort.on('open', function () {
-    console.log('port opened');
-
-    serialPort.on('data', function(data) {
-      console.log('data received: ' + data);
-    });
-  });
-} catch (err) {
-  console.log(err);
-}
+// // start serial
+// try {
+//   // may be pick this from settings?
+//   var serialPort = new SerialPort('/dev/tty.wchusbserial1410', {
+//     baudrate: 9600
+//   });
+//
+//   serialPort.on('open', function () {
+//     console.log('port opened');
+//
+//     serialPort.on('data', function(data) {
+//       console.log('data received: ' + data);
+//     });
+//   });
+// } catch (err) {
+//   console.log(err);
+// }
